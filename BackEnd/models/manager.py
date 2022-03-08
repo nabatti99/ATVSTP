@@ -14,6 +14,7 @@ class Manager:
             'hash_password': self.hash_password,
             'email': self.email,
             'phone': self.phone,
+            'address': self.address,
             'type': self.type,
             'position': self.position
         }
