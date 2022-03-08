@@ -1,10 +1,12 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
-my_server = "mongodb+srv://ATVSTP:atvstp@atvstp-project.xoj9q.mongodb.net/test"
+load_dotenv()
 
 
 def connect_server():
-    client = MongoClient(my_server)
+    client = MongoClient(os.environ.get('MONGODB_URI'))
     return client
 
 
