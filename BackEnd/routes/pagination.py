@@ -4,7 +4,7 @@ from models.manager import Manager
 from routes import app
 from flask import request, jsonify
 
-list_database = [{'id': i+1} for i in range(100)]
+# list_database = [{'id': i+1} for i in range(100)]
 
 @app.route('/paging/<string:type_database>', methods=['POST'])
 def pagination(type_database):
@@ -12,8 +12,8 @@ def pagination(type_database):
     offset = int(request.args['offset'])
     limit = int(request.args['limit'])
 
-    # database = get_current_database(type_database)
-    # list_database = [Manager().db_to_dict(db) for db in database.find({})]
+    database = get_current_database(type_database)
+    list_database = [Manager().db_to_dict(db) for db in database.find({})]
     obj = {}
 
     if offset == 1:
