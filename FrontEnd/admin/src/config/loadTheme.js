@@ -150,6 +150,15 @@ const theme = createTheme({
         },
       },
     },
+
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          minWidth: "unset",
+          marginRight: 12,
+        },
+      },
+    },
   },
 });
 

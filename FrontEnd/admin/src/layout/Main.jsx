@@ -3,7 +3,7 @@ import LeaderBoardSvg from "../components/Icons/LeaderBoardSvg";
 
 import { connectAppContext } from "../contexts/appContext/appContext";
 
-function Main({ appContext }) {
+function Main({ appContext, children }) {
   const { drawerWidth } = appContext;
 
   return (
@@ -24,12 +24,14 @@ function Main({ appContext }) {
       >
         <Stack minHeight={62} justifyContent="center" pr={2}>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" flexGrow={1}>
-            <IconButton>
-              <LeaderBoardSvg mr={2} />
-            </IconButton>
-            <IconButton>
-              <LeaderBoardSvg mr={4} />
-            </IconButton>
+            <Box mr={4}>
+              <IconButton>
+                <LeaderBoardSvg />
+              </IconButton>
+              <IconButton>
+                <LeaderBoardSvg />
+              </IconButton>
+            </Box>
             <Typography variant="strong" mr={2}>
               Xin chào, Minh
             </Typography>
@@ -44,7 +46,8 @@ function Main({ appContext }) {
       </AppBar>
 
       <Box minHeight={62} />
-      <Typography variant="strong">Content</Typography>
+
+      {children}
     </Box>
   );
 }
