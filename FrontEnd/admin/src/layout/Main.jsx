@@ -7,10 +7,11 @@ function Main({ appContext, children }) {
   const { drawerWidth } = appContext;
 
   return (
-    <Box
+    <Stack
       sx={{
         width: `calc(100% - ${drawerWidth}px)`,
         marginLeft: `${drawerWidth}px`,
+        height: "100vh",
       }}
     >
       <AppBar
@@ -22,7 +23,7 @@ function Main({ appContext, children }) {
           marginLeft: `${drawerWidth}px`,
         }}
       >
-        <Stack minHeight={62} justifyContent="center" pr={2}>
+        <Stack height={62} justifyContent="center" pr={2}>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" flexGrow={1}>
             <Box mr={4}>
               <IconButton>
@@ -45,10 +46,14 @@ function Main({ appContext, children }) {
         </Stack>
       </AppBar>
 
-      <Box minHeight={62} />
+      <Stack flexGrow={1}>
+        <Box height={62} />
 
-      {children}
-    </Box>
+        <Box flexGrow={1} bgcolor="gray.50" p={4}>
+          {children}
+        </Box>
+      </Stack>
+    </Stack>
   );
 }
 

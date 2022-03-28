@@ -5,7 +5,7 @@ import theme from "./config/loadTheme";
 
 import RootLayout from "./layout/RootLayout";
 import Statistic from "./views/Statistic";
-import UsersManagement from "./views/UsersManagement";
+import UsersManagement from "./views/UserManagement/UsersManagement";
 
 function App() {
   return (

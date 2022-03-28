@@ -2,6 +2,20 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   typography: {
+    fontFamily: [
+      '"Be Vietnam Pro"',
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(", "),
+
     h1: {
       fontWeight: 700,
       fontSize: 64,
@@ -32,16 +46,6 @@ const theme = createTheme({
     regular: {
       fontWeight: 500,
       fontSize: 14,
-    },
-
-    strong: {
-      fontWeight: 700,
-      fontSize: 14,
-    },
-
-    small: {
-      fontWeight: 700,
-      fontSize: 10,
     },
   },
 
@@ -100,23 +104,23 @@ const theme = createTheme({
   },
 
   components: {
-    MuiTypography: {
-      defaultProps: {
-        fontFamily: [
-          '"Be Vietnam Pro"',
-          "-apple-system",
-          "BlinkMacSystemFont",
-          '"Segoe UI"',
-          "Roboto",
-          '"Helvetica Neue"',
-          "Arial",
-          "sans-serif",
-          '"Apple Color Emoji"',
-          '"Segoe UI Emoji"',
-          '"Segoe UI Symbol"',
-        ].join(", "),
-      },
-    },
+    // MuiTypography: {
+    //   defaultProps: {
+    //     fontFamily: [
+    //       '"Be Vietnam Pro"',
+    //       "-apple-system",
+    //       "BlinkMacSystemFont",
+    //       '"Segoe UI"',
+    //       "Roboto",
+    //       '"Helvetica Neue"',
+    //       "Arial",
+    //       "sans-serif",
+    //       '"Apple Color Emoji"',
+    //       '"Segoe UI Emoji"',
+    //       '"Segoe UI Symbol"',
+    //     ].join(", "),
+    //   },
+    // },
 
     MuiPaper: {
       styleOverrides: {
@@ -162,6 +166,18 @@ const theme = createTheme({
   },
 });
 
+theme.typography.strong = {
+  fontWeight: 700,
+  fontSize: 14,
+  fontFamily: theme.typography.fontFamily,
+};
+
+theme.typography.small = {
+  fontWeight: 700,
+  fontSize: 10,
+  fontFamily: theme.typography.fontFamily,
+};
+
 theme.components.MuiAvatar = {
   styleOverrides: {
     root: ({ ownerState, theme }) => {
@@ -169,6 +185,22 @@ theme.components.MuiAvatar = {
       return {
         border: `${ownerState.border}px solid ${borderColor}`,
       };
+    },
+  },
+};
+
+theme.components.MuiInputBase = {
+  styleOverrides: {
+    root: {
+      fontFamily: theme.typography.fontFamily,
+    },
+  },
+};
+
+theme.components.MuiTableHead = {
+  styleOverrides: {
+    root: {
+      backgroundColor: theme.palette.gray[100],
     },
   },
 };

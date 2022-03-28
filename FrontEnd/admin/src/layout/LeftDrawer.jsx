@@ -1,4 +1,4 @@
-import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
+import { Drawer, Link, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router";
 
 import { connectAppContext } from "../contexts/appContext/appContext";
@@ -37,17 +37,20 @@ function LeftDrawer({ appContext }) {
       }}
     >
       <Stack minHeight={62} justifyContent="center" pl={2}>
-        <Stack direction="row" alignItems="center">
-          <LeaderBoardSvg mr={1} size={32} />
-          <Typography variant="h5" sx={{ fontWeight: 900 }}>
-            ATVSTP - Admin
-          </Typography>
-        </Stack>
+        <Link href="/" underline="none">
+          <Stack direction="row" alignItems="center">
+            <LeaderBoardSvg mr={1} size={32} color="gray.900" />
+            <Typography variant="h5" sx={{ fontWeight: 900 }} color="gray.900">
+              ATVSTP - Admin
+            </Typography>
+          </Stack>
+        </Link>
       </Stack>
 
       <List>
         {navItems.map(({ Icon, path, text }) => {
           const isSelected = location.pathname == path;
+          const color = isSelected ? "blue.500" : "gray.500";
 
           return (
             <ListItemButton
@@ -80,9 +83,9 @@ function LeftDrawer({ appContext }) {
               }}
             >
               <ListItemIcon>
-                <Icon color={isSelected ? "blue.500" : undefined} />
+                <Icon color={color} />
               </ListItemIcon>
-              <ListItemText>{text}</ListItemText>
+              <ListItemText sx={{ color }}>{text}</ListItemText>
             </ListItemButton>
           );
         })}
