@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material/styles";
-import "@fontsource/be-vietnam-pro";
 
 const theme = createTheme({
   typography: {

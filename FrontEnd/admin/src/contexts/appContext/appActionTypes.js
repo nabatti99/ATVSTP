@@ -1,0 +1,1 @@
+export const SET_DRAWER_WIDTH = "SET_DRAWER_WIDTH";
