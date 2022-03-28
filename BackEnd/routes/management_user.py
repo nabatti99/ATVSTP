@@ -4,6 +4,7 @@ from flask import request, make_response, render_template
 from run import app
 from models.manager import Manager
 from .management_email import gen_password, send_email_new_password
+from .pagination import pagination
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
@@ -110,18 +111,25 @@ def create_new_manager(current_manager=None):
             return {'Type Error': e}, 400
 
 
-@app.route('/manager/get_all_manager', methods=['GET'])
+@app.route('/manager/<string:type_manager>', methods=['GET'])
 @manager_required('level_two')
-def get_all_manager(current_manager=None):
+def get_all_manager(current_manager=None, type_manager: str = ''):
     list_manager = []
-    type_manager = request.args.get('type_manager')
+
+    offset = int(request.args['offset'])
+    limit = int(request.args['limit'])
+
     try:
         all_manager = manager_collection.find({'type_manager': type_manager})
         if all_manager:
             for mn in all_manager:
                 list_manager.append(Manager().db_to_dict(mn))
+            print(list_manager)
             return {'type manager': str(type_manager),
-                    'all_manager': list_manager}
+                    'all_manager': pagination(path_dir=f'/manager/get_all_manager/{type_manager}',
+                                              offset=offset,
+                                              limit=limit,
+                                              list_database=list_manager)}
         else:
             return {'Status': 'Fail',
                     "Message": f'Can not find any {type_manager}'}, 401
@@ -130,11 +138,12 @@ def get_all_manager(current_manager=None):
         return {'Type Error': e}, 400
 
 
-@app.route('/manager/get_a_manager/<string:_id>', methods=['GET'])
+@app.route('/manager/<string:type_manager>/<string:_id>', methods=['GET'])
 @manager_required('level_two')
-def get_a_manager(current_manager=None, _id: str = ''):
+def get_a_manager(current_manager=None, _id: str = '', type_manager: str = ''):
     try:
-        the_manager = manager_collection.find_one({'_id': ObjectId(_id)})
+        the_manager = manager_collection.find_one({'_id': ObjectId(_id),
+                                                   'type_manager': type_manager})
         if the_manager:
             return Manager().db_to_dict(the_manager)
         else:
@@ -144,7 +153,7 @@ def get_a_manager(current_manager=None, _id: str = ''):
         return {'Type Error': e}, 400
 
 
-@app.route('/manager/update_a_manager/<string:_id>', methods=['PUT'])
+@app.route('/manager/<string:_id>', methods=['PUT'])
 @manager_required("level_one")
 def update_a_manager(current_manager=None, _id: str = ''):
     try:
@@ -246,6 +255,38 @@ def create_new_password(current_manager=None, _id: str = ''):
         return {'Type Error': e}, 400
 
 
+@app.route('/manager/<string:type_manager>/<string:type_search>', methods=['POST'])
+@manager_required('level_two')
+def search_manager(current_manager=None, type_search: str = '', type_manager: str = ''):
+    try:
+        search_value = request.args['value']
+        offset = int(request.args['offset'])
+        limit = int(request.args['limit'])
+        print(type_search, search_value)
+        some_managers = manager_collection.find({
+            'type_manager': type_manager,
+            type_search: {'$regex': f'^{search_value}', '$options': "m"}
+        })
+        list_managers = []
+        if some_managers:
+            for mn in some_managers:
+                list_managers.append(Manager().db_to_dict(mn))
+            return {'type manager': str(type_manager),
+                    'all_manager': pagination(path_dir=f'/manager/get_all_manager/{type_manager}',
+                                              offset=offset,
+                                              limit=limit,
+                                              list_database=list_managers)}
+        else:
+            return {'Status': 'Fail',
+                    "Message": f'Can not find any {type_manager}'}, 401
+
+    except Exception as e:
+        return {'Type Error': e}, 400
+
+
+
+
+
 def checked_manager(new_manager):
     logger = {}
     try:
@@ -277,8 +318,3 @@ def checked_manager(new_manager):
     except:
         logger['type_manager'] = 'No type'
     return logger
-
-
-
-
-
