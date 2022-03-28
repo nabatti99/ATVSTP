@@ -1,7 +1,7 @@
 import datetime
 import functools
 from flask import request, make_response, render_template
-from run import app
+from routes import app
 from models.manager import Manager
 from .management_email import gen_password, send_email_new_password
 from .pagination import pagination
