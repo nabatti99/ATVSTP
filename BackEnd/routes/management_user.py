@@ -82,7 +82,7 @@ def gen_token(_id):
 
 
 @app.route('/manager', methods=['POST'])
-# @manager_required("level_two")
+@manager_required("level_two")
 def create_new_manager(current_manager=None):
     new_register = request.get_json()
 
@@ -131,7 +131,7 @@ def get_all_manager(current_manager=None):
 
 
 @app.route('/manager/get_a_manager/<string:_id>', methods=['GET'])
-# @manager_required('level_two')
+@manager_required('level_two')
 def get_a_manager(current_manager=None, _id: str = ''):
     try:
         the_manager = manager_collection.find_one({'_id': ObjectId(_id)})
@@ -190,7 +190,7 @@ def update_a_manager(current_manager=None, _id: str = ''):
 
 
 @app.route('/manager/<string:_id>', methods=['DELETE'])
-# @manager_required("level_two")
+@manager_required("level_two")
 def delete_a_manager(current_manager=None, _id: str = ''):
     try:
         the_manager = manager_collection.find_one({'_id': ObjectId(_id)})
@@ -211,7 +211,7 @@ def delete_a_manager(current_manager=None, _id: str = ''):
 
 
 @app.route('/manager', methods=['DELETE'])
-# @manager_required('level_two')
+@manager_required('level_two')
 def delete_all_manager(current_manager=None):
     try:
         all_manager = manager_collection.delete_many({})
@@ -226,7 +226,7 @@ def delete_all_manager(current_manager=None):
 
 
 @app.route('/manager/new_password/<string:_id>', methods=['POST'])
-# @manager_required('level_two')
+@manager_required('level_two')
 def create_new_password(current_manager=None, _id: str = ''):
     try:
         new_password = gen_password()

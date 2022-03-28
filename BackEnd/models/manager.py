@@ -1,6 +1,3 @@
-from typing import Dict, overload
-
-
 class Manager:
     def __init__(self,
                  name: str = 'manager',
@@ -32,6 +29,7 @@ class Manager:
 
     def db_to_dict(self, database):
         return {
+            '_id': database['_id'],
             'name': database['name'],
             'email': database['email'],
             'phone': database['phone'],
