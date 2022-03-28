@@ -262,7 +262,7 @@ def search_manager(current_manager=None, type_search: str = '', type_manager: st
         search_value = request.args['value']
         offset = int(request.args['offset'])
         limit = int(request.args['limit'])
-        print(type_search, search_value)
+
         some_managers = manager_collection.find({
             'type_manager': type_manager,
             type_search: {'$regex': f'^{search_value}', '$options': "m"}
@@ -275,6 +275,7 @@ def search_manager(current_manager=None, type_search: str = '', type_manager: st
                     'all_manager': pagination(path_dir=f'/manager/get_all_manager/{type_manager}',
                                               offset=offset,
                                               limit=limit,
+                                              value=search_value,
                                               list_database=list_managers)}
         else:
             return {'Status': 'Fail',
