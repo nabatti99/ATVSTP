@@ -104,24 +104,6 @@ const theme = createTheme({
   },
 
   components: {
-    // MuiTypography: {
-    //   defaultProps: {
-    //     fontFamily: [
-    //       '"Be Vietnam Pro"',
-    //       "-apple-system",
-    //       "BlinkMacSystemFont",
-    //       '"Segoe UI"',
-    //       "Roboto",
-    //       '"Helvetica Neue"',
-    //       "Arial",
-    //       "sans-serif",
-    //       '"Apple Color Emoji"',
-    //       '"Segoe UI Emoji"',
-    //       '"Segoe UI Symbol"',
-    //     ].join(", "),
-    //   },
-    // },
-
     MuiPaper: {
       styleOverrides: {
         elevation1: {
@@ -163,6 +145,14 @@ const theme = createTheme({
         },
       },
     },
+
+    // MuiTable: {
+    //   styleOverrides: {
+    //     root: {
+    //       tableLayout: "fixed",
+    //     },
+    //   },
+    // },
   },
 });
 
