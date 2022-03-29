@@ -126,7 +126,7 @@ def get_all_manager(current_manager=None, type_manager: str = ''):
                 list_manager.append(Manager().db_to_dict(mn))
             print(list_manager)
             return {'type manager': str(type_manager),
-                    'all_manager': pagination(path_dir=f'/manager/get_all_manager/{type_manager}',
+                    'all_manager': pagination(path_dir=f'/manager/{type_manager}',
                                               offset=offset,
                                               limit=limit,
                                               list_database=list_manager)}
@@ -272,7 +272,7 @@ def search_manager(current_manager=None, type_search: str = '', type_manager: st
             for mn in some_managers:
                 list_managers.append(Manager().db_to_dict(mn))
             return {'type manager': str(type_manager),
-                    'all_manager': pagination(path_dir=f'/manager/get_all_manager/{type_manager}',
+                    'all_manager': pagination(path_dir=f'/manager/{type_manager}/{type_search}',
                                               offset=offset,
                                               limit=limit,
                                               value=search_value,
