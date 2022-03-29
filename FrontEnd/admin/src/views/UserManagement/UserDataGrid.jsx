@@ -1,6 +1,8 @@
-import { Paper } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, Button, Paper, Stack, TextField } from "@mui/material";
+import { Fragment, useEffect, useState } from "react";
+import AppModal from "../../components/AppModal";
 import DataGrid from "../../components/DataGrid";
+import LeaderBoardSvg from "../../components/Icons/LeaderBoardSvg";
 
 const headers = [
   { field: "id", headerName: "ID", minWidth: 80, color: "gray.700" },
@@ -138,16 +140,65 @@ function UserDataGrid() {
     }, 1000);
   };
 
+  const actionButtons = [
+    {
+      IconComponent: LeaderBoardSvg,
+      color: "blue.500",
+      handleClicked: (row) => {
+        setIsModalOpened(true);
+      },
+    },
+    {
+      IconComponent: LeaderBoardSvg,
+      color: "blue.500",
+      handleClicked: (row) => {},
+    },
+  ];
+
+  const FooterComponent = (
+    <Box>
+      <Button variant="outlined" onClick={() => {}}>
+        <Box component="span" mr={1}>
+          <LeaderBoardSvg size={16} />
+        </Box>
+        Thêm mới
+      </Button>
+    </Box>
+  );
+
+  // Modal
+  const [isModalOpened, setIsModalOpened] = useState(false);
+
+  const handleCloseButtonClicked = () => {
+    setIsModalOpened(false);
+  };
+
   return (
-    <Paper elevation={2} sx={{ marginTop: 4 }}>
-      <DataGrid
-        headers={headers}
-        data={data}
-        isLoading={isLoading}
-        count={fakeData.length}
-        onTableChange={handleTableChanged}
-      />
-    </Paper>
+    <Fragment>
+      <Paper elevation={2} sx={{ marginTop: 4 }}>
+        <DataGrid
+          headers={headers}
+          data={data}
+          isLoading={isLoading}
+          count={fakeData.length}
+          onTableChange={handleTableChanged}
+          actionButtons={actionButtons}
+          FooterComponent={FooterComponent}
+        />
+      </Paper>
+
+      <AppModal isOpened={isModalOpened} onCLoseButtonClicked={handleCloseButtonClicked}>
+        <Stack>
+          <TextField label="HỌ VÀ TÊN" variant="standard" sx={{ marginBottom: 2 }} />
+          <TextField label="EMAIL" variant="standard" sx={{ marginBottom: 2 }} />
+          <TextField label="SỐ ĐIỆN THOẠI" variant="standard" sx={{ marginBottom: 2 }} />
+          <TextField label="ĐỊA CHỈ" variant="standard" sx={{ marginBottom: 2 }} />
+        </Stack>
+        <Stack direction="row" justifyContent="flex-end" mt={4}>
+          <Button variant="outlined">Cập nhật</Button>
+        </Stack>
+      </AppModal>
+    </Fragment>
   );
 }
 

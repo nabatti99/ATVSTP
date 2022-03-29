@@ -15,10 +15,15 @@ import { Fragment, useEffect, useState } from "react";
 
 import LeaderBoardSvg from "./Icons/LeaderBoardSvg";
 
-// Buttons Fixed Width
-const ACTION_WIDTH = 140;
-
-function DataGrid({ headers = [], data = [], isLoading = true, count = 0, onTableChange }) {
+function DataGrid({
+  headers = [],
+  data = [],
+  isLoading = true,
+  count = 0,
+  actionButtons = [],
+  FooterComponent = null,
+  onTableChange,
+}) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
 
@@ -42,7 +47,7 @@ function DataGrid({ headers = [], data = [], isLoading = true, count = 0, onTabl
     handleTableChanged(0, newRowsPerPage);
   };
 
-  console.log(data);
+  const actionButtonsWidth = actionButtons.length > 0 ? 140 : 0;
 
   return (
     <Fragment>
@@ -58,7 +63,7 @@ function DataGrid({ headers = [], data = [], isLoading = true, count = 0, onTabl
                 </TableCell>
               ))}
 
-              <TableCell sx={{ minWidth: ACTION_WIDTH }} />
+              <TableCell sx={{ minWidth: actionButtonsWidth }} />
             </TableRow>
           </TableHead>
 
@@ -91,12 +96,11 @@ function DataGrid({ headers = [], data = [], isLoading = true, count = 0, onTabl
                     ))}
 
                     <TableCell align="center">
-                      <IconButton>
-                        <LeaderBoardSvg color="gray.500" size={24} />
-                      </IconButton>
-                      <IconButton>
-                        <LeaderBoardSvg color="gray.500" size={24} />
-                      </IconButton>
+                      {actionButtons.map(({ IconComponent, color, handleClicked }) => (
+                        <IconButton onClick={() => handleClicked(row)}>
+                          <IconComponent color={color} />
+                        </IconButton>
+                      ))}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -104,18 +108,21 @@ function DataGrid({ headers = [], data = [], isLoading = true, count = 0, onTabl
         </Table>
       </TableContainer>
 
-      <TablePagination
-        component="div"
-        labelRowsPerPage="Số hàng hiển thị:"
-        rowsPerPageOptions={[5, 10, 20]}
-        rowsPerPage={rowsPerPage}
-        showFirstButton
-        showLastButton
-        page={page}
-        count={count}
-        onPageChange={handlePageChanged}
-        onRowsPerPageChange={handleRowsPerPageChanged}
-      />
+      <Stack direction="row" justifyContent="flex-end" alignItems="center">
+        {FooterComponent}
+        <TablePagination
+          component="div"
+          labelRowsPerPage="Số hàng hiển thị:"
+          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPage={rowsPerPage}
+          showFirstButton
+          showLastButton
+          page={page}
+          count={count}
+          onPageChange={handlePageChanged}
+          onRowsPerPageChange={handleRowsPerPageChanged}
+        />
+      </Stack>
     </Fragment>
   );
 }

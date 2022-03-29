@@ -42,11 +42,6 @@ const theme = createTheme({
       fontWeight: 600,
       fontSize: 16,
     },
-
-    regular: {
-      fontWeight: 500,
-      fontSize: 14,
-    },
   },
 
   palette: {
@@ -145,16 +140,14 @@ const theme = createTheme({
         },
       },
     },
-
-    // MuiTable: {
-    //   styleOverrides: {
-    //     root: {
-    //       tableLayout: "fixed",
-    //     },
-    //   },
-    // },
   },
 });
+
+theme.typography.regular = {
+  fontWeight: 500,
+  fontSize: 14,
+  fontFamily: theme.typography.fontFamily,
+};
 
 theme.typography.strong = {
   fontWeight: 700,
@@ -175,6 +168,30 @@ theme.components.MuiAvatar = {
       return {
         border: `${ownerState.border}px solid ${borderColor}`,
       };
+    },
+  },
+};
+
+theme.components.MuiInput = {
+  styleOverrides: {
+    root: {
+      ...theme.typography.regular,
+    },
+  },
+};
+
+theme.components.MuiInputLabel = {
+  styleOverrides: {
+    root: {
+      ...theme.typography.strong,
+    },
+  },
+};
+
+theme.components.MuiButton = {
+  styleOverrides: {
+    root: {
+      ...theme.typography.strong,
     },
   },
 };
