@@ -1,5 +1,6 @@
 import { AppBar, Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
-import LeaderBoardSvg from "../components/Icons/LeaderBoardSvg";
+import BedTimeSvg from "../components/Icons/BedTimeSvg";
+import NotificationsSvg from "../components/Icons/NotificationsSvg";
 
 import { connectAppContext } from "../contexts/appContext/appContext";
 
@@ -27,10 +28,10 @@ function Main({ appContext, children }) {
           <Stack direction="row" justifyContent="flex-end" alignItems="center" flexGrow={1}>
             <Box mr={4}>
               <IconButton>
-                <LeaderBoardSvg />
+                <BedTimeSvg />
               </IconButton>
               <IconButton>
-                <LeaderBoardSvg />
+                <NotificationsSvg />
               </IconButton>
             </Box>
             <Typography variant="strong" mr={2}>

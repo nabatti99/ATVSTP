@@ -97,7 +97,7 @@ function DataGrid({
 
                     <TableCell align="center">
                       {actionButtons.map(({ IconComponent, color, handleClicked }) => (
-                        <IconButton onClick={() => handleClicked(row)}>
+                        <IconButton key={IconComponent.name} onClick={() => handleClicked(row)}>
                           <IconComponent color={color} />
                         </IconButton>
                       ))}

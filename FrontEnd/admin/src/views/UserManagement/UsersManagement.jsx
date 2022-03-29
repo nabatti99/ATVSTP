@@ -1,5 +1,5 @@
-import { Stack, Typography, Box, Grid, Paper, InputBase, TextField, IconButton } from "@mui/material";
-import LeaderBoardSvg from "../../components/Icons/LeaderBoardSvg";
+import { Stack, Typography, Paper, InputBase, IconButton } from "@mui/material";
+import SearchSvg from "../../components/Icons/SearchSvg";
 import UserDataGrid from "./UserDataGrid";
 
 function UsersManagement() {
@@ -22,7 +22,7 @@ function UsersManagement() {
             placeholder="Tìm kiếm theo ID/Tên/Email"
           />
           <IconButton sx={{ marginTop: 1, marginBottom: 1, marginLeft: 1, marginRight: 2 }}>
-            <LeaderBoardSvg size={16} />
+            <SearchSvg size={16} />
           </IconButton>
         </Paper>
       </Paper>

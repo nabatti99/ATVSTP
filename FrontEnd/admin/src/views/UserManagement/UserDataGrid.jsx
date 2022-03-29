@@ -1,8 +1,11 @@
-import { Box, Button, Paper, Stack, TextField } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
-import AppModal from "../../components/AppModal";
+import { Paper } from "@mui/material";
+import { Fragment, useState } from "react";
+import ButtonIcon from "../../components/ButtonIcon";
 import DataGrid from "../../components/DataGrid";
-import LeaderBoardSvg from "../../components/Icons/LeaderBoardSvg";
+import DeleteSvg from "../../components/Icons/DeleteSvg";
+import CreateSvg from "../../components/Icons/CreateSvg";
+import AddSvg from "../../components/Icons/AddSvg";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const headers = [
   { field: "id", headerName: "ID", minWidth: 80, color: "gray.700" },
@@ -129,6 +132,7 @@ const fakeData = [
 ];
 
 function UserDataGrid() {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -142,36 +146,27 @@ function UserDataGrid() {
 
   const actionButtons = [
     {
-      IconComponent: LeaderBoardSvg,
+      IconComponent: CreateSvg,
       color: "blue.500",
       handleClicked: (row) => {
-        setIsModalOpened(true);
+        navigate(row.email, {
+          state: row,
+        });
       },
     },
     {
-      IconComponent: LeaderBoardSvg,
-      color: "blue.500",
+      IconComponent: DeleteSvg,
+      color: "red.500",
       handleClicked: (row) => {},
     },
   ];
 
+  // Render
   const FooterComponent = (
-    <Box>
-      <Button variant="outlined" onClick={() => {}}>
-        <Box component="span" mr={1}>
-          <LeaderBoardSvg size={16} />
-        </Box>
-        Thêm mới
-      </Button>
-    </Box>
+    <ButtonIcon variant="outlined" onClick={() => navigate("Add")} LeftIcon={AddSvg}>
+      Thêm mới
+    </ButtonIcon>
   );
-
-  // Modal
-  const [isModalOpened, setIsModalOpened] = useState(false);
-
-  const handleCloseButtonClicked = () => {
-    setIsModalOpened(false);
-  };
 
   return (
     <Fragment>
@@ -187,17 +182,7 @@ function UserDataGrid() {
         />
       </Paper>
 
-      <AppModal isOpened={isModalOpened} onCLoseButtonClicked={handleCloseButtonClicked}>
-        <Stack>
-          <TextField label="HỌ VÀ TÊN" variant="standard" sx={{ marginBottom: 2 }} />
-          <TextField label="EMAIL" variant="standard" sx={{ marginBottom: 2 }} />
-          <TextField label="SỐ ĐIỆN THOẠI" variant="standard" sx={{ marginBottom: 2 }} />
-          <TextField label="ĐỊA CHỈ" variant="standard" sx={{ marginBottom: 2 }} />
-        </Stack>
-        <Stack direction="row" justifyContent="flex-end" mt={4}>
-          <Button variant="outlined">Cập nhật</Button>
-        </Stack>
-      </AppModal>
+      <Outlet />
     </Fragment>
   );
 }

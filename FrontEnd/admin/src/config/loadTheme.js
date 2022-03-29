@@ -49,6 +49,8 @@ const theme = createTheme({
     black: "#000000",
 
     gray: {
+      main: "#718096",
+      contrastText: "#FFFFFF",
       50: "#F7FAFC",
       100: "#EDF2F7",
       200: "#E2E8F0",
@@ -61,6 +63,8 @@ const theme = createTheme({
       900: "#171923",
     },
     red: {
+      main: "#E53E3E",
+      contrastText: "#FFFFFF",
       50: "#FFF5F5",
       100: "#FED7D7",
       200: "#FEB2B2",
@@ -73,6 +77,8 @@ const theme = createTheme({
       900: "#63171B",
     },
     green: {
+      main: "#38A169",
+      contrastText: "#FFFFFF",
       50: "#F0FFF4",
       100: "#C6F6D5",
       200: "#9AE6B4",
@@ -85,6 +91,8 @@ const theme = createTheme({
       900: "#1C4532",
     },
     blue: {
+      main: "#3182ce",
+      contrastText: "#FFFFFF",
       50: "#ebf8ff",
       100: "#bee3f8",
       200: "#90cdf4",
@@ -157,7 +165,7 @@ theme.typography.strong = {
 
 theme.typography.small = {
   fontWeight: 700,
-  fontSize: 10,
+  fontSize: 12,
   fontFamily: theme.typography.fontFamily,
 };
 
@@ -184,6 +192,7 @@ theme.components.MuiInputLabel = {
   styleOverrides: {
     root: {
       ...theme.typography.strong,
+      color: theme.palette.gray[500],
     },
   },
 };
@@ -192,6 +201,7 @@ theme.components.MuiButton = {
   styleOverrides: {
     root: {
       ...theme.typography.strong,
+      textTransform: "inherit",
     },
   },
 };

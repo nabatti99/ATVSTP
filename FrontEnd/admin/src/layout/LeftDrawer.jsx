@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 
 import { connectAppContext } from "../contexts/appContext/appContext";
 import LeaderBoardSvg from "../components/Icons/LeaderBoardSvg";
+import GroupSvg from "../components/Icons/GroupSvg";
 
 function LeftDrawer({ appContext }) {
   const navigate = useNavigate();
@@ -13,11 +14,11 @@ function LeftDrawer({ appContext }) {
   const navItems = [
     {
       Icon: LeaderBoardSvg,
-      path: "/Statistic",
+      path: "/",
       text: "Thống kê",
     },
     {
-      Icon: LeaderBoardSvg,
+      Icon: GroupSvg,
       path: "/UsersManagement",
       text: "Nhân sự",
     },
@@ -49,7 +50,7 @@ function LeftDrawer({ appContext }) {
 
       <List>
         {navItems.map(({ Icon, path, text }) => {
-          const isSelected = location.pathname == path;
+          const isSelected = location.pathname === path;
           const color = isSelected ? "blue.500" : "gray.500";
 
           return (
