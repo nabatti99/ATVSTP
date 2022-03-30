@@ -82,7 +82,7 @@ def gen_token(_id):
     return token
 
 
-@app.route('/manager', methods=['POST'])
+@app.route('/manager/create_new_manager', methods=['POST'])
 @manager_required("level_two")
 def create_new_manager(current_manager=None):
     new_register = request.get_json()
@@ -111,51 +111,48 @@ def create_new_manager(current_manager=None):
             return {'Type Error': e}, 400
 
 
-@app.route('/manager/<string:type_manager>', methods=['GET'])
+@app.route('/manager/get_all_manager', methods=['GET'])
 @manager_required('level_two')
-def get_all_manager(current_manager=None, type_manager: str = ''):
+def get_all_manager(current_manager=None):
     list_manager = []
 
     offset = int(request.args['offset'])
     limit = int(request.args['limit'])
 
     try:
-        all_manager = manager_collection.find({'type_manager': type_manager})
+        all_manager = manager_collection.find({}).sort('name')
         if all_manager:
             for mn in all_manager:
                 list_manager.append(Manager().db_to_dict(mn))
-            print(list_manager)
-            return {'type manager': str(type_manager),
-                    'all_manager': pagination(path_dir=f'/manager/{type_manager}',
+            return {'all_manager': pagination(path_dir=f'/manager/get_all_manager',
                                               offset=offset,
                                               limit=limit,
                                               list_database=list_manager)}
         else:
             return {'Status': 'Fail',
-                    "Message": f'Can not find any {type_manager}'}, 401
+                    "Message": 'Can not find any manager in database'}, 401
 
     except Exception as e:
         return {'Type Error': e}, 400
 
 
-@app.route('/manager/<string:type_manager>/<string:_id>', methods=['GET'])
-@manager_required('level_two')
-def get_a_manager(current_manager=None, _id: str = '', type_manager: str = ''):
+@app.route('/manager/get_a_manager/<string:email>', methods=['GET'])
+@manager_required('level_one')
+def get_a_manager(current_manager=None, email: str = ''):
     try:
-        the_manager = manager_collection.find_one({'_id': ObjectId(_id),
-                                                   'type_manager': type_manager})
+        the_manager = manager_collection.find_one({'email': email})
         if the_manager:
             return Manager().db_to_dict(the_manager)
         else:
             return {'Status': 'Fail',
-                    'Message': f'Can not find manager have id {_id} in database, please try again!'}, 401
+                    'Message': f'Can not find manager have email {email} in database, please try again!'}, 401
     except Exception as e:
         return {'Type Error': e}, 400
 
 
-@app.route('/manager/<string:_id>', methods=['PUT'])
+@app.route('/manager/update_a_manager/<string:email>', methods=['PUT'])
 @manager_required("level_one")
-def update_a_manager(current_manager=None, _id: str = ''):
+def update_a_manager(current_manager=None, email: str = ''):
     try:
         updated_manager = request.get_json()
 
@@ -163,7 +160,7 @@ def update_a_manager(current_manager=None, _id: str = ''):
 
         if not logger:
             if current_manager['type_manager'] == 'admin':
-                del_conf_mn = manager_collection.find_one_and_update({'_id': ObjectId(_id)},
+                del_conf_mn = manager_collection.find_one_and_update({'email': email},
                                                                      {'$set': {
                                                                          'name': updated_manager['name'],
                                                                          'email': updated_manager['email'],
@@ -173,7 +170,7 @@ def update_a_manager(current_manager=None, _id: str = ''):
                                                                          'type_manager': updated_manager['type_manager']
                                                                      }})
             elif current_manager['type_manager'] == 'inspector':
-                del_conf_mn = manager_collection.find_one_and_update({'_id': ObjectId(_id)},
+                del_conf_mn = manager_collection.find_one_and_update({'email': email},
                                                                      {'$set': {
                                                                          'name': updated_manager['name'],
                                                                          'email': updated_manager['email'],
@@ -187,10 +184,10 @@ def update_a_manager(current_manager=None, _id: str = ''):
 
             if del_conf_mn:
                 return {'Status': 'Success',
-                        'Message': f'Updated user {_id}'}
+                        'Message': f'Updated user have {email}'}
             else:
                 return {'Status': 'Fail',
-                        'Message': f'Do not find manager have id: {_id} in database, please check again!'}
+                        'Message': f'Do not find manager have email: {email} in database, please check again!'}
         else:
             return {'Status': 'fail',
                     'Message': logger}
@@ -198,28 +195,28 @@ def update_a_manager(current_manager=None, _id: str = ''):
         return {'Type Error': e}, 400
 
 
-@app.route('/manager/<string:_id>', methods=['DELETE'])
+@app.route('/manager/delete_a_manager/<string:email>', methods=['DELETE'])
 @manager_required("level_two")
-def delete_a_manager(current_manager=None, _id: str = ''):
+def delete_a_manager(current_manager=None, email: str = ''):
     try:
-        the_manager = manager_collection.find_one({'_id': ObjectId(_id)})
+        the_manager = manager_collection.find_one({'email': email})
         if the_manager['type_manager'] == 'admin':
             return {'Status': 'Fail!',
                     'Message': f'You is a {current_manager["type_manager"]} can not delete user type: '
                                f'{the_manager["type_manager"]}'}
         else:
-            deleted_manager = manager_collection.delete_one({'_id': ObjectId(_id)})
+            deleted_manager = manager_collection.delete_one({'email': email})
             if deleted_manager:
                 return {'Status': 'Success!',
-                        'Message': f'Deleted user {_id}'}
+                        'Message': f'Deleted user {email}'}
             else:
                 return {'Status': 'Fail!',
-                        'Message': f'Do not have user {_id} in database'}
+                        'Message': f'Do not have user {email} in database'}
     except Exception as e:
         return {'Type Error': e}, 400
 
 
-@app.route('/manager', methods=['DELETE'])
+@app.route('/manager/delete_all_manager', methods=['DELETE'])
 @manager_required('level_two')
 def delete_all_manager(current_manager=None):
     try:
@@ -234,12 +231,12 @@ def delete_all_manager(current_manager=None):
         return {'Type Error': e}, 400
 
 
-@app.route('/manager/new_password/<string:_id>', methods=['POST'])
+@app.route('/manager/new_password/<string:email>', methods=['POST'])
 @manager_required('level_two')
-def create_new_password(current_manager=None, _id: str = ''):
+def create_new_password(current_manager=None, email: str = ''):
     try:
         new_password = gen_password()
-        the_manager = manager_collection.find_one_and_update({'_id': ObjectId(_id)},
+        the_manager = manager_collection.find_one_and_update({"email": email},
                                                              {'$set': {
                                                                  'hash_password': generate_password_hash(new_password,
                                                                                                          method='sha256')
@@ -250,36 +247,34 @@ def create_new_password(current_manager=None, _id: str = ''):
             return {'Message': 'Send Email Success!'}
         else:
             return {'Result': 'Fail',
-                    'Message': f'Do not have manager {_id} in database '}, 401
+                    'Message': f'Do not have manager {email} in database '}, 401
     except Exception as e:
         return {'Type Error': e}, 400
 
 
-@app.route('/manager/<string:type_manager>/<string:type_search>', methods=['POST'])
+@app.route('/manager/search/<string:type_search>', methods=['POST'])
 @manager_required('level_two')
-def search_manager(current_manager=None, type_search: str = '', type_manager: str = ''):
+def search_manager(current_manager=None, type_search: str = ''):
     try:
         search_value = request.args['value']
         offset = int(request.args['offset'])
         limit = int(request.args['limit'])
 
         some_managers = manager_collection.find({
-            'type_manager': type_manager,
             type_search: {'$regex': f'^{search_value}', '$options': "m"}
         })
         list_managers = []
         if some_managers:
             for mn in some_managers:
                 list_managers.append(Manager().db_to_dict(mn))
-            return {'type manager': str(type_manager),
-                    'all_manager': pagination(path_dir=f'/manager/{type_manager}/{type_search}',
+            return {'all_manager': pagination(path_dir=f'/manager/search/{type_search}',
                                               offset=offset,
                                               limit=limit,
                                               value=search_value,
                                               list_database=list_managers)}
         else:
             return {'Status': 'Fail',
-                    "Message": f'Can not find any {type_manager}'}, 401
+                    "Message": f'Can not find any manager in database'}, 401
 
     except Exception as e:
         return {'Type Error': e}, 400
