@@ -1,0 +1,3 @@
+export const ADD_NEW_PROFILE = "ADD_NEW_PROFILE";
+export const EDIT_PROFILE = "EDIT_PROFILE";
+export const DELETE_PROFILE = "DELETE_PROFILE";

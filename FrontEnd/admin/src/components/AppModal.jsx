@@ -26,7 +26,7 @@ function AppModal({ isOpened = true, title, onCLoseButtonClick, onModalClose, ch
           }}
         >
           <Stack direction="row" alignItems="center" mb={4}>
-            <Typography variant="h3" mr={4} color="gray.700">
+            <Typography variant="h3" mr={4} color="gray.700" flexGrow={1}>
               {title}
             </Typography>
             <IconButton onClick={onCLoseButtonClick}>

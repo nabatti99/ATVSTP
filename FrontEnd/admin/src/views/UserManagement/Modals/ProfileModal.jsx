@@ -1,23 +1,32 @@
-import { Box, Button, debounce, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, debounce, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 import AppModal from "../../../components/AppModal";
 import Image from "../../../components/Image";
+import { ADD_NEW_PROFILE, EDIT_PROFILE } from "./profileActionTypes";
 
 function ProfileModal({
   isModalOpened = true,
-  title,
-  onCLoseButtonClick,
-  onModalClose,
-  onNameTextChange,
-  onEmailTextChange,
-  onPhoneTextChange,
-  onLocationChange,
-  onOkButtonClick,
-  avatarSrc,
+  profileData = {},
+  modalType,
+  onCLoseButtonClick = () => {},
+  onModalClose = () => {},
+  onNameChange = () => {},
+  onEmailChange = () => {},
+  onPhoneChange = () => {},
+  onAddressChange = () => {},
+  onAvatarChange = () => {},
+  onOkButtonClick = () => {},
 }) {
   const fileRef = useRef();
   const [file, setFile] = useState(null);
 
+  // Make event debounced
+  const handleNameChangedDebounced = debounce(onNameChange, 1000);
+  const handleEmailChangedDebounced = debounce(onEmailChange, 1000);
+  const handlePhoneChangedDebounced = debounce(onPhoneChange, 1000);
+  const handleAddressChangedDebounced = debounce(onAddressChange, 1000);
+
+  // Handle Events
   function handleChooseFileButtonClicked() {
     fileRef.current.click();
   }
@@ -33,10 +42,31 @@ function ProfileModal({
     console.log(files[0]);
   }
 
+  // Select Role
+  const [role, setRole] = useState(profileData.role);
+
+  const handleRoleChanged = (event) => setRole(event.target.value);
+
+  const renderInfo = {
+    title: "",
+    shouldEnableEmail: true,
+  };
+
+  switch (modalType) {
+    case ADD_NEW_PROFILE:
+      renderInfo.title = "Thêm mới người dùng";
+      break;
+
+    case EDIT_PROFILE:
+      renderInfo.title = "Chỉnh sửa thông tin người dùng";
+      renderInfo.shouldEnableEmail = false;
+      break;
+  }
+
   return (
     <AppModal
       isOpened={isModalOpened}
-      title={title}
+      title={renderInfo.title}
       onCLoseButtonClick={onCLoseButtonClick}
       onModalClose={onModalClose}
     >
@@ -45,32 +75,50 @@ function ProfileModal({
           label="HỌ VÀ TÊN"
           variant="standard"
           sx={{ marginBottom: 2 }}
-          onChange={debounce(onNameTextChange, 1000)}
+          onChange={(event) => handleNameChangedDebounced(event.target.value)}
+          defaultValue={profileData.name}
         />
         <TextField
           label="EMAIL"
           variant="standard"
           sx={{ marginBottom: 2 }}
-          onChange={debounce(onEmailTextChange, 1000)}
+          onChange={(event) => handleEmailChangedDebounced(event.target.value)}
+          disabled={!renderInfo.shouldEnableEmail}
+          defaultValue={profileData.email}
         />
+        <TextField
+          variant="standard"
+          select
+          value={role}
+          onChange={handleRoleChanged}
+          label="VAI TRÒ"
+          sx={{ marginBottom: 2 }}
+        >
+          <MenuItem value="Admin">Admin</MenuItem>
+          <MenuItem value="Thanh tra viên">Thanh tra viên</MenuItem>
+        </TextField>
         <TextField
           label="SỐ ĐIỆN THOẠI"
           variant="standard"
           sx={{ marginBottom: 2 }}
-          onChange={debounce(onPhoneTextChange, 1000)}
+          onChange={(event) => handlePhoneChangedDebounced(event.target.value)}
+          defaultValue={profileData.phone}
         />
         <TextField
           label="ĐỊA CHỈ"
           variant="standard"
           sx={{ marginBottom: 4 }}
-          onChange={debounce(onLocationChange, 1000)}
+          onChange={(event) => handleAddressChangedDebounced(event.target.value)}
+          defaultValue={profileData.address}
         />
         <Stack>
           <Typography variant="strong" color="gray.500">
             AVATAR
           </Typography>
 
-          {avatarSrc && <Image src={avatarSrc} borderRadius={2} width={100} height={100} mt={1} />}
+          {profileData.avatar && (
+            <Image src={profileData.avatar} borderRadius={2} width={100} height={100} mt={1} />
+          )}
 
           <Box mt={1}>
             <Button variant="contained" color="blue" onClick={handleChooseFileButtonClicked}>

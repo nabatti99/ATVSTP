@@ -19,7 +19,7 @@ function LeftDrawer({ appContext }) {
     },
     {
       Icon: GroupSvg,
-      path: "/UsersManagement",
+      path: "/UsersManagement/",
       text: "Nhân sự",
     },
   ];

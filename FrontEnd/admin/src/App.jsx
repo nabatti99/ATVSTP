@@ -10,6 +10,7 @@ import EditProfileModal from "./views/UserManagement/Modals/EditProfileModal";
 import UserDetails from "./views/UserManagement/UserDetails";
 import UsersManagement from "./views/UserManagement/UsersManagement";
 import AddNewProfileModal from "./views/UserManagement/Modals/AddNewProfileModal";
+import DeleteProfileModal from "./views/UserManagement/Modals/DeleteProfileModal";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="UsersManagement" element={<UsersManagement />}>
               <Route path=":email" element={<EditProfileModal />} />
               <Route path="Add" element={<AddNewProfileModal />} />
+              <Route path="Delete" element={<DeleteProfileModal />} />
             </Route>
             <Route path="UserDetails/:email" element={<UserDetails />} />
 

@@ -13,8 +13,6 @@ import {
 } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 
-import LeaderBoardSvg from "./Icons/LeaderBoardSvg";
-
 function DataGrid({
   headers = [],
   data = [],
@@ -33,7 +31,7 @@ function DataGrid({
 
   const handleTableChanged = (page, rowsPerPage) => {
     const dataBegin = rowsPerPage * page;
-    onTableChange(dataBegin, dataBegin + rowsPerPage);
+    onTableChange(dataBegin, rowsPerPage);
   };
 
   const handlePageChanged = (event, newPage) => {

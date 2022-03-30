@@ -1,8 +1,13 @@
 import { Stack, Typography, Paper, InputBase, IconButton } from "@mui/material";
+import { Outlet, useLocation } from "react-router-dom";
 import SearchSvg from "../../components/Icons/SearchSvg";
 import UserDataGrid from "./UserDataGrid";
 
 function UsersManagement() {
+  const { state } = useLocation();
+
+  console.log(state);
+
   return (
     <Stack>
       <Typography variant="h4" color="gray.700">
@@ -28,6 +33,9 @@ function UsersManagement() {
       </Paper>
 
       <UserDataGrid />
+
+      {/* Portal to render Modals */}
+      <Outlet />
     </Stack>
   );
 }

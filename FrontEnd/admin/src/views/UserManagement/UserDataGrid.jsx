@@ -1,5 +1,5 @@
 import { Paper } from "@mui/material";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import ButtonIcon from "../../components/ButtonIcon";
 import DataGrid from "../../components/DataGrid";
 import DeleteSvg from "../../components/Icons/DeleteSvg";
@@ -40,7 +40,7 @@ const headers = [
     color: "gray.500",
   },
   {
-    field: "contactLocation",
+    field: "address",
     headerName: "ĐỊA CHỈ LIÊN HỆ",
     minWidth: 300,
     color: "gray.500",
@@ -55,7 +55,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Admin",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
   {
     id: "TT02",
@@ -64,7 +64,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Admin",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
   {
     id: "TT03",
@@ -73,7 +73,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Thanh tra viên",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
   {
     id: "TT04",
@@ -82,7 +82,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Admin",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
   {
     id: "TT05",
@@ -91,7 +91,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Thanh tra viên",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
   {
     id: "TT06",
@@ -100,7 +100,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Thanh tra viên",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
   {
     id: "TT07",
@@ -109,7 +109,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Admin",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
   {
     id: "TT08",
@@ -118,7 +118,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Admin",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
   {
     id: "TT09",
@@ -127,7 +127,7 @@ const fakeData = [
     email: "anhminh2122000@gmail.com",
     phone: "0946672181",
     role: "Admin",
-    contactLocation: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
+    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
   },
 ];
 
@@ -136,10 +136,10 @@ function UserDataGrid() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleTableChanged = (dataBegin, dataEnd) => {
+  const handleTableChanged = (dataBegin, rowsPerPage) => {
     setIsLoading(true);
     setTimeout(() => {
-      setData(fakeData.slice(dataBegin, dataEnd));
+      setData(fakeData.slice(dataBegin, dataBegin + rowsPerPage));
       setIsLoading(false);
     }, 1000);
   };
@@ -157,7 +157,11 @@ function UserDataGrid() {
     {
       IconComponent: DeleteSvg,
       color: "red.500",
-      handleClicked: (row) => {},
+      handleClicked: (row) => {
+        navigate("Delete", {
+          state: row,
+        });
+      },
     },
   ];
 
@@ -169,21 +173,17 @@ function UserDataGrid() {
   );
 
   return (
-    <Fragment>
-      <Paper elevation={2} sx={{ marginTop: 4 }}>
-        <DataGrid
-          headers={headers}
-          data={data}
-          isLoading={isLoading}
-          count={fakeData.length}
-          onTableChange={handleTableChanged}
-          actionButtons={actionButtons}
-          FooterComponent={FooterComponent}
-        />
-      </Paper>
-
-      <Outlet />
-    </Fragment>
+    <Paper elevation={2} sx={{ marginTop: 4 }}>
+      <DataGrid
+        headers={headers}
+        data={data}
+        isLoading={isLoading}
+        count={fakeData.length}
+        onTableChange={handleTableChanged}
+        actionButtons={actionButtons}
+        FooterComponent={FooterComponent}
+      />
+    </Paper>
   );
 }
 
