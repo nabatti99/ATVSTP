@@ -26,4 +26,4 @@ mail = Mail(app)
 
 
 from routes.management_user import manager_required
-from routes import management_email, management_user, pagination, groceryApis, administration_atvstp_routes
+from routes import management_email, management_user, pagination, groceryApis, administration_atvstp_routes, feedback_of_people_routes, information_atvstp_routes
