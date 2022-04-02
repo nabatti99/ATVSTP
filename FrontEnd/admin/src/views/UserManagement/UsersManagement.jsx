@@ -1,12 +1,69 @@
-import { Stack, Typography, Paper, InputBase, IconButton } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Stack, Typography } from "@mui/material";
 import { Outlet, useLocation } from "react-router-dom";
-import SearchSvg from "../../components/Icons/SearchSvg";
+
 import UserDataGrid from "./UserDataGrid";
 
+import useRequest from "../../hooks/useRequest";
+import { EDIT_PROFILE, ADD_NEW_PROFILE, DELETE_PROFILE } from "./Modals/profileActionTypes";
+import UserSearchBar from "./UserSearchBar";
+
 function UsersManagement() {
+  const request = useRequest();
+
+  // Handle table events
+  const [shouldTableUpdate, setShouldTableUpdate] = useState(false);
+
+  const handleTableUpdated = () => {
+    setShouldTableUpdate(false);
+  };
+
+  // Handle search bar events
+  const [query, setQuery] = useState({
+    searchGroup: "name",
+    keyword: "",
+  });
+  const handleChanged = (searchGroup, keyword) => {
+    setQuery({
+      searchGroup,
+      keyword,
+    });
+
+    setShouldTableUpdate(true);
+  };
+
+  // Trigger execute table actions
   const { state } = useLocation();
 
-  console.log(state);
+  useEffect(() => {
+    if (state && state.isSubmitted) {
+      const profile = state.profileData;
+
+      Promise.resolve()
+        .then(() => {
+          switch (state.action) {
+            case EDIT_PROFILE:
+              return request.put(`manager/update_a_manager/${profile.email}`, {
+                ...profile,
+              });
+
+            case ADD_NEW_PROFILE:
+              return request.post("manager/create_new_manager", {
+                ...profile,
+              });
+
+            case DELETE_PROFILE:
+              return request.delete(`/manager/delete_a_manager/${profile.email}`);
+
+            default:
+              throw new Error("Không thể tạo mới người dùng");
+          }
+        })
+        .then(() => {
+          setShouldTableUpdate(true);
+        });
+    }
+  }, [state]);
 
   return (
     <Stack>
@@ -14,25 +71,9 @@ function UsersManagement() {
         Quản lí nhân sự
       </Typography>
 
-      <Paper elevation={2} sx={{ padding: 2, marginTop: 4 }}>
-        <Paper variant="outlined" sx={{ borderColor: "gray.200", display: "flex", alignItems: "center" }}>
-          <InputBase
-            sx={{
-              paddingTop: 1,
-              paddingBottom: 1,
-              paddingLeft: 2,
-              paddingRight: 2,
-              flexGrow: 1,
-            }}
-            placeholder="Tìm kiếm theo ID/Tên/Email"
-          />
-          <IconButton sx={{ marginTop: 1, marginBottom: 1, marginLeft: 1, marginRight: 2 }}>
-            <SearchSvg size={16} />
-          </IconButton>
-        </Paper>
-      </Paper>
+      <UserSearchBar onChange={handleChanged} />
 
-      <UserDataGrid />
+      <UserDataGrid shouldTableUpdate={shouldTableUpdate} query={query} onTableUpdate={handleTableUpdated} />
 
       {/* Portal to render Modals */}
       <Outlet />

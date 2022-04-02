@@ -11,39 +11,41 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import usePrevious from "../hooks/usePrevious";
 
 function DataGrid({
   headers = [],
   data = [],
   isLoading = true,
   count = 0,
+  shouldUpdate,
   actionButtons = [],
   FooterComponent = null,
-  onTableChange,
+  onUpdateTable,
 }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
 
-  useEffect(() => {
-    handleTableChanged(page, rowsPerPage);
-  }, []);
-
-  const handleTableChanged = (page, rowsPerPage) => {
+  const updateTable = (page, rowsPerPage) => {
     const dataBegin = rowsPerPage * page;
-    onTableChange(dataBegin, rowsPerPage);
+    onUpdateTable(dataBegin, rowsPerPage);
   };
 
   const handlePageChanged = (event, newPage) => {
     setPage(newPage);
-    handleTableChanged(newPage, rowsPerPage);
+    updateTable(newPage, rowsPerPage);
   };
 
   const handleRowsPerPageChanged = (event) => {
     const newRowsPerPage = parseInt(event.target.value);
     setRowsPerPage(newRowsPerPage);
-    handleTableChanged(0, newRowsPerPage);
+    updateTable(0, newRowsPerPage);
   };
+
+  useEffect(() => {
+    updateTable(page, rowsPerPage);
+  }, [shouldUpdate]);
 
   const actionButtonsWidth = actionButtons.length > 0 ? 140 : 0;
 
@@ -88,7 +90,7 @@ function DataGrid({
                     {headers.map((header) => (
                       <TableCell key={header.field}>
                         <Typography variant="regular" color={header.color}>
-                          {row[header.field]}
+                          {header.transform ? header.transform(row[header.field]) : row[header.field]}
                         </Typography>
                       </TableCell>
                     ))}

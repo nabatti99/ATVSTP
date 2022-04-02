@@ -2,6 +2,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import theme from "./config/loadTheme";
+import "./config/loadCustom";
 
 import RootLayout from "./layout/RootLayout";
 import Statistic from "./views/Statistic";

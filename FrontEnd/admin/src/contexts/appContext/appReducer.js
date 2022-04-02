@@ -7,6 +7,9 @@ const appReducer = (state, action) => {
         ...state,
         drawerWidth: action.drawerWidth,
       };
+
+    default:
+      return state;
   }
 };
 

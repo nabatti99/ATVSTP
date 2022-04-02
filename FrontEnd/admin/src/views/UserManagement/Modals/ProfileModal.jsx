@@ -12,6 +12,7 @@ function ProfileModal({
   onModalClose = () => {},
   onNameChange = () => {},
   onEmailChange = () => {},
+  onTypeManagerChange = () => {},
   onPhoneChange = () => {},
   onAddressChange = () => {},
   onAvatarChange = () => {},
@@ -42,11 +43,6 @@ function ProfileModal({
     console.log(files[0]);
   }
 
-  // Select Role
-  const [role, setRole] = useState(profileData.role);
-
-  const handleRoleChanged = (event) => setRole(event.target.value);
-
   const renderInfo = {
     title: "",
     shouldEnableEmail: true,
@@ -61,6 +57,9 @@ function ProfileModal({
       renderInfo.title = "Chỉnh sửa thông tin người dùng";
       renderInfo.shouldEnableEmail = false;
       break;
+
+    default:
+      throw new Error("Not found Modal Type");
   }
 
   return (
@@ -89,13 +88,13 @@ function ProfileModal({
         <TextField
           variant="standard"
           select
-          value={role}
-          onChange={handleRoleChanged}
+          value={profileData.type_manager}
+          onChange={(event) => onTypeManagerChange(event.target.value)}
           label="VAI TRÒ"
           sx={{ marginBottom: 2 }}
         >
-          <MenuItem value="Admin">Admin</MenuItem>
-          <MenuItem value="Thanh tra viên">Thanh tra viên</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+          <MenuItem value="inspector">Thanh tra viên</MenuItem>
         </TextField>
         <TextField
           label="SỐ ĐIỆN THOẠI"

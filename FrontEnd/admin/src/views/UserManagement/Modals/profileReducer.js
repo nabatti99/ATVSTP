@@ -1,6 +1,6 @@
 export const NAME_CHANGE = "NAME_CHANGE";
 export const EMAIL_CHANGE = "EMAIL_CHANGE";
-export const PASSWORD_CHANGE = "PASSWORD_CHANGE";
+export const TYPE_MANAGER = "TYPE_MANAGER";
 export const PHONE_CHANGE = "PHONE_CHANGE";
 export const ADDRESS_CHANGE = "ADDRESS_CHANGE";
 export const AVATAR_CHANGE = "AVATAR_CHANGE";
@@ -19,10 +19,10 @@ export function profileReducer(state, action) {
         email: action.email,
       };
 
-    case PASSWORD_CHANGE:
+    case TYPE_MANAGER:
       return {
         ...state,
-        password: action.password,
+        type_manager: action.type_manager,
       };
 
     case PHONE_CHANGE:

@@ -2,7 +2,14 @@ import { useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ADD_NEW_PROFILE } from "./profileActionTypes";
 import ProfileModal from "./ProfileModal";
-import { ADDRESS_CHANGE, EMAIL_CHANGE, NAME_CHANGE, PHONE_CHANGE, profileReducer } from "./profileReducer";
+import {
+  ADDRESS_CHANGE,
+  EMAIL_CHANGE,
+  NAME_CHANGE,
+  PHONE_CHANGE,
+  profileReducer,
+  TYPE_MANAGER,
+} from "./profileReducer";
 
 function AddNewProfileModal() {
   const navigate = useNavigate();
@@ -14,6 +21,7 @@ function AddNewProfileModal() {
     email: "",
     phone: "",
     address: "",
+    type_manager: "",
     avatar: "",
   });
 
@@ -29,6 +37,13 @@ function AddNewProfileModal() {
     dispatch({
       type: EMAIL_CHANGE,
       email,
+    });
+  };
+
+  const handleTypeManagerChanged = (type_manager) => {
+    dispatch({
+      type: TYPE_MANAGER,
+      type_manager,
     });
   };
 
@@ -78,6 +93,7 @@ function AddNewProfileModal() {
       onNameChange={handleNameChanged}
       onPhoneChange={handlePhoneChanged}
       onEmailChange={handleEmailChanged}
+      onTypeManagerChange={handleTypeManagerChanged}
       onAddressChange={handleAddressChanged}
     />
   );

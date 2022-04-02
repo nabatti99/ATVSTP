@@ -1,18 +1,20 @@
 import { Paper } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import ButtonIcon from "../../components/ButtonIcon";
 import DataGrid from "../../components/DataGrid";
 import DeleteSvg from "../../components/Icons/DeleteSvg";
 import CreateSvg from "../../components/Icons/CreateSvg";
 import AddSvg from "../../components/Icons/AddSvg";
-import { Outlet, useNavigate } from "react-router-dom";
+
+import useRequest from "../../hooks/useRequest";
 
 const headers = [
-  { field: "id", headerName: "ID", minWidth: 80, color: "gray.700" },
   {
-    field: "firstJoinDate",
-    headerName: "NGÀY THAM GIA",
-    minWidth: 160,
+    field: "email",
+    headerName: "EMAIL",
+    minWidth: 240,
     color: "gray.500",
   },
   {
@@ -22,22 +24,28 @@ const headers = [
     color: "gray.500",
   },
   {
-    field: "email",
-    headerName: "EMAIL",
-    minWidth: 240,
-    color: "gray.500",
-  },
-  {
     field: "phone",
     headerName: "SỐ ĐIỆN THOẠI",
     minWidth: 120,
     color: "gray.500",
   },
   {
-    field: "role",
+    field: "type_manager",
     headerName: "VAI TRÒ",
     minWidth: 140,
     color: "gray.500",
+    transform: function (value) {
+      switch (value) {
+        case "admin":
+          return "Admin";
+
+        case "inspector":
+          return "Thanh tra viên";
+
+        default:
+          return;
+      }
+    },
   },
   {
     field: "address",
@@ -47,101 +55,37 @@ const headers = [
   },
 ];
 
-const fakeData = [
-  {
-    id: "TT01",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Admin",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-  {
-    id: "TT02",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Admin",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-  {
-    id: "TT03",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Thanh tra viên",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-  {
-    id: "TT04",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Admin",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-  {
-    id: "TT05",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Thanh tra viên",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-  {
-    id: "TT06",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Thanh tra viên",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-  {
-    id: "TT07",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Admin",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-  {
-    id: "TT08",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Admin",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-  {
-    id: "TT09",
-    firstJoinDate: "03/03/2021",
-    name: "Nguyễn Lê Anh Minh",
-    email: "anhminh2122000@gmail.com",
-    phone: "0946672181",
-    role: "Admin",
-    address: "105 Điện Biên Phủ, Hải Châu, Đà Nẵng",
-  },
-];
-
-function UserDataGrid() {
+function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
+  const request = useRequest();
   const navigate = useNavigate();
+
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleTableChanged = (dataBegin, rowsPerPage) => {
+  console.log(`Render datagrid ${shouldTableUpdate}`);
+
+  const handleUpdateTable = (dataBegin, rowsPerPage) => {
+    onTableUpdate();
     setIsLoading(true);
-    setTimeout(() => {
-      setData(fakeData.slice(dataBegin, dataBegin + rowsPerPage));
-      setIsLoading(false);
-    }, 1000);
+
+    console.log(query);
+
+    request
+      .post(
+        `manager/search/${query.searchGroup}`,
+        {},
+        {
+          params: {
+            offset: dataBegin,
+            limit: rowsPerPage,
+            value: query.keyword,
+          },
+        }
+      )
+      .then((res) => {
+        setData(res.data.all_manager.result);
+        setIsLoading(false);
+      });
   };
 
   const actionButtons = [
@@ -177,9 +121,10 @@ function UserDataGrid() {
       <DataGrid
         headers={headers}
         data={data}
+        shouldUpdate={shouldTableUpdate}
         isLoading={isLoading}
-        count={fakeData.length}
-        onTableChange={handleTableChanged}
+        count={12}
+        onUpdateTable={handleUpdateTable}
         actionButtons={actionButtons}
         FooterComponent={FooterComponent}
       />

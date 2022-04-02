@@ -2,7 +2,7 @@ import { useReducer, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { EDIT_PROFILE } from "./profileActionTypes";
 import ProfileModal from "./ProfileModal";
-import { ADDRESS_CHANGE, EMAIL_CHANGE, NAME_CHANGE, PHONE_CHANGE, profileReducer } from "./profileReducer";
+import { ADDRESS_CHANGE, NAME_CHANGE, PHONE_CHANGE, profileReducer } from "./profileReducer";
 
 function EditProfileModal() {
   const navigate = useNavigate();
