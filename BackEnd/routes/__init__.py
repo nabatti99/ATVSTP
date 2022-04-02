@@ -1,11 +1,14 @@
 from flask import Flask
 from flask_mail import Mail, Message
+from flask_cors import CORS
 import os
 from service import conn
 from models.encoder import Encoder
+from dotenv import load_dotenv
 
+load_dotenv()
 # -------------Mongodb-------------
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 app.config['DEBUG'] = True
 
@@ -23,7 +26,8 @@ app.config['SECURITY_PASSWORD_SALT'] = os.getenv("SECURITY_PASSWORD_SALT")
 app.json_encoder = Encoder
 app.db = conn.atvstp
 mail = Mail(app)
+CORS(app)
 
 
 from routes.management_user import manager_required
-from routes import management_email, management_user, pagination, groceryApis, administration_atvstp_routes, feedback_of_people_routes, information_atvstp_routes
+from routes import management_email, management_user, pagination, groceryApis

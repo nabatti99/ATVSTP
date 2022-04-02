@@ -1,3 +1,6 @@
+from typing import Dict, overload
+
+
 class Manager:
     def __init__(self,
                  name: str = 'manager',
@@ -6,7 +9,8 @@ class Manager:
                  address:  dict = None,
                  phone: str = '',
                  type_manager: str = 'admin',
-                 position: str = ''):
+                 work_from: str = '',
+                 image_url: str = ""):
 
         self.name = name
         self.hash_password = hash_password
@@ -14,7 +18,8 @@ class Manager:
         self.email = email
         self.phone = phone
         self.type_manager = type_manager
-        self.position = position
+        self.work_from = work_from
+        self.image_url = image_url
 
     def to_dict(self):
         return {
@@ -24,7 +29,8 @@ class Manager:
             'phone': self.phone,
             'address': self.address,
             'type_manager': self.type_manager,
-            'position': self.position
+            'work_from': self.work_from,
+            'image_url': self.image_url
         }
 
     def db_to_dict(self, database):
@@ -35,5 +41,6 @@ class Manager:
             'phone': database['phone'],
             'address': database['address'],
             'type_manager': database['type_manager'],
-            'position': database['position']
+            'work_from': database['work_from'],
+            'image_url': database['image_url']
         }

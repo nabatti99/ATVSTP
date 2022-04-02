@@ -1,8 +1,9 @@
 import datetime
 import functools
-from flask import request, make_response, render_template
+from flask import request, make_response, render_template, jsonify
 from routes import app
 from models.manager import Manager
+from models.firebase import storage
 from .management_email import gen_password, send_email_new_password
 from .pagination import pagination
 from bson.objectid import ObjectId
@@ -10,6 +11,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 
 manager_collection = app.db.manager
+
+fail_status = 'Fail'
+success_status = 'Success'
+
+
+def response_status(status, message):
+    return jsonify({
+        'Status': status,
+        'Message': message
+    })
 
 
 @app.route('/')
@@ -60,8 +71,12 @@ def login():
     if not auth or not auth.username or not auth.password:
         return make_response('Could not sign in', 401, {'WWW-authenticate': 'Basic realm="Login to use!"'})
 
-    current_manager = manager_collection.find_one({'name': auth.username,
-                                                   })
+    current_manager = manager_collection.find_one({
+        "$or": [
+            {'name': {'$in': [auth.username]}},
+            {'email': {'$in': [auth.username]}},
+        ]
+    })
     if check_password_hash(current_manager['hash_password'], auth.password):
         token = gen_token(current_manager['_id'])
         return {'token': token}
@@ -87,26 +102,33 @@ def gen_token(_id):
 def create_new_manager(current_manager=None):
     new_register = request.get_json()
 
-    hashed_password = generate_password_hash(new_register['password'], method='sha256')
+    # create password for new manager
+    new_password = gen_password()
+    hashed_password = generate_password_hash(new_password, method='sha256')
+
     logger = checked_manager(new_register)
     if logger:
         return logger
     else:
+
         new_inspector = Manager(name=new_register['name'],
-                                hash_password=hashed_password,
+                                hash_password=str(hashed_password),
                                 email=new_register['email'],
                                 address=new_register['address'],
                                 phone=new_register['phone'],
-                                position=new_register['position'],
+                                work_from=new_register['work_from'],
                                 type_manager=new_register['type_manager'])
 
         verify = manager_collection.find_one({'name': new_inspector.name})
         if verify is not None:
-            return {'Status': 'fail', 'reason': 'username is not unique!'}, 401
+            return response_status(status=fail_status,
+                                   message='username is not unique!'), 401
 
         try:
+            send_email_new_password(new_inspector.to_dict(), new_password)
             manager_collection.insert_one(new_inspector.to_dict())
-            return {'Status': 'success', 'user': new_inspector.to_dict()}
+            return response_status(status=success_status,
+                                   message=new_inspector.to_dict())
         except Exception as e:
             return {'Type Error': e}, 400
 
@@ -129,8 +151,9 @@ def get_all_manager(current_manager=None):
                                               limit=limit,
                                               list_database=list_manager)}
         else:
-            return {'Status': 'Fail',
-                    "Message": 'Can not find any manager in database'}, 401
+            return response_status(status=fail_status,
+                                   message='Can not find any manager in database'), 401
+
 
     except Exception as e:
         return {'Type Error': e}, 400
@@ -144,8 +167,9 @@ def get_a_manager(current_manager=None, email: str = ''):
         if the_manager:
             return Manager().db_to_dict(the_manager)
         else:
-            return {'Status': 'Fail',
-                    'Message': f'Can not find manager have email {email} in database, please try again!'}, 401
+            return response_status(status=fail_status,
+                                   message=f'Can not find manager have email {email} in database, please try again!'), \
+                   401
     except Exception as e:
         return {'Type Error': e}, 400
 
@@ -163,34 +187,33 @@ def update_a_manager(current_manager=None, email: str = ''):
                 del_conf_mn = manager_collection.find_one_and_update({'email': email},
                                                                      {'$set': {
                                                                          'name': updated_manager['name'],
-                                                                         'email': updated_manager['email'],
                                                                          'phone': updated_manager['phone'],
                                                                          'address': updated_manager['address'],
-                                                                         'position': updated_manager['position'],
+                                                                         'work_from': updated_manager['work_from'],
                                                                          'type_manager': updated_manager['type_manager']
                                                                      }})
             elif current_manager['type_manager'] == 'inspector':
                 del_conf_mn = manager_collection.find_one_and_update({'email': email},
                                                                      {'$set': {
                                                                          'name': updated_manager['name'],
-                                                                         'email': updated_manager['email'],
                                                                          'phone': updated_manager['phone'],
                                                                          'address': updated_manager['address'],
                                                                      }})
             else:
-                return {'Status': 'Fail',
-                        'Message': f'You is a {current_manager["type_manager"]}, '
-                                   f'can not update to {updated_manager["type_manager"]}'}, 401
+                return response_status(status=fail_status,
+                                       message=f'You is a {current_manager["type_manager"]}, '
+                                               f'can not update to {updated_manager["type_manager"]}'), 401
 
             if del_conf_mn:
-                return {'Status': 'Success',
-                        'Message': f'Updated user have {email}'}
+                return response_status(status=success_status,
+                                       message=f'Updated user have {email}')
             else:
-                return {'Status': 'Fail',
-                        'Message': f'Do not find manager have email: {email} in database, please check again!'}
+                return response_status(status=fail_status,
+                                       message=f'Do not find manager have email: {email} '
+                                               f'in database, please check again!'), 401
+
         else:
-            return {'Status': 'fail',
-                    'Message': logger}
+            return response_status(status=fail_status, message=logger), 401
     except Exception as e:
         return {'Type Error': e}, 400
 
@@ -201,17 +224,23 @@ def delete_a_manager(current_manager=None, email: str = ''):
     try:
         the_manager = manager_collection.find_one({'email': email})
         if the_manager['type_manager'] == 'admin':
-            return {'Status': 'Fail!',
-                    'Message': f'You is a {current_manager["type_manager"]} can not delete user type: '
-                               f'{the_manager["type_manager"]}'}
+            return response_status(status=fail_status,
+                                   message=f'You is a {current_manager["type_manager"]} can not delete user type: '
+                                           f'{the_manager["type_manager"]}')
         else:
+
+            # delete profile manager in firebase
+            if the_manager['image_url']:
+                storage.delete(f'manager/{the_manager["_id"]}.jpg', None)
+
             deleted_manager = manager_collection.delete_one({'email': email})
+
             if deleted_manager:
-                return {'Status': 'Success!',
-                        'Message': f'Deleted user {email}'}
+                return response_status(status=success_status,
+                                       message=f'Deleted user {email}')
             else:
-                return {'Status': 'Fail!',
-                        'Message': f'Do not have user {email} in database'}
+                return response_status(status=fail_status,
+                                       message=f'Do not have user {email} in database'), 401
     except Exception as e:
         return {'Type Error': e}, 400
 
@@ -220,13 +249,15 @@ def delete_a_manager(current_manager=None, email: str = ''):
 @manager_required('level_two')
 def delete_all_manager(current_manager=None):
     try:
+        # TODO delete all images firebase
         all_manager = manager_collection.delete_many({})
         if all_manager:
-            return {'Status': 'Success!',
-                    'Message': 'Deleted all manager in database!'}
+            return response_status(status=success_status,
+                                   message='Deleted all manager in database!')
         else:
-            return {'Status': 'Fail!',
-                    'Message': 'Can not find any manager in database'}, 401
+            return response_status(status=fail_status,
+                                   message='Can not find any manager in database'), 401
+
     except Exception as e:
         return {'Type Error': e}, 400
 
@@ -244,43 +275,74 @@ def create_new_password(current_manager=None, email: str = ''):
 
         if the_manager:
             send_email_new_password(the_manager, new_password)
-            return {'Message': 'Send Email Success!'}
+            return response_status(status=success_status,
+                                   message='Send Email Success!')
+
         else:
-            return {'Result': 'Fail',
-                    'Message': f'Do not have manager {email} in database '}, 401
+            return response_status(status=fail_status,
+                                   message=f'Do not have manager {email} in database'), 401
+
     except Exception as e:
         return {'Type Error': e}, 400
 
 
-@app.route('/manager/search/<string:type_search>', methods=['POST'])
+@app.route('/manager/search', methods=['POST'])
 @manager_required('level_two')
-def search_manager(current_manager=None, type_search: str = ''):
+def get_managers(current_manager=None):
     try:
         search_value = request.args['value']
         offset = int(request.args['offset'])
         limit = int(request.args['limit'])
 
         some_managers = manager_collection.find({
-            type_search: {'$regex': f'^{search_value}', '$options': "m"}
+            "$or": [
+                {'name': {'$regex': str(search_value)}},
+                {'email': {'$regex': str(search_value)}},
+            ]
         })
+
         list_managers = []
         if some_managers:
             for mn in some_managers:
                 list_managers.append(Manager().db_to_dict(mn))
-            return {'all_manager': pagination(path_dir=f'/manager/search/{type_search}',
-                                              offset=offset,
-                                              limit=limit,
-                                              value=search_value,
-                                              list_database=list_managers)}
+            records = int(len(list_managers) / limit) + (len(list_managers) % limit > 0)
+            return pagination(path_dir=f'manager/search',
+                              offset=offset,
+                              limit=limit,
+                              value=search_value,
+                              list_database=list_managers,
+                              records=records)
         else:
-            return {'Status': 'Fail',
-                    "Message": f'Can not find any manager in database'}, 401
+            return response_status(status=fail_status,
+                                   message='Can not find any manager in database'), 401
 
     except Exception as e:
         return {'Type Error': e}, 400
 
 
+@app.route('/manager/save_image/<string:email>', methods=['POST'])
+@manager_required('level_one')
+def load_image_profile_manager(current_manager=None, email: str = ''):
+    try:
+        upload = request.files['upload']
+        the_manager = manager_collection.find_one({'email': email})
+        save_dir = f'manager/{the_manager["_id"]}.jpg'
+        if the_manager:
 
+            storage.child(save_dir).put(upload)
+            manager_collection.find_one_and_update({'email': email},
+                                                   {"$set": {
+                                                       "image_url": storage.child(save_dir).get_url(None)
+                                                   }})
+        else:
+            return response_status(status=fail_status,
+                                   message=f"Upload success profile manager:{the_manager['image_url']}"), 401
+
+        return response_status(status=success_status,
+                               message={"image uploaded": storage.child(save_dir).get_url(None)})
+
+    except Exception as e:
+        return {'Type Error': e}, 400
 
 
 def checked_manager(new_manager):
@@ -290,14 +352,6 @@ def checked_manager(new_manager):
     except:
         logger['name'] = 'No name'
     try:
-        new_manager['email']
-    except:
-        logger['email'] = 'No email'
-    try:
-        new_manager['password']
-    except:
-        logger['password'] = 'No password'
-    try:
         new_manager['address']
     except:
         logger['address'] = 'No address'
@@ -306,9 +360,9 @@ def checked_manager(new_manager):
     except:
         logger['phone'] = 'No phone'
     try:
-        new_manager['position']
+        new_manager['work_from']
     except:
-        logger['position'] = 'No position'
+        logger['work_from'] = 'No work_from'
     try:
         new_manager['type_manager']
     except:
