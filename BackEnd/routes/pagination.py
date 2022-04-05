@@ -12,9 +12,10 @@ def pagination(path_dir: str = "",
         obj['prev_url'] = ''
     else:
         if value:
-            obj['prev_url'] = f'{path_dir}?offset=' + str(max(1, offset - limit)) + '&limit=' + str(offset - 1) + "&value=" + value
+            obj['prev_url'] = f'/{path_dir}?offset=' + str(max(0, offset - limit)) + '&limit=' + str(offset - 1) + "&value=" + value
         else:
-            obj['prev_url'] = f'{path_dir}?offset=' + str(max(1, offset - limit)) + '&limit=' + str(offset - 1)
+            obj['prev_url'] = f'/{path_dir}?offset=' + str(max(0, offset - limit)) + '&limit=' + str(offset - 1)
+
     if offset + limit >= len(list_database):
         obj['next_url'] = ''
     else:
