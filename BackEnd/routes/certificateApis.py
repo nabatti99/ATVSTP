@@ -13,6 +13,7 @@ certificate_collection = app.db.certificate_atvstp;
 @app.route('/certificate', methods=["GET"])
 @manager_required("level-one")
 def get_certificate(current_manager=None):
+
     list_certificate = []
 
     offset = int(request.args['offset'])
@@ -40,7 +41,8 @@ def get_certificate(current_manager=None):
 
 @app.route('/certificate', methods=["POST"])
 @manager_required("level_one")
-def create_certificate(current_manager=None):
+
+def create_certificate(current_manager = None):
     data = request.get_json()
     new_certificate = Certificate(name=data['name'],
                                   manager=data['manager'],
@@ -56,6 +58,7 @@ def create_certificate(current_manager=None):
 
 @app.route('/certificate/<string:name>', methods=["PUT"])
 @manager_required("level_one")
+
 def update_certificate(current_manager=None, certificate_name=''):
     data = request.get_json()
     seconds = time.time()
@@ -74,6 +77,7 @@ def update_certificate(current_manager=None, certificate_name=''):
 
 @app.route('/certificate/<string:name>', methods=["DELETE"])
 @manager_required("level_one")
+
 def delete_certificate(current_manager=None, certificate_name=''):
     try:
         certificate_collection.find_one_and_delete({'name': certificate_name})
