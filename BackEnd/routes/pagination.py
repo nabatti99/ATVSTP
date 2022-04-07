@@ -25,5 +25,5 @@ def pagination(path_dir: str = "",
             obj['next_url'] = f'/{path_dir}?offset=' + str(offset + limit) + '&limit=' + str(limit)
 
     obj['result'] = list_database[offset:offset + limit]
-    obj['records'] = records
+    obj['records'] = len(list_database)
     return jsonify(obj)

@@ -305,13 +305,12 @@ def get_managers(current_manager=None):
         if some_managers:
             for mn in some_managers:
                 list_managers.append(Manager().db_to_dict(mn))
-            records = int(len(list_managers) / limit) + (len(list_managers) % limit > 0)
+            # records = int(len(list_managers) / limit) + (len(list_managers) % limit > 0)
             return pagination(path_dir=f'manager/search',
                               offset=offset,
                               limit=limit,
                               value=search_value,
-                              list_database=list_managers,
-                              records=records)
+                              list_database=list_managers)
         else:
             return response_status(status=fail_status,
                                    message='Can not find any manager in database'), 401
