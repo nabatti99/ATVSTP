@@ -48,6 +48,12 @@ const headers = [
     },
   },
   {
+    field: "work_from",
+    headerName: "ĐỊA CHỈ LÀM VIỆC",
+    minWidth: 300,
+    color: "gray.500",
+  },
+  {
     field: "address",
     headerName: "ĐỊA CHỈ LIÊN HỆ",
     minWidth: 300,
@@ -72,18 +78,18 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
 
     request
       .post(
-        `manager/search/${query.searchGroup}`,
+        `manager/search`,
         {},
         {
           params: {
             offset: dataBegin,
             limit: rowsPerPage,
-            value: query.keyword,
+            value: query,
           },
         }
       )
       .then((res) => {
-        setData(res.data.all_manager.result);
+        setData(res.data.result);
         setIsLoading(false);
       });
   };

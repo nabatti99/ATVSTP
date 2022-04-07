@@ -15,31 +15,31 @@ function ProfileModal({
   onTypeManagerChange = () => {},
   onPhoneChange = () => {},
   onAddressChange = () => {},
+  onAddressWorkFromChange = () => {},
   onAvatarChange = () => {},
   onOkButtonClick = () => {},
 }) {
-  const fileRef = useRef();
-  const [file, setFile] = useState(null);
+  const avatarFileRef = useRef();
 
   // Make event debounced
   const handleNameChangedDebounced = debounce(onNameChange, 1000);
   const handleEmailChangedDebounced = debounce(onEmailChange, 1000);
   const handlePhoneChangedDebounced = debounce(onPhoneChange, 1000);
   const handleAddressChangedDebounced = debounce(onAddressChange, 1000);
+  const handleAddressWorkFromChangedDebounced = debounce(onAddressWorkFromChange, 1000);
 
   // Handle Events
   function handleChooseFileButtonClicked() {
-    fileRef.current.click();
+    avatarFileRef.current.click();
   }
 
   function handleOnFileChanged(event) {
     const { files } = event.target;
     if (files.length === 0) {
-      setFile(null);
       return;
     }
 
-    setFile(files[0]);
+    onAvatarChange(files[0]);
     console.log(files[0]);
   }
 
@@ -62,6 +62,8 @@ function ProfileModal({
       throw new Error("Not found Modal Type");
   }
 
+  const { avatar, name, email, type_manager, phone, address, addressWorkFrom } = profileData;
+
   return (
     <AppModal
       isOpened={isModalOpened}
@@ -75,7 +77,7 @@ function ProfileModal({
           variant="standard"
           sx={{ marginBottom: 2 }}
           onChange={(event) => handleNameChangedDebounced(event.target.value)}
-          defaultValue={profileData.name}
+          defaultValue={name}
         />
         <TextField
           label="EMAIL"
@@ -83,12 +85,12 @@ function ProfileModal({
           sx={{ marginBottom: 2 }}
           onChange={(event) => handleEmailChangedDebounced(event.target.value)}
           disabled={!renderInfo.shouldEnableEmail}
-          defaultValue={profileData.email}
+          defaultValue={email}
         />
         <TextField
           variant="standard"
           select
-          value={profileData.type_manager}
+          value={type_manager}
           onChange={(event) => onTypeManagerChange(event.target.value)}
           label="VAI TRÒ"
           sx={{ marginBottom: 2 }}
@@ -101,23 +103,28 @@ function ProfileModal({
           variant="standard"
           sx={{ marginBottom: 2 }}
           onChange={(event) => handlePhoneChangedDebounced(event.target.value)}
-          defaultValue={profileData.phone}
+          defaultValue={phone}
         />
         <TextField
           label="ĐỊA CHỈ"
           variant="standard"
-          sx={{ marginBottom: 4 }}
+          sx={{ marginBottom: 2 }}
           onChange={(event) => handleAddressChangedDebounced(event.target.value)}
-          defaultValue={profileData.address}
+          defaultValue={address}
+        />
+        <TextField
+          label="ĐỊA CHỈ LÀM VIỆC"
+          variant="standard"
+          sx={{ marginBottom: 4 }}
+          onChange={(event) => handleAddressWorkFromChangedDebounced(event.target.value)}
+          defaultValue={addressWorkFrom}
         />
         <Stack>
           <Typography variant="strong" color="gray.500">
             AVATAR
           </Typography>
 
-          {profileData.avatar && (
-            <Image src={profileData.avatar} borderRadius={2} width={100} height={100} mt={1} />
-          )}
+          {avatar && <Image src={URL.createObjectURL(avatar)} borderRadius={2} width={100} height={100} mt={1} />}
 
           <Box mt={1}>
             <Button variant="contained" color="blue" onClick={handleChooseFileButtonClicked}>
@@ -129,15 +136,9 @@ function ProfileModal({
               accept="image/*"
               hidden
               onChange={handleOnFileChanged}
-              ref={fileRef}
+              ref={avatarFileRef}
             />
           </Box>
-
-          {file && (
-            <Typography variant="small" mt={1} color="gray.700">
-              {file.name}
-            </Typography>
-          )}
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent="flex-end" mt={4}>

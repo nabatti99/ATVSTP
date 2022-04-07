@@ -19,15 +19,9 @@ function UsersManagement() {
   };
 
   // Handle search bar events
-  const [query, setQuery] = useState({
-    searchGroup: "name",
-    keyword: "",
-  });
-  const handleChanged = (searchGroup, keyword) => {
-    setQuery({
-      searchGroup,
-      keyword,
-    });
+  const [query, setQuery] = useState("");
+  const handleChanged = (keyword) => {
+    setQuery(keyword);
 
     setShouldTableUpdate(true);
   };
@@ -48,15 +42,28 @@ function UsersManagement() {
               });
 
             case ADD_NEW_PROFILE:
-              return request.post("manager/create_new_manager", {
-                ...profile,
-              });
+              const avatarFormData = new FormData();
+              avatarFormData.append("upload", profile.avatar);
+
+              console.log(profile);
+
+              return request
+                .post("manager/create_new_manager", {
+                  ...profile,
+                })
+                .then(() => {
+                  return request.post(`manager/save_image/${profile.email}`, avatarFormData, {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  });
+                });
 
             case DELETE_PROFILE:
               return request.delete(`/manager/delete_a_manager/${profile.email}`);
 
             default:
-              throw new Error("Không thể tạo mới người dùng");
+              throw new Error("Lệnh không hợp lệ");
           }
         })
         .then(() => {

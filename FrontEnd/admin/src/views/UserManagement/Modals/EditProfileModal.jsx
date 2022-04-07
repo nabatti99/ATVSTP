@@ -2,7 +2,14 @@ import { useReducer, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { EDIT_PROFILE } from "./profileActionTypes";
 import ProfileModal from "./ProfileModal";
-import { ADDRESS_CHANGE, NAME_CHANGE, PHONE_CHANGE, profileReducer } from "./profileReducer";
+import {
+  ADDRESS_CHANGE,
+  ADDRESS_WORK_FROM_CHANGE,
+  AVATAR_CHANGE,
+  NAME_CHANGE,
+  PHONE_CHANGE,
+  profileReducer,
+} from "./profileReducer";
 
 function EditProfileModal() {
   const navigate = useNavigate();
@@ -28,10 +35,24 @@ function EditProfileModal() {
     });
   };
 
+  const handleAddressWorkFromChanged = (addressWorkFrom) => {
+    dispatch({
+      type: ADDRESS_WORK_FROM_CHANGE,
+      addressWorkFrom,
+    });
+  };
+
   const handlePhoneChanged = (phone) => {
     dispatch({
       type: PHONE_CHANGE,
       phone,
+    });
+  };
+
+  const handleAvatarChanged = (avatarFile) => {
+    dispatch({
+      type: AVATAR_CHANGE,
+      avatar: avatarFile,
     });
   };
 
@@ -67,6 +88,8 @@ function EditProfileModal() {
       onNameChange={handleNameChanged}
       onPhoneChange={handlePhoneChanged}
       onAddressChange={handleAddressChanged}
+      onAddressWorkFromChange={handleAddressWorkFromChanged}
+      onAvatarChange={handleAvatarChanged}
     />
   );
 }
