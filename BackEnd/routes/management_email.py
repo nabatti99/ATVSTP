@@ -22,14 +22,14 @@ def confirm_token(token, expiration=3600):
 
 
 def send_email_new_password(the_manager, new_password):
-    subject = f'Thay đổi mật khẩu trang của user: {the_manager["name"]} tại website ATVSTP'
+    subject = f'Mật khẩu mới trang của user: {the_manager["name"]} tại website ATVSTP'
 
     content = f'''
-        Bạn nhận được mail này vì bạn quên mật khẩu với vai trò là {the_manager['type_manager']}.
+        Bạn nhận được mail này vì bạn có mật khẩu mới với vai trò là {the_manager['type_manager']}.
         Mật khẩu mới được thay đổi phía bên dưới
-        
+
         New password:\t{new_password}
-        
+
         Cảm ơn bạn đã sử dụng website của chúng tôi     
     '''
 
@@ -44,7 +44,7 @@ def gen_password():
     special_characters = '! @ # % ^ & * - +'
 
     password = random.choices(numbers.split(), k=random.randint(3, 7)) + \
-               random.choices(characters.split(), k=random.randint(3, 7)) +\
+               random.choices(characters.split(), k=random.randint(3, 7)) + \
                random.choices(special_characters.split(), k=random.randint(3, 7))
     random.shuffle(password)
     return ''.join(password)

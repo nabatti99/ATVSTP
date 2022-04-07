@@ -10,51 +10,30 @@ from models.certificate import Certificate
 certificate_collection = app.db.certificate_atvstp;
 
 
-@app.route('/certificate/<string:type_search>', methods=["GET"])
+@app.route('/certificate', methods=["GET"])
 @manager_required("level-one")
-def get_certificate(current_manager = None, type_search: str = ''):
+def get_certificate(current_manager=None):
+
     list_certificate = []
 
     offset = int(request.args['offset'])
     limit = int(request.args['limit'])
     search_value = request.args['value']
     try:
-        if type_search != '' and search_value != '':
-            all_certificate = certificate_collection.find({
-                type_search: {'$regex': f'^{search_value}', '$options': "m"}
-            })
+        all_certificate = certificate_collection.find({
+            'name': {'$regex': str(search_value)}
+        })
+        if all_certificate:
             for certificate in all_certificate:
                 list_certificate.append(certificate)
-            return {'Status': 'Success',
-                    'All certificates': pagination(path_dir=f'/certificate/{type_search}',
-                                                   offset=offset,
-                                                   limit=limit,
-                                                   list_database=list_certificate)}
-        else:
-            all_certificate = certificate_collection.find({}).sort('name')
-            for certificate in all_certificate:
-                list_certificate.append(certificate)
-            return {'Status': 'Success',
-                    'All certificates': pagination(path_dir=f'/certificate',
-                                                   offset=offset,
-                                                   limit=limit,
-                                                   list_database=list_certificate)}
-    except Exception as e:
-        return {'Status': 'Fail',
-                'Message': 'Can not get data'}, 400
-
-
-@app.route('/certificate/<string:name>', methods=["GET"])
-@manager_required("level_one")
-def get_certificate_by_name(current_manager = None, certificate_name=''):
-    try:
-        certificate = certificate_collection.find({'name': certificate_name})
-        if certificate:
-            return {'Result': 'Success',
-                    'Certificate': certificate}
+            return pagination(path_dir=f'/certificate',
+                              offset=offset,
+                              limit=limit,
+                              list_database=list_certificate)
         else:
             return {'Status': 'Fail',
-                    'Message': 'Not found certificate'}, 401
+                    'Message': 'Can not find any certificate in database'}, 401
+
     except Exception as e:
         return {'Status': 'Fail',
                 'Message': 'Can not get data'}, 400
@@ -62,6 +41,7 @@ def get_certificate_by_name(current_manager = None, certificate_name=''):
 
 @app.route('/certificate', methods=["POST"])
 @manager_required("level_one")
+
 def create_certificate(current_manager = None):
     data = request.get_json()
     new_certificate = Certificate(name=data['name'],
@@ -78,7 +58,8 @@ def create_certificate(current_manager = None):
 
 @app.route('/certificate/<string:name>', methods=["PUT"])
 @manager_required("level_one")
-def update_certificate(current_manager = None, certificate_name = ''):
+
+def update_certificate(current_manager=None, certificate_name=''):
     data = request.get_json()
     seconds = time.time()
     last_update_time = time.ctime(seconds)
@@ -96,7 +77,8 @@ def update_certificate(current_manager = None, certificate_name = ''):
 
 @app.route('/certificate/<string:name>', methods=["DELETE"])
 @manager_required("level_one")
-def delete_certificate(current_manager = None, certificate_name = ''):
+
+def delete_certificate(current_manager=None, certificate_name=''):
     try:
         certificate_collection.find_one_and_delete({'name': certificate_name})
         return {'Status': 'Success'}

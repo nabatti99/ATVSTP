@@ -16,39 +16,22 @@ def get_grocery(current_manager=None):
 
     list_groceries = []
     try:
-
         all_groceries = grocery_collection.find({
             'name': {'$regex': str(search_value)}
         })
         if all_groceries:
             for gr in all_groceries:
-                list_groceries.append(Grocery().to_dict(gr))
+                list_groceries.append(gr)
             records = int(len(list_groceries) / limit) + (len(list_groceries) % limit > 0)
-            return {'Status': 'Success',
-                    'List_of_groceries': pagination(path_dir=f'/grocery',
-                                                    offset=offset,
-                                                    limit=limit,
-                                                    list_database=list_groceries,
-                                                    records=records)}
+            return pagination(path_dir=f'/grocery/search',
+                              offset=offset,
+                              limit=limit,
+                              value=search_value,
+                              records=records,
+                              list_database=list_groceries)
         else:
             return {'Status': 'Fail',
                     'Message': 'Can not find any grocery in database'}, 401
-    except Exception as e:
-        return {'Status': 'Fail',
-                'Message': 'Can not get data'}, 400
-
-
-@app.route('/grocery/<string:name>', methods=['GET'])
-@manager_required("level_one")
-def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
-    try:
-        grocery = grocery_collection.find_one({'name': grocery_name})
-        if grocery:
-            return {'Status': 'Success',
-                    'Grocery': grocery.to_dict()}
-        else:
-            return {'Status': 'Fail',
-                    'Message': 'Not found'}, 401
     except Exception as e:
         return {'Status': 'Fail',
                 'Message': 'Can not get data'}, 400
