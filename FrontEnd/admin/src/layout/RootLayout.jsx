@@ -1,17 +1,18 @@
+import { Fragment } from "react";
 import { Outlet } from "react-router-dom";
-import { AppContextProvider } from "../contexts/appContext/appContext";
+import ErrorBoundary from "../views/ErrorBoundary";
 import LeftDrawer from "./LeftDrawer";
 import Main from "./Main";
 
 function RootLayout() {
   return (
-    <AppContextProvider>
+    <ErrorBoundary>
       <Main>
         <Outlet />
       </Main>
 
       <LeftDrawer />
-    </AppContextProvider>
+    </ErrorBoundary>
   );
 }
 

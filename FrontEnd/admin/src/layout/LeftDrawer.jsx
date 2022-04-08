@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router";
 import { connectAppContext } from "../contexts/appContext/appContext";
 import LeaderBoardSvg from "../components/Icons/LeaderBoardSvg";
 import GroupSvg from "../components/Icons/GroupSvg";
+import LocalMallSvg from "../components/Icons/LocalMallSvg";
 
 function LeftDrawer({ appContext }) {
   const navigate = useNavigate();
@@ -21,6 +22,11 @@ function LeftDrawer({ appContext }) {
       Icon: GroupSvg,
       path: "/UsersManagement/",
       text: "Nhân sự",
+    },
+    {
+      Icon: LocalMallSvg,
+      path: "/StoresManagement/",
+      text: "Cửa hàng",
     },
   ];
 

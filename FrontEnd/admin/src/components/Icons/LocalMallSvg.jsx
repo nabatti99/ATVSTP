@@ -1,6 +1,6 @@
 import { Stack, SvgIcon } from "@mui/material";
 
-function LocalMailSvg({ color = "inherit", size = 24, ...props }) {
+function LocalMallSvg({ color = "inherit", size = 24, ...props }) {
   return (
     <Stack {...props} color={color} width={size} height={size} justifyContent="center" alignItems="center">
       <SvgIcon sx={{ fontSize: size }} viewBox="0 0 24 24">
@@ -10,4 +10,4 @@ function LocalMailSvg({ color = "inherit", size = 24, ...props }) {
   );
 }
 
-export default LocalMailSvg;
+export default LocalMallSvg;

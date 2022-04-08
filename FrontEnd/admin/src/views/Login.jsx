@@ -1,0 +1,85 @@
+import { Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import useRequest from "../hooks/useRequest";
+import { connectAppContext } from "../contexts/appContext/appContext";
+import { updateAccessToken } from "../contexts/appContext/appActions";
+
+function Login({ dispatch }) {
+  const request = useRequest();
+  const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    setIsLoading(true);
+
+    const form = event.target;
+    const email = form[0].value;
+    const password = form[1].value;
+
+    request
+      .post(
+        "login",
+        {},
+        {
+          auth: {
+            username: email,
+            password: password,
+          },
+        }
+      )
+      .then((res) => {
+        dispatch(updateAccessToken(res.data.token));
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch(updateAccessToken(null));
+        alert(error);
+      });
+  };
+
+  return (
+    <Stack justifyContent="center" alignItems="center" height="100vh">
+      <Paper elevation={4} sx={{ borderRadius: 4 }}>
+        <Stack px={8} py={8}>
+          <Typography variant="h3" color="blue.500" mb={4}>
+            ATVSTP - Admin
+          </Typography>
+
+          <form onSubmit={handleSubmit}>
+            <Stack>
+              <TextField
+                label="EMAIL"
+                type="email"
+                name="email"
+                variant="standard"
+                sx={{ marginBottom: 2 }}
+                placeholder="email@gmail.com"
+              />
+
+              <TextField
+                label="MẬT KHẨU"
+                name="password"
+                variant="standard"
+                type="password"
+                sx={{ marginBottom: 4 }}
+                placeholder="Mật khẩu của bạn"
+              />
+
+              <Button disabled={isLoading} type="submit" variant="contained">
+                {isLoading ? "Đang xử lý" : "Đăng nhập"}
+              </Button>
+            </Stack>
+          </form>
+        </Stack>
+      </Paper>
+    </Stack>
+  );
+}
+
+export default connectAppContext(Login);

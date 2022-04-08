@@ -1,4 +1,4 @@
-import { SET_DRAWER_WIDTH } from "./appActionTypes";
+import { SET_DRAWER_WIDTH, UPDATE_ACCESS_TOKEN } from "./appActionTypes";
 
 const appReducer = (state, action) => {
   switch (action.type) {
@@ -6,6 +6,13 @@ const appReducer = (state, action) => {
       return {
         ...state,
         drawerWidth: action.drawerWidth,
+      };
+
+    case UPDATE_ACCESS_TOKEN:
+      localStorage.setItem("access-token", action.accessToken);
+      return {
+        ...state,
+        accessToken: action.accessToken,
       };
 
     default:

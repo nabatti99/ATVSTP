@@ -6,6 +6,7 @@ const appContext = createContext();
 export function AppContextProvider({ children }) {
   const [value, dispatch] = useReducer(appReducer, {
     drawerWidth: 248,
+    accessToken: localStorage.getItem("access-token"),
   });
 
   const ContextProvider = appContext.Provider;

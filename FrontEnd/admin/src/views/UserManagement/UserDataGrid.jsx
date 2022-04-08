@@ -1,6 +1,6 @@
 import { Paper } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import ButtonIcon from "../../components/ButtonIcon";
 import DataGrid from "../../components/DataGrid";
@@ -66,6 +66,7 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
+  const [numRecords, setNumRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   console.log(`Render datagrid ${shouldTableUpdate}`);
@@ -90,6 +91,7 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       )
       .then((res) => {
         setData(res.data.result);
+        setNumRecords(res.data.records);
         setIsLoading(false);
       });
   };
@@ -129,7 +131,7 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
         data={data}
         shouldUpdate={shouldTableUpdate}
         isLoading={isLoading}
-        count={12}
+        count={numRecords}
         onUpdateTable={handleUpdateTable}
         actionButtons={actionButtons}
         FooterComponent={FooterComponent}
