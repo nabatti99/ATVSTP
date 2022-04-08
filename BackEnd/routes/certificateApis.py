@@ -1,11 +1,11 @@
 from datetime import time
-
 from routes import app, manager_required
 from bson import ObjectId
 from flask import request
 import time
 from .pagination import pagination
 from models.certificate import Certificate
+from models.firebase import storage
 
 certificate_collection = app.db.certificate_atvstp;
 
@@ -44,9 +44,12 @@ def get_certificate(current_manager=None):
 
 def create_certificate(current_manager = None):
     data = request.get_json()
+    seconds = time.time()
+    last_update_time = time.ctime(seconds)
     new_certificate = Certificate(name=data['name'],
                                   manager=data['manager'],
-                                  effective_time=data['effective_time'])
+                                  effective_time=data['effective_time'],
+                                  last_update=last_update_time)
     try:
         certificate_collection.insert_one(new_certificate.to_dict())
         return {'Status': 'Success',
@@ -56,7 +59,7 @@ def create_certificate(current_manager = None):
                 'Message': 'Can not insert data'}, 400
 
 
-@app.route('/certificate/<string:name>', methods=["PUT"])
+@app.route('/certificate/<string:certificate_name>', methods=["PUT"])
 @manager_required("level_one")
 
 def update_certificate(current_manager=None, certificate_name=''):
@@ -84,3 +87,28 @@ def delete_certificate(current_manager=None, certificate_name=''):
         return {'Status': 'Success'}
     except:
         return {'Status': 'Fail'}, 400
+
+
+@app.route('/certificate/save_image/<string:name>', methods=['POST'])
+@manager_required('level_one')
+def load_image_certificate(current_manager=None, name: str = ''):
+    try:
+        upload = request.files['upload']
+        certificate = certificate_collection.find_one({'name': name})
+        if certificate:
+            save_dir = f'certificate_atvstp/{certificate["_id"]}.jpg'
+            storage.child(save_dir).put(upload)
+            certificate_collection.find_one_and_update({'name': name},
+                                                       {"$set": {
+                                                           "image_url": storage.child(save_dir).get_url(None)
+                                                       }})
+            return {'Status': 'Success',
+                    'Message': f"Upload image successfully: {certificate['image_url']}"}
+        else:
+            return {'Status': 'Fail',
+                    'Message': 'Can not find this certificate in database'}, 401
+
+    except Exception as e:
+        print(e)
+        return {'Status': 'Fail',
+                'Message': 'Have some error'}, 400

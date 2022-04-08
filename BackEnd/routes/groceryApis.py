@@ -3,6 +3,7 @@ from bson import ObjectId
 from flask import request
 from .pagination import pagination
 from models.grocery import Grocery
+from models.firebase import storage
 
 grocery_collection = app.db.grocery
 
@@ -93,3 +94,29 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
     except Exception as e:
         return {'Status': 'Fail',
                 'Message': 'Can not delete'}, 400
+
+
+@app.route('/grocery/save_image/<string:name>', methods=['POST'])
+@manager_required('level_one')
+def load_image_grocery(current_manager=None, name: str = ''):
+    try:
+        upload = request.files['upload']
+        grocery = grocery_collection.find_one({'name': name})
+        if grocery:
+            save_dir = f'grocery/{grocery["_id"]}.jpg'
+            storage.child(save_dir).put(upload)
+            grocery_collection.find_one_and_update({'name': name},
+                                                   {"$set": {
+                                                       "image_url": storage.child(save_dir).get_url(None)
+                                                   }})
+            return {'Status': 'Success',
+                    'Message': f"Upload image successfully: {grocery['image_url']}"}
+        else:
+            return {'Status': 'Fail',
+                    'Message': 'Can not find this grocery in database'}, 401
+
+    except Exception as e:
+        return {'Status': 'Fail',
+                'Message': e}, 400
+
+
