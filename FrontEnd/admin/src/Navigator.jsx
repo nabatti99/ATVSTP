@@ -1,17 +1,21 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import RootLayout from "./layout/RootLayout";
-import GroceriesManagement from "./views/GroceryManagement/GroceryManagement";
 import Login from "./views/Login";
 import NotFound from "./views/NotFound";
-import Statistic from "./views/Statistic";
+import Statistic from "./views/Statistic/Statistic";
 import AddNewProfileModal from "./views/UserManagement/Modals/AddNewProfileModal";
 import DeleteProfileModal from "./views/UserManagement/Modals/DeleteProfileModal";
 import EditProfileModal from "./views/UserManagement/Modals/EditProfileModal";
 import UserDetails from "./views/UserManagement/UserDetails";
+import GroceriesManagement from "./views/GroceryManagement/GroceryManagement";
 import UsersManagement from "./views/UserManagement/UsersManagement";
+import CertificatesManagement from "./views/CertificateManagement/CertificatesManagement";
 
 import { connectAppContext } from "./contexts/appContext/appContext";
+import EditCertificateModal from "./views/CertificateManagement/Modals/EditCertificateModal";
+import AddNewCertificateModal from "./views/CertificateManagement/Modals/AddNewCertificateModal";
+import DeleteCertificateModal from "./views/CertificateManagement/Modals/DeleteCertificateModal";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -30,7 +34,13 @@ function Navigator({ appContext }) {
             </Route>
             <Route path="UserDetails/:email" element={<UserDetails />} />
 
-            <Route path="StoresManagement" element={<GroceriesManagement />}></Route>
+            <Route path="GroceriesManagement" element={<GroceriesManagement />}></Route>
+
+            <Route path="CertificatesManagement" element={<CertificatesManagement />}>
+              <Route path=":name" element={<EditCertificateModal />} />
+              <Route path="Add" element={<AddNewCertificateModal />} />
+              <Route path="Delete" element={<DeleteCertificateModal />} />
+            </Route>
 
             <Route path="*" element={<NotFound />} />
           </Route>

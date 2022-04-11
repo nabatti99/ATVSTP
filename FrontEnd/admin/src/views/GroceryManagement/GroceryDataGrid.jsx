@@ -32,7 +32,7 @@ const headers = [
   {
     field: "item",
     headerName: "MẶT HÀNG KINH DOANH",
-    minWidth: 150,
+    minWidth: 180,
     color: "gray.500",
     transform: function (items = []) {
       return items.map(({ is_allowed, name }) => (
@@ -62,7 +62,7 @@ const headers = [
   {
     field: "status",
     headerName: "TRẠNG THÁI",
-    minWidth: 200,
+    minWidth: 160,
     color: "gray.500",
     transform: function (status) {
       const isActive = status === "active";
@@ -74,7 +74,7 @@ const headers = [
   {
     field: "certificate",
     headerName: "CHỨNG NHẬN ĐƯỢC CẤP",
-    minWidth: 250,
+    minWidth: 180,
     color: "gray.500",
     transform: function (certificates = []) {
       return certificates.map((certificate) => {
@@ -122,7 +122,7 @@ function GroceryDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
         },
       })
       .then((res) => {
-        setData(res.data.List_of_groceries);
+        setData(res.data.result);
         setNumRecords(res.data.records);
         setIsLoading(false);
       });
@@ -163,7 +163,7 @@ function GroceryDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
         data={data}
         shouldUpdate={shouldTableUpdate}
         isLoading={isLoading}
-        count={8} // TODO: Fix
+        count={numRecords}
         onUpdateTable={handleUpdateTable}
         actionButtons={actionButtons}
         FooterComponent={FooterComponent}

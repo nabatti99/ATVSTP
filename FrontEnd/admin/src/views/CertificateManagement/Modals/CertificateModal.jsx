@@ -2,20 +2,17 @@ import { Box, Button, debounce, MenuItem, Stack, TextField, Typography } from "@
 import { useRef, useState } from "react";
 import AppModal from "../../../components/AppModal";
 import Image from "../../../components/Image";
-import { ADD_NEW_PROFILE, EDIT_PROFILE } from "./profileActionTypes";
+import { ADD_NEW_CERTIFICATE, EDIT_CERTIFICATE } from "./certificateActionTypes";
 
-function ProfileModal({
+function CertificateModal({
   isModalOpened = true,
-  profileData = {},
+  certificateData = {},
   modalType,
   onCLoseButtonClick = () => {},
   onModalClose = () => {},
   onNameChange = () => {},
-  onEmailChange = () => {},
-  onTypeManagerChange = () => {},
-  onPhoneChange = () => {},
-  onAddressChange = () => {},
-  onAddressWorkFromChange = () => {},
+  onManagerChange = () => {},
+  onEffectiveTimeChange = () => {},
   onAvatarChange = () => {},
   onOkButtonClick = () => {},
 }) {
@@ -23,10 +20,8 @@ function ProfileModal({
 
   // Make event debounced
   const handleNameChangedDebounced = debounce(onNameChange, 1000);
-  const handleEmailChangedDebounced = debounce(onEmailChange, 1000);
-  const handlePhoneChangedDebounced = debounce(onPhoneChange, 1000);
-  const handleAddressChangedDebounced = debounce(onAddressChange, 1000);
-  const handleAddressWorkFromChangedDebounced = debounce(onAddressWorkFromChange, 1000);
+  const handleManagerChangedDebounced = debounce(onManagerChange, 1000);
+  const handleEffectiveTimeChangedDebounced = debounce(onEffectiveTimeChange, 1000);
 
   // Handle Events
   function handleChooseFileButtonClicked() {
@@ -45,24 +40,24 @@ function ProfileModal({
 
   const renderInfo = {
     title: "",
-    shouldEnableEmail: true,
+    shouldEnableName: true,
   };
 
   switch (modalType) {
-    case ADD_NEW_PROFILE:
-      renderInfo.title = "Thêm mới người dùng";
+    case ADD_NEW_CERTIFICATE:
+      renderInfo.title = "Thêm chứng nhận mới";
       break;
 
-    case EDIT_PROFILE:
-      renderInfo.title = "Chỉnh sửa thông tin người dùng";
-      renderInfo.shouldEnableEmail = false;
+    case EDIT_CERTIFICATE:
+      renderInfo.title = "Chỉnh sửa chứng nhận";
+      renderInfo.shouldEnableName = false;
       break;
 
     default:
       throw new Error("Lệnh không đúng");
   }
 
-  const { avatar, name, email, type_manager, phone, address, addressWorkFrom, image_url } = profileData;
+  const { avatar, image_url, name, manager, effective_time } = certificateData;
   const imageSrc = (avatar && URL.createObjectURL(avatar)) || image_url;
 
   return (
@@ -74,55 +69,31 @@ function ProfileModal({
     >
       <Stack>
         <TextField
-          label="HỌ VÀ TÊN"
+          label="TÊN GIẤY CHỨNG NHẬN"
           variant="standard"
           sx={{ marginBottom: 2 }}
           onChange={(event) => handleNameChangedDebounced(event.target.value)}
           defaultValue={name}
+          disabled={!renderInfo.shouldEnableName}
         />
         <TextField
-          label="EMAIL"
+          label="ĐƠN VỊ PHÁT HÀNH"
           variant="standard"
           sx={{ marginBottom: 2 }}
-          onChange={(event) => handleEmailChangedDebounced(event.target.value)}
-          disabled={!renderInfo.shouldEnableEmail}
-          defaultValue={email}
+          onChange={(event) => handleManagerChangedDebounced(event.target.value)}
+          defaultValue={manager}
         />
         <TextField
+          label="THỜI GIAN HIỆU LỰC (THÁNG)"
           variant="standard"
-          select
-          value={type_manager}
-          onChange={(event) => onTypeManagerChange(event.target.value)}
-          label="VAI TRÒ"
-          sx={{ marginBottom: 2 }}
-        >
-          <MenuItem value="admin">Admin</MenuItem>
-          <MenuItem value="inspector">Thanh tra viên</MenuItem>
-        </TextField>
-        <TextField
-          label="SỐ ĐIỆN THOẠI"
-          variant="standard"
-          sx={{ marginBottom: 2 }}
-          onChange={(event) => handlePhoneChangedDebounced(event.target.value)}
-          defaultValue={phone}
-        />
-        <TextField
-          label="ĐỊA CHỈ"
-          variant="standard"
-          sx={{ marginBottom: 2 }}
-          onChange={(event) => handleAddressChangedDebounced(event.target.value)}
-          defaultValue={address}
-        />
-        <TextField
-          label="ĐỊA CHỈ LÀM VIỆC"
-          variant="standard"
+          type="number"
           sx={{ marginBottom: 4 }}
-          onChange={(event) => handleAddressWorkFromChangedDebounced(event.target.value)}
-          defaultValue={addressWorkFrom}
+          onChange={(event) => handleEffectiveTimeChangedDebounced(event.target.value)}
+          defaultValue={effective_time}
         />
         <Stack>
           <Typography variant="strong" color="gray.500">
-            AVATAR
+            ẢNH MINH HOẠ
           </Typography>
 
           {imageSrc && <Image src={imageSrc} borderRadius={2} width={100} height={100} mt={1} />}
@@ -151,4 +122,4 @@ function ProfileModal({
   );
 }
 
-export default ProfileModal;
+export default CertificateModal;

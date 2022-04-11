@@ -33,31 +33,43 @@ function UsersManagement() {
     if (state && state.isSubmitted) {
       const profile = state.profileData;
 
+      let avatarFormData = null;
+
+      if (profile.avatar instanceof File) {
+        avatarFormData = new FormData();
+        avatarFormData.append("upload", profile.avatar);
+      }
+
       Promise.resolve()
         .then(() => {
           switch (state.action) {
             case EDIT_PROFILE:
-              return request.put(`manager/update_a_manager/${profile.email}`, {
-                ...profile,
-              });
+              return request.put(`manager/update_a_manager/${profile.email}`, profile).then(
+                () =>
+                  avatarFormData &&
+                  request.post(`manager/save_image/${profile.email}`, avatarFormData, {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  })
+              );
 
             case ADD_NEW_PROFILE:
-              const avatarFormData = new FormData();
-              avatarFormData.append("upload", profile.avatar);
-
               console.log(profile);
 
               return request
                 .post("manager/create_new_manager", {
                   ...profile,
                 })
-                .then(() => {
-                  return request.post(`manager/save_image/${profile.email}`, avatarFormData, {
-                    headers: {
-                      "Content-Type": "multipart/form-data",
-                    },
-                  });
-                });
+                .then(
+                  () =>
+                    avatarFormData &&
+                    request.post(`manager/save_image/${profile.email}`, avatarFormData, {
+                      headers: {
+                        "Content-Type": "multipart/form-data",
+                      },
+                    })
+                );
 
             case DELETE_PROFILE:
               return request.delete(`/manager/delete_a_manager/${profile.email}`);

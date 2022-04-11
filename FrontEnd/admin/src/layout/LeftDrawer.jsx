@@ -5,6 +5,7 @@ import { connectAppContext } from "../contexts/appContext/appContext";
 import LeaderBoardSvg from "../components/Icons/LeaderBoardSvg";
 import GroupSvg from "../components/Icons/GroupSvg";
 import LocalMallSvg from "../components/Icons/LocalMallSvg";
+import AssignmentTurnedInSvg from "../components/Icons/AssignmentTurnedInSvg";
 
 function LeftDrawer({ appContext }) {
   const navigate = useNavigate();
@@ -25,8 +26,13 @@ function LeftDrawer({ appContext }) {
     },
     {
       Icon: LocalMallSvg,
-      path: "/StoresManagement/",
+      path: "/GroceriesManagement/",
       text: "Cửa hàng",
+    },
+    {
+      Icon: AssignmentTurnedInSvg,
+      path: "/CertificatesManagement/",
+      text: "Chứng nhận",
     },
   ];
 

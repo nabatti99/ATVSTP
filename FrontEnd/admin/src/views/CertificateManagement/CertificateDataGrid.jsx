@@ -1,4 +1,4 @@
-import { Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,59 +9,48 @@ import CreateSvg from "../../components/Icons/CreateSvg";
 import AddSvg from "../../components/Icons/AddSvg";
 
 import useRequest from "../../hooks/useRequest";
+import Image from "../../components/Image";
 
 const headers = [
   {
-    field: "email",
-    headerName: "EMAIL",
-    minWidth: 240,
-    color: "gray.500",
-  },
-  {
     field: "name",
-    headerName: "HỌ VÀ TÊN",
-    minWidth: 200,
-    color: "gray.500",
+    headerName: "TÊN",
+    minWidth: 80,
+    color: "gray.700",
   },
   {
-    field: "phone",
-    headerName: "SỐ ĐIỆN THOẠI",
+    field: "manager",
+    headerName: "ĐƠN VỊ PHÁT HÀNH",
     minWidth: 120,
     color: "gray.500",
   },
   {
-    field: "type_manager",
-    headerName: "VAI TRÒ",
-    minWidth: 140,
+    field: "effective_time",
+    headerName: "THỜI GIAN HIỆU LỰC",
+    minWidth: 100,
     color: "gray.500",
     transform: function (value) {
-      switch (value) {
-        case "admin":
-          return "Admin";
-
-        case "inspector":
-          return "Thanh tra viên";
-
-        default:
-          return;
-      }
+      return `${value} Tháng`;
     },
   },
   {
-    field: "work_from",
-    headerName: "ĐỊA CHỈ LÀM VIỆC",
-    minWidth: 300,
+    field: "last_update",
+    headerName: "LẦN CUỐI CẬP NHẬT",
+    minWidth: 120,
     color: "gray.500",
   },
   {
-    field: "address",
-    headerName: "ĐỊA CHỈ LIÊN HỆ",
-    minWidth: 300,
+    field: "is_active",
+    headerName: "TRẠNG THÁI",
+    minWidth: 160,
     color: "gray.500",
+    transform: function (isActive) {
+      return <Box color={isActive ? "green.500" : "red.500"}>{isActive ? "Còn hiệu lực" : "Hết hiệu lực"}</Box>;
+    },
   },
 ];
 
-function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
+function CertificateDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
   const request = useRequest();
   const navigate = useNavigate();
 
@@ -78,17 +67,13 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
     console.log(query);
 
     request
-      .post(
-        `manager/search`,
-        {},
-        {
-          params: {
-            offset: dataBegin,
-            limit: rowsPerPage,
-            value: query,
-          },
-        }
-      )
+      .get(`certificate`, {
+        params: {
+          offset: dataBegin,
+          limit: rowsPerPage,
+          value: query,
+        },
+      })
       .then((res) => {
         setData(res.data.result);
         setNumRecords(res.data.records);
@@ -101,7 +86,7 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       IconComponent: CreateSvg,
       color: "blue.500",
       handleClicked: (row) => {
-        navigate(row.email, {
+        navigate(row.name, {
           state: row,
         });
       },
@@ -140,4 +125,4 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
   );
 }
 
-export default UserDataGrid;
+export default CertificateDataGrid;

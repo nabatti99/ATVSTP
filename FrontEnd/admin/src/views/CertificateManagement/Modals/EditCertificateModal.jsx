@@ -1,26 +1,23 @@
 import { useReducer, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { EDIT_PROFILE } from "./profileActionTypes";
-import ProfileModal from "./ProfileModal";
+import { EDIT_CERTIFICATE } from "./certificateActionTypes";
+import CertificateModal from "./CertificateModal";
 import {
-  ADDRESS_CHANGE,
-  ADDRESS_WORK_FROM_CHANGE,
   AVATAR_CHANGE,
+  certificateReducer,
+  EFFECTIVE_TIME_CHANGE,
+  MANAGER_CHANGE,
   NAME_CHANGE,
-  PHONE_CHANGE,
-  profileReducer,
-} from "./profileReducer";
+} from "./certificateReducer";
 
-function EditProfileModal() {
+function EditCertificateModal() {
   const navigate = useNavigate();
   const [isModalOpened, setIsModalOpened] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { state } = useLocation();
 
-  console.log(state);
-
-  const [profileData, dispatch] = useReducer(profileReducer, state);
+  const [certificateData, dispatch] = useReducer(certificateReducer, state);
 
   // Handle Data modified
   const handleNameChanged = (name) => {
@@ -30,24 +27,17 @@ function EditProfileModal() {
     });
   };
 
-  const handleAddressChanged = (address) => {
+  const handleManagerChanged = (manager) => {
     dispatch({
-      type: ADDRESS_CHANGE,
-      address,
+      type: MANAGER_CHANGE,
+      manager,
     });
   };
 
-  const handleAddressWorkFromChanged = (addressWorkFrom) => {
+  const handleEffectiveTimeChanged = (effectiveTime) => {
     dispatch({
-      type: ADDRESS_WORK_FROM_CHANGE,
-      addressWorkFrom,
-    });
-  };
-
-  const handlePhoneChanged = (phone) => {
-    dispatch({
-      type: PHONE_CHANGE,
-      phone,
+      type: EFFECTIVE_TIME_CHANGE,
+      effectiveTime,
     });
   };
 
@@ -72,28 +62,27 @@ function EditProfileModal() {
     navigate("../", {
       replace: true,
       state: {
-        action: EDIT_PROFILE,
-        profileData,
+        action: EDIT_CERTIFICATE,
+        certificateData,
         isSubmitted,
       },
     });
   };
 
   return (
-    <ProfileModal
+    <CertificateModal
       isModalOpened={isModalOpened}
-      modalType={EDIT_PROFILE}
-      profileData={profileData}
+      modalType={EDIT_CERTIFICATE}
+      certificateData={certificateData}
       onModalClose={handleModalClosed}
       onCLoseButtonClick={handleCloseButtonClicked}
       onOkButtonClick={handleOkButtonClicked}
       onNameChange={handleNameChanged}
-      onPhoneChange={handlePhoneChanged}
-      onAddressChange={handleAddressChanged}
-      onAddressWorkFromChange={handleAddressWorkFromChanged}
+      onManagerChange={handleManagerChanged}
+      onEffectiveTimeChange={handleEffectiveTimeChanged}
       onAvatarChange={handleAvatarChanged}
     />
   );
 }
 
-export default EditProfileModal;
+export default EditCertificateModal;
