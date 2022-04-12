@@ -29,7 +29,7 @@ function GroceriesManagement() {
 
   useEffect(() => {
     if (state && state.isSubmitted) {
-      // TODO: Catch events here
+      setShouldTableUpdate(true);
     }
   }, [state]);
 

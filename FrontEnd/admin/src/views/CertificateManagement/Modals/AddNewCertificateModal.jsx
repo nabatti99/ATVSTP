@@ -1,5 +1,8 @@
 import { useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import useRequest from "hooks/useRequest";
+import createImageFormData from "utilities/createImageFormData";
 import { ADD_NEW_CERTIFICATE } from "./certificateActionTypes";
 import CertificateModal from "./CertificateModal";
 import {
@@ -12,13 +15,14 @@ import {
 
 function AddNewCertificateModal() {
   const navigate = useNavigate();
+  const request = useRequest();
   const [isModalOpened, setIsModalOpened] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [certificateData, dispatch] = useReducer(certificateReducer, {
     name: "",
     manager: "",
-    effectiveTime: "",
+    effective_time: "",
     avatar: "",
   });
 
@@ -62,20 +66,41 @@ function AddNewCertificateModal() {
   };
 
   const handleModalClosed = () => {
-    navigate("../", {
-      replace: true,
-      state: {
-        action: ADD_NEW_CERTIFICATE,
-        certificateData,
-        isSubmitted,
-      },
-    });
+    if (isSubmitted)
+      request
+        .post("/certificate", certificateData)
+        .then(
+          () =>
+            certificateData.avatar &&
+            request.post(
+              `certificate/save_image/${certificateData.name}`,
+              createImageFormData(certificateData.avatar),
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+        )
+        .then(() =>
+          navigate("../", {
+            replace: true,
+            state: {
+              isSubmitted,
+            },
+          })
+        );
+    else
+      navigate("../", {
+        replace: true,
+      });
   };
 
   return (
     <CertificateModal
       isModalOpened={isModalOpened}
-      profileData={certificateData}
+      certificateData={certificateData}
+      modalType={ADD_NEW_CERTIFICATE}
       onModalClose={handleModalClosed}
       onCLoseButtonClick={handleCloseButtonClicked}
       onOkButtonClick={handleOkButtonClicked}

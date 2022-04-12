@@ -1,4 +1,6 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
+
+import useRequest from "hooks/useRequest";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AppModal from "../../../components/AppModal";
@@ -6,6 +8,7 @@ import { DELETE_PROFILE } from "./profileActionTypes";
 
 function DeleteProfileModal() {
   const navigate = useNavigate();
+  const request = useRequest();
   const [isModalOpened, setIsModalOpened] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -18,15 +21,22 @@ function DeleteProfileModal() {
     setIsModalOpened(false);
   };
 
-  const handleModalClosed = () =>
-    navigate("../", {
-      replace: true,
-      state: {
-        action: DELETE_PROFILE,
-        profileData: state,
-        isSubmitted,
-      },
-    });
+  const handleModalClosed = () => {
+    if (isSubmitted)
+      request.delete(`/manager/delete_a_manager/${state.email}`).then(() =>
+        navigate("../", {
+          replace: true,
+          state: {
+            action: DELETE_PROFILE,
+            isSubmitted,
+          },
+        })
+      );
+    else
+      navigate("../", {
+        replace: true,
+      });
+  };
 
   return (
     <AppModal

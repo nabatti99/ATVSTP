@@ -1,6 +1,6 @@
-import { Box, Paper } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Paper, Stack } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import ButtonIcon from "../../components/ButtonIcon";
 import DataGrid from "../../components/DataGrid";
@@ -35,19 +35,23 @@ const headers = [
     minWidth: 180,
     color: "gray.500",
     transform: function (items = []) {
-      return items.map(({ is_allowed, name }) => (
-        <Box
-          component="span"
-          borderRadius={4}
-          bgcolor={is_allowed ? "green.100" : "red.100"}
-          color={is_allowed ? "green.500" : "red.500"}
-          px={1}
-          py="2px"
-          mr={1}
-        >
-          {name}
-        </Box>
-      ));
+      return (
+        <Stack direction="row" flexWrap="wrap">
+          {items.map(({ is_allowed, name }) => (
+            <Box
+              borderRadius={4}
+              bgcolor={is_allowed ? "green.100" : "red.100"}
+              color={is_allowed ? "green.500" : "red.500"}
+              px={1}
+              py="2px"
+              mr={1}
+              mb={1}
+            >
+              {name}
+            </Box>
+          ))}
+        </Stack>
+      );
     },
   },
   {
@@ -55,9 +59,6 @@ const headers = [
     headerName: "ĐỊA CHỈ LIÊN HỆ",
     minWidth: 300,
     color: "gray.500",
-    transform: function ({ district, province, street, ward }) {
-      return `${street}, ${ward}, ${province}, ${district}`;
-    },
   },
   {
     field: "status",
@@ -77,22 +78,25 @@ const headers = [
     minWidth: 180,
     color: "gray.500",
     transform: function (certificates = []) {
-      return certificates.map((certificate) => {
-        const isActive = true; // TODO: Fix after complete certificate page
-        return (
-          <Box
-            component="span"
-            borderRadius={4}
-            bgcolor={isActive ? "green.100" : "red.100"}
-            color={isActive ? "green.500" : "red.500"}
-            px={1}
-            py="2px"
-            mr={1}
-          >
-            {certificate.name}
-          </Box>
-        );
-      });
+      return (
+        <Stack direction="row" flexWrap="wrap">
+          {certificates.map((certificate) => {
+            const isActive = true; // TODO: Fix after complete certificate page
+            return (
+              <Box
+                borderRadius={4}
+                bgcolor={isActive ? "green.100" : "red.100"}
+                color={isActive ? "green.500" : "red.500"}
+                px={1}
+                py="2px"
+                mr={1}
+              >
+                {certificate.name}
+              </Box>
+            );
+          })}
+        </Stack>
+      );
     },
   },
 ];
@@ -128,6 +132,10 @@ function GroceryDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       });
   };
 
+  const handleGroceryRowClicked = (row) => {
+    navigate(`/GroceryDetail/${row.name}`);
+  };
+
   const actionButtons = [
     {
       IconComponent: CreateSvg,
@@ -161,6 +169,7 @@ function GroceryDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       <DataGrid
         headers={headers}
         data={data}
+        onRowClick={handleGroceryRowClicked}
         shouldUpdate={shouldTableUpdate}
         isLoading={isLoading}
         count={numRecords}

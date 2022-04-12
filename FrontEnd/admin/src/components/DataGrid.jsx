@@ -23,6 +23,7 @@ function DataGrid({
   actionButtons = [],
   FooterComponent = null,
   onUpdateTable,
+  onRowClick = () => {},
 }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
@@ -86,7 +87,16 @@ function DataGrid({
                   </TableRow>
                 ))
               : data.map((row) => (
-                  <TableRow key={row.id}>
+                  <TableRow
+                    key={row.id}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: "gray.50",
+                      },
+                    }}
+                    onClick={() => onRowClick(row)}
+                  >
                     {headers.map((header) => (
                       <TableCell key={header.field}>
                         <Typography variant="regular" color={header.color}>

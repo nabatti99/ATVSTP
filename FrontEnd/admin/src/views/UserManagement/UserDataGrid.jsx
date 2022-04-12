@@ -96,6 +96,10 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       });
   };
 
+  const handleUserRowClicked = (row) => {
+    navigate(`/UserDetail/${row.email}`);
+  };
+
   const actionButtons = [
     {
       IconComponent: CreateSvg,
@@ -129,6 +133,7 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       <DataGrid
         headers={headers}
         data={data}
+        onRowClick={handleUserRowClicked}
         shouldUpdate={shouldTableUpdate}
         isLoading={isLoading}
         count={numRecords}

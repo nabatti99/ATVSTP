@@ -31,56 +31,7 @@ function UsersManagement() {
 
   useEffect(() => {
     if (state && state.isSubmitted) {
-      const profile = state.profileData;
-
-      let avatarFormData = null;
-
-      if (profile.avatar instanceof File) {
-        avatarFormData = new FormData();
-        avatarFormData.append("upload", profile.avatar);
-      }
-
-      Promise.resolve()
-        .then(() => {
-          switch (state.action) {
-            case EDIT_PROFILE:
-              return request.put(`manager/update_a_manager/${profile.email}`, profile).then(
-                () =>
-                  avatarFormData &&
-                  request.post(`manager/save_image/${profile.email}`, avatarFormData, {
-                    headers: {
-                      "Content-Type": "multipart/form-data",
-                    },
-                  })
-              );
-
-            case ADD_NEW_PROFILE:
-              console.log(profile);
-
-              return request
-                .post("manager/create_new_manager", {
-                  ...profile,
-                })
-                .then(
-                  () =>
-                    avatarFormData &&
-                    request.post(`manager/save_image/${profile.email}`, avatarFormData, {
-                      headers: {
-                        "Content-Type": "multipart/form-data",
-                      },
-                    })
-                );
-
-            case DELETE_PROFILE:
-              return request.delete(`/manager/delete_a_manager/${profile.email}`);
-
-            default:
-              throw new Error("Lệnh không hợp lệ");
-          }
-        })
-        .then(() => {
-          setShouldTableUpdate(true);
-        });
+      setShouldTableUpdate(true);
     }
   }, [state]);
 

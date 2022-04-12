@@ -1,67 +1,66 @@
 import { Box, Paper, Skeleton, Stack, Typography } from "@mui/material";
-
-import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+
+import useRequest from "hooks/useRequest";
 import ButtonIcon from "../../components/ButtonIcon";
-import MailSvg from "../../components/Icons/MailSvg";
 import PhoneSvg from "../../components/Icons/PhoneSvg";
 import LocationPinSvg from "../../components/Icons/LocationPinSvg";
-import EventNoteSvg from "../../components/Icons/EventNoteSvg";
 import Image from "../../components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
-import { DELETE_PROFILE } from "./Modals/profileActionTypes";
+import { DELETE_GROCERY } from "./Modals/groceryActionTypes";
 
-function UserDetails() {
+function GroceryDetails() {
   const request = useRequest();
   const navigate = useNavigate();
 
-  const { email } = useParams();
+  const { name } = useParams();
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [profile, setProfile] = useState({
+  const [grocery, setGrocery] = useState({
     name: "",
-    email: "",
-    phone: "",
+    owner: "",
+    phone_number: "",
     address: "",
-    type_manager: "",
+    status: "active",
+    item: [],
+    certificate: [],
     image_url: "",
-    work_from: "",
   });
 
-  const getProfile = async () => {
+  const getGrocery = async () => {
     setIsLoading(true);
-    const { data } = await request.get(`manager/get_a_manager/${email}`);
-    setProfile(data);
+    const { data } = await request.get(`grocery/${name}`);
+    setGrocery(data);
     setIsLoading(false);
   };
 
-  useEffect(() => getProfile(), []);
+  useEffect(() => getGrocery(), []);
 
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      if (state.action == DELETE_PROFILE) {
-        navigate("/UsersManagement/", {
+      if (state.action == DELETE_GROCERY) {
+        navigate("/GroceriesManagement/", {
           replace: true,
         });
         return;
       }
 
-      getProfile();
+      getGrocery();
     }
   }, [state]);
 
-  const { name, phone, address, type_manager, image_url, work_from } = profile;
+  const { owner, phone_number, address, status, item, certificate, image_url } = grocery;
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
   return (
     <Stack>
       <Typography variant="h4" color="gray.700">
-        Thông tin cá nhân
+        Thông tin cửa hàng sản xuất và kinh doanh thực phẩm
       </Typography>
 
       <Paper elevation={2} sx={{ padding: 4, marginTop: 4 }}>
@@ -69,34 +68,58 @@ function UserDetails() {
           <Stack flexGrow={1}>
             <Stack direction="row">
               {isLoading ? skeleton : <Image src={image_url} width={160} height={160}></Image>}
+
               <Stack mt={2} ml={4}>
-                <Typography variant="h4">{isLoading ? skeleton : name}</Typography>
-                <Box width={100} height={2} bgcolor="gray.500" mt={2} />
+                <Stack direction="row" alignItems="center">
+                  <Typography variant="h4" mr={2}>
+                    {isLoading ? skeleton : name}
+                  </Typography>
+
+                  {isLoading ? (
+                    skeleton
+                  ) : (
+                    <Box bgcolor="green.100" py={1} px={2}>
+                      {status == "active" ? "Đang hoạt động" : "Ngừng hoạt động"}
+                    </Box>
+                  )}
+                </Stack>
 
                 <Stack direction="row" color="gray.500" alignItems="center" mt={1}>
-                  <MailSvg size={16} mr={1} />
-                  <Typography variant="strong">{isLoading ? skeleton : email}</Typography>
+                  <LocationPinSvg size={16} mr={1} />
+                  <Typography variant="strong">{isLoading ? skeleton : address}</Typography>
                 </Stack>
 
                 <Stack direction="row" color="gray.500" alignItems="center" mt={1}>
                   <PhoneSvg size={16} mr={1} />
-                  <Typography variant="strong">{isLoading ? skeleton : phone}</Typography>
+                  <Typography variant="strong">{isLoading ? skeleton : `${owner}: ${phone_number}`}</Typography>
                 </Stack>
-
-                <Typography variant="strong" color="red.500" mt={1}>
-                  {isLoading ? skeleton : type_manager == "admin" ? "Admin" : "Inspector"}
-                </Typography>
               </Stack>
             </Stack>
 
-            <Stack direction="row" alignItems="center" color="gray.500" mt={2}>
-              <LocationPinSvg size={16} mr={1} />
-              <Typography variant="strong">{isLoading ? skeleton : address}</Typography>
+            <Typography variant="strong" color="gray.500" mt={2}>
+              Mặt hàng kinh doanh:
+            </Typography>
+            <Stack direction="row" mt={1}>
+              {isLoading
+                ? skeleton
+                : item.map((_item) => (
+                    <Box key={_item.name} bgcolor={_item.is_allowed ? "green.100" : "red.100"} px={1} mr={1}>
+                      {_item.name}
+                    </Box>
+                  ))}
             </Stack>
 
-            <Stack direction="row" alignItems="center" color="gray.500" mt={1}>
-              <EventNoteSvg size={16} mr={1} />
-              <Typography variant="strong">Công tác tại: {isLoading ? skeleton : work_from}</Typography>
+            <Typography variant="strong" color="gray.500" mt={2}>
+              Chứng nhận được cấp:
+            </Typography>
+            <Stack direction="row" mt={1}>
+              {isLoading
+                ? skeleton
+                : certificate.map((_certificate) => (
+                    <Box key={_certificate.name} bgcolor="green.100" px={1} mr={1}>
+                      {_certificate.name}
+                    </Box>
+                  ))}
             </Stack>
           </Stack>
 
@@ -106,7 +129,7 @@ function UserDetails() {
               LeftIcon={ModeSvg}
               onClick={() => {
                 navigate("Edit", {
-                  state: profile,
+                  state: grocery,
                 });
               }}
               sx={{ marginBottom: 2 }}
@@ -119,7 +142,7 @@ function UserDetails() {
               LeftIcon={DeleteSvg}
               onClick={() => {
                 navigate("Delete", {
-                  state: profile,
+                  state: grocery,
                 });
               }}
             >
@@ -135,4 +158,4 @@ function UserDetails() {
   );
 }
 
-export default UserDetails;
+export default GroceryDetails;

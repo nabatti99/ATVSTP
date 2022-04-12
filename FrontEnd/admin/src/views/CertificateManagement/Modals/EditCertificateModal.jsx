@@ -1,5 +1,8 @@
 import { useReducer, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import useRequest from "hooks/useRequest";
+import createImageFormData from "utilities/createImageFormData";
 import { EDIT_CERTIFICATE } from "./certificateActionTypes";
 import CertificateModal from "./CertificateModal";
 import {
@@ -12,6 +15,7 @@ import {
 
 function EditCertificateModal() {
   const navigate = useNavigate();
+  const request = useRequest();
   const [isModalOpened, setIsModalOpened] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -59,14 +63,34 @@ function EditCertificateModal() {
   };
 
   const handleModalClosed = () => {
-    navigate("../", {
-      replace: true,
-      state: {
-        action: EDIT_CERTIFICATE,
-        certificateData,
-        isSubmitted,
-      },
-    });
+    if (isSubmitted)
+      request
+        .put(`/certificate/${certificateData.name}`, certificateData)
+        .then(
+          () =>
+            certificateData.avatar &&
+            request.post(
+              `certificate/save_image/${certificateData.name}`,
+              createImageFormData(certificateData.avatar),
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+        )
+        .then(() =>
+          navigate("../", {
+            replace: true,
+            state: {
+              isSubmitted,
+            },
+          })
+        );
+    else
+      navigate("../", {
+        replace: true,
+      });
   };
 
   return (

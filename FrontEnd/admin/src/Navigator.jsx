@@ -11,11 +11,16 @@ import UserDetails from "./views/UserManagement/UserDetails";
 import GroceriesManagement from "./views/GroceryManagement/GroceryManagement";
 import UsersManagement from "./views/UserManagement/UsersManagement";
 import CertificatesManagement from "./views/CertificateManagement/CertificatesManagement";
-
-import { connectAppContext } from "./contexts/appContext/appContext";
 import EditCertificateModal from "./views/CertificateManagement/Modals/EditCertificateModal";
 import AddNewCertificateModal from "./views/CertificateManagement/Modals/AddNewCertificateModal";
 import DeleteCertificateModal from "./views/CertificateManagement/Modals/DeleteCertificateModal";
+import AddNewGroceryModal from "./views/GroceryManagement/Modals/AddNewGroceryModal";
+import EditGroceryModal from "views/GroceryManagement/Modals/EditGroceryModal";
+import DeleteGroceryModal from "views/GroceryManagement/Modals/DeleteGroceryModal";
+import GroceryDetails from "views/GroceryManagement/GroceryDetails";
+import CertificateDetails from "views/CertificateManagement/CertificateDetails";
+
+import { connectAppContext } from "./contexts/appContext/appContext";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -32,13 +37,28 @@ function Navigator({ appContext }) {
               <Route path="Add" element={<AddNewProfileModal />} />
               <Route path="Delete" element={<DeleteProfileModal />} />
             </Route>
-            <Route path="UserDetails/:email" element={<UserDetails />} />
+            <Route path="UserDetail/:email" element={<UserDetails />}>
+              <Route path="Edit" element={<EditProfileModal />} />
+              <Route path="Delete" element={<DeleteProfileModal />} />
+            </Route>
 
-            <Route path="GroceriesManagement" element={<GroceriesManagement />}></Route>
+            <Route path="GroceriesManagement" element={<GroceriesManagement />}>
+              <Route path=":name" element={<EditGroceryModal />} />
+              <Route path="Add" element={<AddNewGroceryModal />} />
+              <Route path="Delete" element={<DeleteGroceryModal />} />
+            </Route>
+            <Route path="GroceryDetail/:name" element={<GroceryDetails />}>
+              <Route path="Edit" element={<EditGroceryModal />} />
+              <Route path="Delete" element={<DeleteGroceryModal />} />
+            </Route>
 
             <Route path="CertificatesManagement" element={<CertificatesManagement />}>
               <Route path=":name" element={<EditCertificateModal />} />
               <Route path="Add" element={<AddNewCertificateModal />} />
+              <Route path="Delete" element={<DeleteCertificateModal />} />
+            </Route>
+            <Route path="CertificateDetail/:name" element={<CertificateDetails />}>
+              <Route path="Edit" element={<EditCertificateModal />} />
               <Route path="Delete" element={<DeleteCertificateModal />} />
             </Route>
 

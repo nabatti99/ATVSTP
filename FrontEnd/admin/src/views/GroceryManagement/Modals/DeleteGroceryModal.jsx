@@ -5,9 +5,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useRequest from "hooks/useRequest";
 import AppModal from "../../../components/AppModal";
 
-function DeleteCertificateModal() {
-  const navigate = useNavigate();
+function DeleteGroceryModal() {
   const request = useRequest();
+  const navigate = useNavigate();
   const [isModalOpened, setIsModalOpened] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -22,7 +22,7 @@ function DeleteCertificateModal() {
 
   const handleModalClosed = () => {
     if (isSubmitted)
-      request.delete(`/certificate/${state.name}`).then(() =>
+      request.delete(`grocery/${state.name}`).then(() =>
         navigate("../", {
           replace: true,
           state: {
@@ -66,4 +66,4 @@ function DeleteCertificateModal() {
   );
 }
 
-export default DeleteCertificateModal;
+export default DeleteGroceryModal;

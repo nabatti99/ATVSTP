@@ -13,6 +13,15 @@ import Image from "../../components/Image";
 
 const headers = [
   {
+    field: "image_url",
+    headerName: "",
+    minWidth: 80,
+    color: "gray.700",
+    transform: function (imageUrl) {
+      return imageUrl && <Image src={imageUrl} borderRadius={4} width={62} height={62} />;
+    },
+  },
+  {
     field: "name",
     headerName: "TÊN",
     minWidth: 80,
@@ -81,6 +90,10 @@ function CertificateDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       });
   };
 
+  const handleCertificateRowClicked = (row) => {
+    navigate(`/CertificateDetail/${row.name}`);
+  };
+
   const actionButtons = [
     {
       IconComponent: CreateSvg,
@@ -114,6 +127,7 @@ function CertificateDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       <DataGrid
         headers={headers}
         data={data}
+        onRowClick={handleCertificateRowClicked}
         shouldUpdate={shouldTableUpdate}
         isLoading={isLoading}
         count={numRecords}

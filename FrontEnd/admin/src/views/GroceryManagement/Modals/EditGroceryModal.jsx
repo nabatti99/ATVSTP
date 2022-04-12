@@ -3,32 +3,34 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import useRequest from "hooks/useRequest";
 import createImageFormData from "utilities/createImageFormData";
-import { EDIT_PROFILE } from "./profileActionTypes";
-import ProfileModal from "./ProfileModal";
+import GroceryModal from "./GroceryModal";
+import { EDIT_GROCERY } from "./groceryActionTypes";
 import {
   ADDRESS_CHANGE,
-  ADDRESS_WORK_FROM_CHANGE,
   AVATAR_CHANGE,
-  NAME_CHANGE,
-  PHONE_CHANGE,
-  profileReducer,
-} from "./profileReducer";
+  CERTIFICATES_CHANGE,
+  groceryReducer,
+  ITEMS_CHANGE,
+  OWNER_CHANGE,
+  PHONE_NUMBER_CHANGE,
+  STATUS_CHANGE,
+} from "./groceryReducer";
 
-function EditProfileModal() {
-  const navigate = useNavigate();
+function EditGroceryModal() {
   const request = useRequest();
+  const navigate = useNavigate();
   const [isModalOpened, setIsModalOpened] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { state } = useLocation();
 
-  const [profileData, dispatch] = useReducer(profileReducer, state);
+  const [groceryData, dispatch] = useReducer(groceryReducer, state);
 
   // Handle Data modified
-  const handleNameChanged = (name) => {
+  const handleOwnerChanged = (owner) => {
     dispatch({
-      type: NAME_CHANGE,
-      name,
+      type: OWNER_CHANGE,
+      owner,
     });
   };
 
@@ -39,17 +41,31 @@ function EditProfileModal() {
     });
   };
 
-  const handleAddressWorkFromChanged = (addressWorkFrom) => {
+  const handleStatusChanged = (status) => {
     dispatch({
-      type: ADDRESS_WORK_FROM_CHANGE,
-      addressWorkFrom,
+      type: STATUS_CHANGE,
+      status,
     });
   };
 
-  const handlePhoneChanged = (phone) => {
+  const handlePhoneNumberChanged = (phoneNumber) => {
     dispatch({
-      type: PHONE_CHANGE,
-      phone,
+      type: PHONE_NUMBER_CHANGE,
+      phoneNumber,
+    });
+  };
+
+  const handleItemsChanged = (items) => {
+    dispatch({
+      type: ITEMS_CHANGE,
+      items,
+    });
+  };
+
+  const handleCertificatesChanged = (certificates) => {
+    dispatch({
+      type: CERTIFICATES_CHANGE,
+      certificates,
     });
   };
 
@@ -73,11 +89,11 @@ function EditProfileModal() {
   const handleModalClosed = () => {
     if (isSubmitted)
       request
-        .put(`manager/update_a_manager/${profileData.email}`, profileData)
+        .put(`grocery/${groceryData.name}`, groceryData)
         .then(
           () =>
-            profileData.avatar &&
-            request.post(`manager/save_image/${profileData.email}`, createImageFormData(profileData.avatar), {
+            groceryData.avatar &&
+            request.post(`grocery/save_image/${groceryData.name}`, createImageFormData(groceryData.avatar), {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
@@ -98,20 +114,22 @@ function EditProfileModal() {
   };
 
   return (
-    <ProfileModal
+    <GroceryModal
       isModalOpened={isModalOpened}
-      modalType={EDIT_PROFILE}
-      profileData={profileData}
+      modalType={EDIT_GROCERY}
+      groceryData={groceryData}
       onModalClose={handleModalClosed}
       onCLoseButtonClick={handleCloseButtonClicked}
       onOkButtonClick={handleOkButtonClicked}
-      onNameChange={handleNameChanged}
-      onPhoneChange={handlePhoneChanged}
+      onOwnerChange={handleOwnerChanged}
       onAddressChange={handleAddressChanged}
-      onAddressWorkFromChange={handleAddressWorkFromChanged}
+      onPhoneNumberChange={handlePhoneNumberChanged}
+      onStatusChange={handleStatusChanged}
+      onItemsChange={handleItemsChanged}
+      onCertificatesChange={handleCertificatesChanged}
       onAvatarChange={handleAvatarChanged}
     />
   );
 }
 
-export default EditProfileModal;
+export default EditGroceryModal;

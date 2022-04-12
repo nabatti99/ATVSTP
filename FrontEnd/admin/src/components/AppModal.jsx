@@ -17,6 +17,8 @@ function AppModal({ isOpened = true, title, onCLoseButtonClick, onModalClose, ch
           elevation={3}
           sx={{
             maxWidth: "80%",
+            maxHeight: "80vh",
+            overflow: "auto",
             position: "absolute",
             top: "50%",
             left: "50%",

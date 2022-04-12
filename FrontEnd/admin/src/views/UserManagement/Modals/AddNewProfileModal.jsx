@@ -1,5 +1,8 @@
 import { useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import useRequest from "hooks/useRequest";
+import createImageFormData from "utilities/createImageFormData";
 import { ADD_NEW_PROFILE } from "./profileActionTypes";
 import ProfileModal from "./ProfileModal";
 import {
@@ -15,6 +18,7 @@ import {
 
 function AddNewProfileModal() {
   const navigate = useNavigate();
+  const request = useRequest();
   const [isModalOpened, setIsModalOpened] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -89,14 +93,30 @@ function AddNewProfileModal() {
   };
 
   const handleModalClosed = () => {
-    navigate("../", {
-      replace: true,
-      state: {
-        action: ADD_NEW_PROFILE,
-        profileData,
-        isSubmitted,
-      },
-    });
+    if (isSubmitted)
+      request
+        .post("manager/create_new_manager", profileData)
+        .then(
+          () =>
+            profileData.avatar &&
+            request.post(`manager/save_image/${profileData.email}`, createImageFormData(profileData.avatar), {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+        )
+        .then(() =>
+          navigate("../", {
+            replace: true,
+            state: {
+              isSubmitted,
+            },
+          })
+        );
+    else
+      navigate("../", {
+        replace: true,
+      });
   };
 
   return (

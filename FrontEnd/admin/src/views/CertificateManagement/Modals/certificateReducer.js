@@ -20,7 +20,7 @@ export function certificateReducer(state, action) {
     case EFFECTIVE_TIME_CHANGE:
       return {
         ...state,
-        effectiveTime: action.effectiveTime,
+        effective_time: action.effectiveTime,
       };
 
     case AVATAR_CHANGE:

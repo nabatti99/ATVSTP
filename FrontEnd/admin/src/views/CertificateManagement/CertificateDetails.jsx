@@ -4,57 +4,52 @@ import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import ButtonIcon from "../../components/ButtonIcon";
-import MailSvg from "../../components/Icons/MailSvg";
-import PhoneSvg from "../../components/Icons/PhoneSvg";
-import LocationPinSvg from "../../components/Icons/LocationPinSvg";
-import EventNoteSvg from "../../components/Icons/EventNoteSvg";
+import ApartmentSvg from "../../components/Icons/ApartmentSvg";
+import AlarmOnSvg from "../../components/Icons/AlarmOnSvg";
 import Image from "../../components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
-import { DELETE_PROFILE } from "./Modals/profileActionTypes";
+import { DELETE_CERTIFICATE } from "./Modals/certificateActionTypes";
 
-function UserDetails() {
+function CertificateDetails() {
   const request = useRequest();
   const navigate = useNavigate();
 
-  const { email } = useParams();
+  const { name } = useParams();
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [profile, setProfile] = useState({
+  const [certificate, setCertificate] = useState({
     name: "",
-    email: "",
-    phone: "",
-    address: "",
-    type_manager: "",
+    manager: "",
+    effective_time: "",
     image_url: "",
-    work_from: "",
   });
 
-  const getProfile = async () => {
+  const getCertificate = async () => {
     setIsLoading(true);
-    const { data } = await request.get(`manager/get_a_manager/${email}`);
-    setProfile(data);
+    const { data } = await request.get(`certificate/${name}`);
+    setCertificate(data);
     setIsLoading(false);
   };
 
-  useEffect(() => getProfile(), []);
+  useEffect(() => getCertificate(), []);
 
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      if (state.action == DELETE_PROFILE) {
+      if (state.action == DELETE_CERTIFICATE) {
         navigate("/UsersManagement/", {
           replace: true,
         });
         return;
       }
 
-      getProfile();
+      getCertificate();
     }
   }, [state]);
 
-  const { name, phone, address, type_manager, image_url, work_from } = profile;
+  const { manager, effective_time, image_url, last_update } = certificate;
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
@@ -69,35 +64,26 @@ function UserDetails() {
           <Stack flexGrow={1}>
             <Stack direction="row">
               {isLoading ? skeleton : <Image src={image_url} width={160} height={160}></Image>}
+
               <Stack mt={2} ml={4}>
                 <Typography variant="h4">{isLoading ? skeleton : name}</Typography>
                 <Box width={100} height={2} bgcolor="gray.500" mt={2} />
 
                 <Stack direction="row" color="gray.500" alignItems="center" mt={1}>
-                  <MailSvg size={16} mr={1} />
-                  <Typography variant="strong">{isLoading ? skeleton : email}</Typography>
+                  <ApartmentSvg size={16} mr={1} />
+                  <Typography variant="strong">{isLoading ? skeleton : manager}</Typography>
                 </Stack>
 
                 <Stack direction="row" color="gray.500" alignItems="center" mt={1}>
-                  <PhoneSvg size={16} mr={1} />
-                  <Typography variant="strong">{isLoading ? skeleton : phone}</Typography>
+                  <AlarmOnSvg size={16} mr={1} />
+                  <Typography variant="strong">
+                    {isLoading ? skeleton : `Thời hạn: ${effective_time} Tháng`}
+                  </Typography>
                 </Stack>
-
-                <Typography variant="strong" color="red.500" mt={1}>
-                  {isLoading ? skeleton : type_manager == "admin" ? "Admin" : "Inspector"}
-                </Typography>
               </Stack>
             </Stack>
 
-            <Stack direction="row" alignItems="center" color="gray.500" mt={2}>
-              <LocationPinSvg size={16} mr={1} />
-              <Typography variant="strong">{isLoading ? skeleton : address}</Typography>
-            </Stack>
-
-            <Stack direction="row" alignItems="center" color="gray.500" mt={1}>
-              <EventNoteSvg size={16} mr={1} />
-              <Typography variant="strong">Công tác tại: {isLoading ? skeleton : work_from}</Typography>
-            </Stack>
+            <Typography variant="strong">Cập nhật lần cuối: {isLoading ? skeleton : last_update}</Typography>
           </Stack>
 
           <Stack>
@@ -106,7 +92,7 @@ function UserDetails() {
               LeftIcon={ModeSvg}
               onClick={() => {
                 navigate("Edit", {
-                  state: profile,
+                  state: certificate,
                 });
               }}
               sx={{ marginBottom: 2 }}
@@ -119,7 +105,7 @@ function UserDetails() {
               LeftIcon={DeleteSvg}
               onClick={() => {
                 navigate("Delete", {
-                  state: profile,
+                  state: certificate,
                 });
               }}
             >
@@ -135,4 +121,4 @@ function UserDetails() {
   );
 }
 
-export default UserDetails;
+export default CertificateDetails;

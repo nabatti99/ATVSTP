@@ -62,7 +62,7 @@ function ProfileModal({
       throw new Error("Lệnh không đúng");
   }
 
-  const { avatar, name, email, type_manager, phone, address, addressWorkFrom, image_url } = profileData;
+  const { avatar, name, email, type_manager, phone, address, work_from, image_url } = profileData;
   const imageSrc = (avatar && URL.createObjectURL(avatar)) || image_url;
 
   return (
@@ -118,7 +118,7 @@ function ProfileModal({
           variant="standard"
           sx={{ marginBottom: 4 }}
           onChange={(event) => handleAddressWorkFromChangedDebounced(event.target.value)}
-          defaultValue={addressWorkFrom}
+          defaultValue={work_from}
         />
         <Stack>
           <Typography variant="strong" color="gray.500">
