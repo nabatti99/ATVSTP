@@ -21,6 +21,10 @@ import GroceryDetails from "views/GroceryManagement/GroceryDetails";
 import CertificateDetails from "views/CertificateManagement/CertificateDetails";
 
 import { connectAppContext } from "./contexts/appContext/appContext";
+import InspectionSchedulesManagement from "views/InspectionScheduleManagement/InspectionSchedulesManagement";
+import AdministrationsManagement from "views/AdministrationManagement/AdministrationsManagement";
+import NotificationsManagement from "views/NotificationManagement/NotificationsManagement";
+import NotificationDetail from "views/NotificationManagement/NotificationDetail";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -60,6 +64,30 @@ function Navigator({ appContext }) {
             <Route path="CertificateDetail/:name" element={<CertificateDetails />}>
               <Route path="Edit" element={<EditCertificateModal />} />
               <Route path="Delete" element={<DeleteCertificateModal />} />
+            </Route>
+
+            <Route path="InspectionSchedulesManagement" element={<InspectionSchedulesManagement />}>
+              {/* <Route path=":name" element={<EditCertificateModal />} />
+              <Route path="Add" element={<AddNewCertificateModal />} />
+              <Route path="Delete" element={<DeleteCertificateModal />} /> */}
+            </Route>
+            {/* <Route path="CertificateDetail/:name" element={<CertificateDetails />}>
+              <Route path="Edit" element={<EditCertificateModal />} />
+              <Route path="Delete" element={<DeleteCertificateModal />} />
+            </Route> */}
+
+            <Route path="AdministrationsManagement" element={<AdministrationsManagement />}>
+              {/* <Route path=":name" element={<EditCertificateModal />} />
+              <Route path="Add" element={<AddNewCertificateModal />} />
+              <Route path="Delete" element={<DeleteCertificateModal />} /> */}
+            </Route>
+            {/* <Route path="CertificateDetail/:name" element={<CertificateDetails />}>
+              <Route path="Edit" element={<EditCertificateModal />} />
+              <Route path="Delete" element={<DeleteCertificateModal />} />
+            </Route> */}
+
+            <Route path="NotificationsManagement" element={<NotificationsManagement />}>
+              <Route path=":id" element={<NotificationDetail />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

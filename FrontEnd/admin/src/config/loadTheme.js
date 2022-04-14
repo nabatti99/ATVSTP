@@ -169,6 +169,20 @@ theme.typography.small = {
   fontFamily: theme.typography.fontFamily,
 };
 
+theme.components.MuiTab = {
+  styleOverrides: {
+    root: {
+      fontWeight: 800,
+    },
+    selected: {
+      color: theme.palette.blue[500],
+    },
+    textColorPrimary: {
+      color: theme.palette.gray[900],
+    },
+  },
+};
+
 theme.components.MuiAvatar = {
   styleOverrides: {
     root: ({ ownerState, theme }) => {

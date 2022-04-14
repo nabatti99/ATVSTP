@@ -6,6 +6,9 @@ import LeaderBoardSvg from "../components/Icons/LeaderBoardSvg";
 import GroupSvg from "../components/Icons/GroupSvg";
 import LocalMallSvg from "../components/Icons/LocalMallSvg";
 import AssignmentTurnedInSvg from "../components/Icons/AssignmentTurnedInSvg";
+import EventNoteSvg from "components/Icons/EventNoteSvg";
+import ApartmentSvg from "components/Icons/ApartmentSvg";
+import MarkChatUnreadSvg from "components/Icons/MarkChatUnreadSvg";
 
 function LeftDrawer({ appContext }) {
   const navigate = useNavigate();
@@ -25,6 +28,11 @@ function LeftDrawer({ appContext }) {
       text: "Nhân sự",
     },
     {
+      Icon: ApartmentSvg,
+      path: "/AdministrationsManagement/",
+      text: "Tổ chức thanh tra",
+    },
+    {
       Icon: LocalMallSvg,
       path: "/GroceriesManagement/",
       text: "Cửa hàng",
@@ -33,6 +41,16 @@ function LeftDrawer({ appContext }) {
       Icon: AssignmentTurnedInSvg,
       path: "/CertificatesManagement/",
       text: "Chứng nhận",
+    },
+    {
+      Icon: EventNoteSvg,
+      path: "/InspectionSchedulesManagement/",
+      text: "Kế hoạch thanh tra",
+    },
+    {
+      Icon: MarkChatUnreadSvg,
+      path: "/NotificationsManagement/",
+      text: "Thông báo, phản hồi",
     },
   ];
 
