@@ -4,6 +4,7 @@ from routes import app, manager_required, response_status, fail_status, success_
 from models.inspection_schedule import InspectionSchedule
 from flask import request
 from routes.pagination import pagination_inspection_schedule
+from routes.management_email import send_email_managers_for_new_inspection_schedule
 
 inspection_schedule = app.db.inspection_schedule
 
@@ -42,6 +43,8 @@ def create_an_inspection_schedule(current_manager=None):
                                                          content=db['content'])
 
             inspection_schedule.insert_one(new_inspection_schedule.to_dict())
+            send_email_managers_for_new_inspection_schedule(ins_sche=new_inspection_schedule.to_dict(),
+                                                            current_manager=current_manager['email'])
             return response_status(status=success_status,
                                    message=new_inspection_schedule.to_dict())
     except Exception as e:
