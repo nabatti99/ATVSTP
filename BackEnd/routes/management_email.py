@@ -50,4 +50,9 @@ def gen_password():
     return ''.join(password)
 
 
+def send_email_managers_for_new_inspection_schedule(authority, current_manager, lst_email, content):
+    subject = f'Tôi là {current_manager} đã lên lịch cho đơn vị {authority} thực hiện thanh tra'
 
+    msg = Message(subject, recipients=lst_email)
+    msg.body = content
+    mail.send(msg)

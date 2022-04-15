@@ -11,6 +11,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 
 manager_collection = app.db.manager
+admin_avtitp = app.db.administration_atvstp
+
 
 fail_status = 'Fail'
 success_status = 'Success'
@@ -117,18 +119,30 @@ def create_new_manager(current_manager=None):
                                 address=new_register['address'],
                                 phone=new_register['phone'],
                                 work_from=new_register['work_from'],
-                                type_manager=new_register['type_manager'])
+                                type_manager=new_register['type_manager'],
+                                role=new_register['role'])
 
-        verify = manager_collection.find_one({'name': new_inspector.name})
+        verify = manager_collection.find_one({'name': new_register['name']})
         if verify is not None:
             return response_status(status=fail_status,
                                    message='username is not unique!'), 401
 
         try:
-            send_email_new_password(new_inspector.to_dict(), new_password)
-            manager_collection.insert_one(new_inspector.to_dict())
-            return response_status(status=success_status,
-                                   message=new_inspector.to_dict())
+            current_admin_atvstp = admin_avtitp.find_one_and_update({'name': new_register['work_from']},
+                                                                    {
+                                                                        '$push': {
+                                                                            f'responsible.{new_register["role"]}':
+                                                                                new_register['email']
+                                                                        }
+                                                                    })
+            if current_admin_atvstp:
+                send_email_new_password(new_inspector.to_dict(), new_password)
+                manager_collection.insert_one(new_inspector.to_dict())
+                return response_status(status=success_status,
+                                       message=new_inspector.to_dict())
+            else:
+                return response_status(status=fail_status,
+                                       message=f'Do not have {new_register["work_from"]} administration atvstp in database')
         except Exception as e:
             return {'Type Error': e}, 400
 
@@ -190,7 +204,8 @@ def update_a_manager(current_manager=None, email: str = ''):
                                                                          'phone': updated_manager['phone'],
                                                                          'address': updated_manager['address'],
                                                                          'work_from': updated_manager['work_from'],
-                                                                         'type_manager': updated_manager['type_manager']
+                                                                         'type_manager': updated_manager['type_manager'],
+                                                                         'role': updated_manager['role']
                                                                      }})
             elif current_manager['type_manager'] == 'inspector':
                 del_conf_mn = manager_collection.find_one_and_update({'email': email},
@@ -366,4 +381,9 @@ def checked_manager(new_manager):
         new_manager['type_manager']
     except:
         logger['type_manager'] = 'No type'
+    try:
+        new_manager['role']
+    except:
+        logger['role'] = 'No role'
+
     return logger
