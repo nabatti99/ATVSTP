@@ -9,6 +9,7 @@ import AssignmentTurnedInSvg from "../components/Icons/AssignmentTurnedInSvg";
 import EventNoteSvg from "components/Icons/EventNoteSvg";
 import ApartmentSvg from "components/Icons/ApartmentSvg";
 import MarkChatUnreadSvg from "components/Icons/MarkChatUnreadSvg";
+import AssignmentSvg from "components/Icons/AssignmentSvg";
 
 function LeftDrawer({ appContext }) {
   const navigate = useNavigate();
@@ -36,6 +37,11 @@ function LeftDrawer({ appContext }) {
       Icon: LocalMallSvg,
       path: "/GroceriesManagement/",
       text: "Cửa hàng",
+    },
+    {
+      Icon: AssignmentSvg,
+      path: "/PostsManagement/",
+      text: "Bài đăng",
     },
     {
       Icon: AssignmentTurnedInSvg,

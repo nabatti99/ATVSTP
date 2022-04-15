@@ -25,6 +25,10 @@ import InspectionSchedulesManagement from "views/InspectionScheduleManagement/In
 import AdministrationsManagement from "views/AdministrationManagement/AdministrationsManagement";
 import NotificationsManagement from "views/NotificationManagement/NotificationsManagement";
 import NotificationDetail from "views/NotificationManagement/NotificationDetail";
+import PostsManagement from "views/PostManagement/PostsManagement";
+import EditPostModal from "views/PostManagement/Modals/EditPostModal";
+import AddNewPostModal from "views/PostManagement/Modals/AddNewPostModal";
+import DeletePostModal from "views/PostManagement/Modals/DeletePostModal";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -85,6 +89,16 @@ function Navigator({ appContext }) {
               <Route path="Edit" element={<EditCertificateModal />} />
               <Route path="Delete" element={<DeleteCertificateModal />} />
             </Route> */}
+
+            <Route path="PostsManagement" element={<PostsManagement />}>
+              <Route path=":_id" element={<EditPostModal />} />
+              <Route path="Add" element={<AddNewPostModal />} />
+              <Route path="Delete" element={<DeletePostModal />} />
+            </Route>
+            <Route path="CertificateDetail/:name" element={<CertificateDetails />}>
+              <Route path="Edit" element={<EditCertificateModal />} />
+              <Route path="Delete" element={<DeleteCertificateModal />} />
+            </Route>
 
             <Route path="NotificationsManagement" element={<NotificationsManagement />}>
               <Route path=":id" element={<NotificationDetail />} />

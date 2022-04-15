@@ -95,7 +95,10 @@ function DataGrid({
                         backgroundColor: "gray.50",
                       },
                     }}
-                    onClick={() => onRowClick(row)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onRowClick(row);
+                    }}
                   >
                     {headers.map((header) => (
                       <TableCell key={header.field}>
@@ -107,7 +110,13 @@ function DataGrid({
 
                     <TableCell align="center">
                       {actionButtons.map(({ IconComponent, color, handleClicked }) => (
-                        <IconButton key={IconComponent.name} onClick={() => handleClicked(row)}>
+                        <IconButton
+                          key={IconComponent.name}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleClicked(row);
+                          }}
+                        >
                           <IconComponent color={color} />
                         </IconButton>
                       ))}

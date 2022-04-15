@@ -7,6 +7,7 @@ export function AppContextProvider({ children }) {
   const [value, dispatch] = useReducer(appReducer, {
     drawerWidth: 248,
     accessToken: localStorage.getItem("access-token"),
+    userEmail: "admin@gmail.com",
   });
 
   const ContextProvider = appContext.Provider;
