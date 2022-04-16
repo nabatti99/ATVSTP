@@ -44,9 +44,9 @@ def create_an_inspection_schedule(current_manager=None):
                                                          is_draft=db['is_draft'])
 
             inspection_schedule.insert_one(new_inspection_schedule.to_dict())
-            if not db['is_draft']:
-                send_email_for_schedule(new_schedule=new_inspection_schedule.to_dict(),
-                                        current_manager=current_manager['email'])
+            # if not db['is_draft']:
+            #     send_email_for_schedule(new_schedule=new_inspection_schedule.to_dict(),
+            #                             current_manager=current_manager['email'])
             return response_status(status=success_status,
                                    message=new_inspection_schedule.to_dict())
     except Exception as e:
@@ -114,9 +114,9 @@ def update_inspection_schedule(current_manager=None, _id: str = ''):
                                                                   '$set': current_inspection_schedule.to_dict()
                                                               })
             if updated_ins_sche:
-                if not db['is_draft']:
-                    send_email_for_schedule(new_schedule=current_inspection_schedule.to_dict(),
-                                            current_manager=current_manager['email'])
+                # if not db['is_draft']:
+                #     send_email_for_schedule(new_schedule=current_inspection_schedule.to_dict(),
+                #                             current_manager=current_manager['email'])
                 return response_status(status=success_status,
                                        message=f'Updated inspection schedule {_id}')
             else:
