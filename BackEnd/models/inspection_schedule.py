@@ -8,7 +8,8 @@ class InspectionSchedule:
                  content: str,
                  assigned_to: list,
                  schedule: datetime,
-                 updated_by: str):
+                 updated_by: str,
+                 is_draft: bool = True):
 
         self.__authority = authority
         self.__groceries = groceries
@@ -16,6 +17,7 @@ class InspectionSchedule:
         self.__assigned_to = assigned_to
         self.__schedule = schedule
         self.__updated_by = updated_by
+        self.__is_draft = is_draft
 
     def to_dict(self):
         return {
@@ -24,5 +26,6 @@ class InspectionSchedule:
             'content': self.__content,
             'assigned_to': self.__assigned_to,
             'schedule': self.__schedule,
-            'updated_by': self.__updated_by
+            'updated_by': self.__updated_by,
+            'is_dratf': self.__is_draft
         }

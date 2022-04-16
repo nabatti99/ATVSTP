@@ -11,7 +11,8 @@ def pagination(path_dir: str = "",
         obj['prev_url'] = ''
     else:
         if value:
-            obj['prev_url'] = f'/{path_dir}?offset=' + str(max(0, offset - limit)) + '&limit=' + str(offset - 1) + "&value=" + value
+            obj['prev_url'] = f'/{path_dir}?offset=' + str(max(0, offset - limit)) + '&limit=' + str(
+                offset - 1) + "&value=" + value
         else:
             obj['prev_url'] = f'/{path_dir}?offset=' + str(max(0, offset - limit)) + '&limit=' + str(offset - 1)
 
@@ -28,24 +29,27 @@ def pagination(path_dir: str = "",
     return jsonify(obj)
 
 
-def pagination_inspection_schedule(path_dir: str = "",
-                                   offset: int = 0,
-                                   limit: int = 10,
-                                   date_start: str = "",
-                                   date_end: str = '',
-                                   list_database: list = None):
+def pagination_schedule(path_dir: str = "",
+                        offset: int = 0,
+                        limit: int = 10,
+                        date_start: str = "",
+                        date_end: str = '',
+                        is_draft: bool = True,
+                        list_database: list = None):
     obj = {}
     if offset == 0:
         obj['prev_url'] = ''
     else:
         obj['prev_url'] = f'/{path_dir}?offset=' + str(max(0, offset - limit)) + \
-                          '&limit=' + str(offset - 1) + "&date_start=" + date_start + "&date_end=" + date_end
+                          '&limit=' + str(offset - 1) + "&date_start=" + date_start +\
+                          "&date_end=" + date_end + "&is_draft=" + str(is_draft)
 
     if offset + limit >= len(list_database):
         obj['next_url'] = ''
     else:
         obj['next_url'] = f'/{path_dir}?offset=' + str(offset + limit) + \
-                          '&limit=' + str(limit) + "&date_start=" + date_start + "&date_end=" + date_end
+                          '&limit=' + str(limit) + "&date_start=" + date_start \
+                          + "&date_end=" + date_end + "&is_draft=" + str(is_draft)
 
     obj['result'] = list_database[offset:offset + limit]
     obj['records'] = len(list_database)
