@@ -38,6 +38,22 @@ def get_grocery(current_manager=None):
                 'Message': 'Can not get data'}, 400
 
 
+@app.route('/grocery/<string:grocery_name>', methods=['GET'])
+@manager_required("level_one")
+def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
+    try:
+        grocery = grocery_collection.find_one({'name': grocery_name})
+        if grocery:
+            return {'Status': 'Success',
+                    'Grocery': grocery}
+        else:
+            return {'Status': 'Fail',
+                    'Message': 'Not found'}, 401
+    except Exception as e:
+        return {'Status': 'Fail',
+                'Message': f'{e}'}, 400
+
+
 @app.route('/grocery', methods=['POST'])
 @manager_required("level_one")
 def add_grocery(current_manager=None):
