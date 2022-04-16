@@ -1,7 +1,6 @@
 from flask import request, jsonify
 from routes import app
 from bson.objectid import ObjectId
-from bson.json_util import dumps
 import flask
 import time
 
@@ -20,7 +19,7 @@ def information_read():
     data_from_client = request.args
     current_page = data_from_client.get('offset')
     if current_page is None:
-        current_page = 1 # default page
+        current_page = 0 # default page
     row_limit = data_from_client.get('limit') # so du lieu trong 1 trang: lay tu client
     if row_limit is None:
         row_limit = total_row_per_page
@@ -52,8 +51,7 @@ def information_read():
             ]
         }).skip(offset).limit(int(row_limit))
     list_data = list(data)
-    json_data = dumps(list_data)
-    result = '{"data":' + json_data + ', "total_page":"' + str(total_page) +'"' + '}'
+    result = {"data": list_data, "total_page": total_page}
     return result
 
 
@@ -62,7 +60,7 @@ def information_read_by_id(oid):
     try:
         information = information_collection.find_one({"_id": ObjectId(oid)})
         if information is not None:
-            return dumps(information)
+            return jsonify(information)
         else:
             return response_status(fail_status, f'Can not find information with id {oid} in database'), 401
     except Exception as e:
@@ -124,7 +122,7 @@ def information_update():
 @app.route('/information/delete', methods=['DELETE'])
 def information_delete():
     data = request.args
-    oid = data.get('oid')
+    oid = data.get('_id')
     if oid is None:
         return response_status(fail_status, "Data not exist")
     item_update = information_collection.find_one({"_id": ObjectId(oid)}) # object will be deleted
@@ -156,7 +154,7 @@ def information_disable():
 
 # pagination util
 def getOffset(page, limit):
-    return (page - 1) * limit
+    return page * limit
 
 def getTotalPage(total_row, limit):
     page = total_row // limit

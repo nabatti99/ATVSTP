@@ -1,7 +1,6 @@
-from flask import request
+from flask import request, jsonify
 from routes import app
 from bson.objectid import ObjectId
-from bson.json_util import dumps
 import flask
 import time
 
@@ -20,7 +19,7 @@ def feedback_read():
     data_from_client = request.args
     current_page = data_from_client.get('offset')
     if current_page is None:
-        current_page = 1 # default page
+        current_page = 0 # default page
     row_limit = data_from_client.get('limit') # so du lieu trong 1 trang: lay tu client
     if row_limit is None:
         row_limit = total_row_per_page
@@ -56,8 +55,7 @@ def feedback_read():
     list_data = list(data)
     if len(list_data) == 0:
         return {'result': 'no data'}
-    json_data = dumps(list_data)
-    result = '{"data":' + json_data + ', "total_page":"' + str(total_page) +'"' + '}'
+    result = {"data": list_data, "total_page": total_page}
     return result
 
 
@@ -66,7 +64,7 @@ def feedback_read_by_id(oid):
     try:
         feedback = feedback_collection.find_one({"_id": ObjectId(oid)})
         if feedback is not None:
-            return dumps(feedback)
+            return jsonify(feedback)
         else:
             return response_status(fail_status, f'Can not find feedback with id {oid} in database'), 401
     except Exception as e:
@@ -126,7 +124,7 @@ def feedback_update():
 @app.route('/feedback/delete', methods=['DELETE'])
 def feedback_delete():
     data = request.args
-    oid = data.get('oid')
+    oid = data.get('_id')
     if oid is None:
         return response_status(fail_status, "Data not exist")
     item_update = feedback_collection.find_one({"_id": ObjectId(oid)}) # object will be deleted
@@ -141,7 +139,7 @@ def feedback_delete():
 
 # pagination util
 def getOffset(page, limit):
-    return (page - 1) * limit
+    return page * limit
 
 def getTotalPage(total_row, limit):
     page = total_row // limit
