@@ -1,4 +1,4 @@
-import { Box, Paper, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Link, Paper, Skeleton, Stack, Typography } from "@mui/material";
 
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
@@ -9,81 +9,97 @@ import AlarmOnSvg from "../../components/Icons/AlarmOnSvg";
 import Image from "../../components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
-import { DELETE_CERTIFICATE } from "./Modals/certificateActionTypes";
+import { DELETE_ADMINISTRATION } from "./Modals/administrationActionTypes";
+import PhoneSvg from "components/Icons/PhoneSvg";
+import GroupSvg from "components/Icons/GroupSvg";
 
-function CertificateDetails() {
+function AdministrationDetails() {
   const request = useRequest();
   const navigate = useNavigate();
 
-  const { name } = useParams();
+  const { _id } = useParams();
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [certificate, setCertificate] = useState({
+  const [administration, setAdministration] = useState({
     name: "",
-    manager: "",
-    effective_time: "",
-    image_url: "",
+    phone_number: "",
+    responsible: {
+      "Giám Đốc": [],
+      "Phó Giám Đốc": [],
+      "Thanh Tra": [],
+    },
   });
 
-  const getCertificate = async () => {
+  const getAdministration = async () => {
     setIsLoading(true);
-    const { data } = await request.get(`certificate/${name}`);
-    setCertificate(data);
+    const { data } = await request.get(`administration/read/${_id}`);
+    setAdministration(data);
     setIsLoading(false);
   };
 
-  useEffect(() => getCertificate(), []);
+  useEffect(() => getAdministration(), []);
 
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      if (state.action == DELETE_CERTIFICATE) {
+      if (state.action == DELETE_ADMINISTRATION) {
         navigate("/UsersManagement/", {
           replace: true,
         });
         return;
       }
 
-      getCertificate();
+      getAdministration();
     }
   }, [state]);
 
-  const { manager, effective_time, image_url, last_update } = certificate;
+  const { name, phone_number, responsible } = administration;
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
   return (
     <Stack>
       <Typography variant="h4" color="gray.700">
-        Thông tin cá nhân
+        Thông tin Tổ chức thanh tra
       </Typography>
 
       <Paper elevation={2} sx={{ padding: 4, marginTop: 4 }}>
         <Stack direction="row">
           <Stack flexGrow={1}>
             <Stack direction="row">
-              {isLoading ? skeleton : <Image src={image_url} width={160} height={160}></Image>}
-
               <Stack mt={2} ml={4}>
                 <Typography variant="h4">{isLoading ? skeleton : name}</Typography>
                 <Box width={100} height={2} bgcolor="gray.500" mt={2} />
 
                 <Stack direction="row" color="gray.500" alignItems="center" mt={1}>
-                  <ApartmentSvg size={16} mr={1} />
-                  <Typography variant="strong">{isLoading ? skeleton : manager}</Typography>
+                  <PhoneSvg size={16} mr={1} />
+                  <Typography variant="strong">{isLoading ? skeleton : phone_number}</Typography>
                 </Stack>
 
-                <Stack direction="row" color="gray.500" alignItems="center" mt={1}>
-                  <AlarmOnSvg size={16} mr={1} />
-                  <Typography variant="strong">
-                    {isLoading ? skeleton : `Thời hạn: ${effective_time} Tháng`}
-                  </Typography>
+                <Stack direction="row" color="gray.700" alignItems="center" mt={2}>
+                  <GroupSvg size={20} mr={1} />
+                  <Typography variant="h5">{isLoading ? skeleton : "NHÂN SỰ"}</Typography>
                 </Stack>
+
+                {Object.keys(responsible).map((key) => (
+                  <Stack key={key} direction="row" mt={2}>
+                    <Typography variant="strong" color="gray.500" flexBasis="28%">
+                      {key}:
+                    </Typography>
+                    <Stack>
+                      {responsible[key].map((email) => (
+                        <Typography variant="regular">
+                          <Link href={`/UserDetail/${email}`} key={email} mb={1}>
+                            {email}
+                          </Link>
+                        </Typography>
+                      ))}
+                    </Stack>
+                  </Stack>
+                ))}
               </Stack>
             </Stack>
-
-            <Typography variant="strong">Cập nhật lần cuối: {isLoading ? skeleton : last_update}</Typography>
           </Stack>
 
           <Stack>
@@ -92,7 +108,7 @@ function CertificateDetails() {
               LeftIcon={ModeSvg}
               onClick={() => {
                 navigate("Edit", {
-                  state: certificate,
+                  state: administration,
                 });
               }}
               sx={{ marginBottom: 2 }}
@@ -105,7 +121,7 @@ function CertificateDetails() {
               LeftIcon={DeleteSvg}
               onClick={() => {
                 navigate("Delete", {
-                  state: certificate,
+                  state: administration,
                 });
               }}
             >
@@ -121,4 +137,4 @@ function CertificateDetails() {
   );
 }
 
-export default CertificateDetails;
+export default AdministrationDetails;

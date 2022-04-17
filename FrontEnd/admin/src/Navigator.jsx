@@ -19,8 +19,6 @@ import EditGroceryModal from "views/GroceryManagement/Modals/EditGroceryModal";
 import DeleteGroceryModal from "views/GroceryManagement/Modals/DeleteGroceryModal";
 import GroceryDetails from "views/GroceryManagement/GroceryDetails";
 import CertificateDetails from "views/CertificateManagement/CertificateDetails";
-
-import { connectAppContext } from "./contexts/appContext/appContext";
 import InspectionSchedulesManagement from "views/InspectionScheduleManagement/InspectionSchedulesManagement";
 import AdministrationsManagement from "views/AdministrationManagement/AdministrationsManagement";
 import NotificationsManagement from "views/NotificationManagement/NotificationsManagement";
@@ -29,6 +27,12 @@ import PostsManagement from "views/PostManagement/PostsManagement";
 import EditPostModal from "views/PostManagement/Modals/EditPostModal";
 import AddNewPostModal from "views/PostManagement/Modals/AddNewPostModal";
 import DeletePostModal from "views/PostManagement/Modals/DeletePostModal";
+import AddNewAdministrationModal from "views/AdministrationManagement/Modals/AddNewAdministrationModal";
+import DeleteAdministrationModal from "views/AdministrationManagement/Modals/DeleteAdministrationModal";
+import EditAdministrationModal from "views/AdministrationManagement/Modals/EditAdministrationModal";
+
+import { connectAppContext } from "./contexts/appContext/appContext";
+import AdministrationDetails from "views/AdministrationManagement/AdministrationDetails";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -81,14 +85,14 @@ function Navigator({ appContext }) {
             </Route> */}
 
             <Route path="AdministrationsManagement" element={<AdministrationsManagement />}>
-              {/* <Route path=":name" element={<EditCertificateModal />} />
-              <Route path="Add" element={<AddNewCertificateModal />} />
-              <Route path="Delete" element={<DeleteCertificateModal />} /> */}
+              <Route path=":_id" element={<EditAdministrationModal />} />
+              <Route path="Add" element={<AddNewAdministrationModal />} />
+              <Route path="Delete" element={<DeleteAdministrationModal />} />
             </Route>
-            {/* <Route path="CertificateDetail/:name" element={<CertificateDetails />}>
-              <Route path="Edit" element={<EditCertificateModal />} />
-              <Route path="Delete" element={<DeleteCertificateModal />} />
-            </Route> */}
+            <Route path="AdministrationDetail/:_id" element={<AdministrationDetails />}>
+              <Route path="Edit" element={<EditAdministrationModal />} />
+              <Route path="Delete" element={<DeleteAdministrationModal />} />
+            </Route>
 
             <Route path="PostsManagement" element={<PostsManagement />}>
               <Route path=":_id" element={<EditPostModal />} />

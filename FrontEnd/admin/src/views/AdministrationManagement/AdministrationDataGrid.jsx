@@ -1,4 +1,4 @@
-import { Paper } from "@mui/material";
+import { Link, Paper, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,6 +28,22 @@ const headers = [
     headerName: "CHỨC VỤ",
     minWidth: 200,
     color: "gray.500",
+    transform: function (responsible) {
+      return Object.keys(responsible).map((key) => (
+        <Stack key={key}>
+          <Stack direction="row">
+            <Typography variant="regular" color="gray.500">
+              {key}:&nbsp;
+            </Typography>
+            {responsible[key].map((email) => (
+              <Link href={`/UserDetail/${email}`} key={email} mr={1}>
+                {email}
+              </Link>
+            ))}
+          </Stack>
+        </Stack>
+      ));
+    },
   },
 ];
 
@@ -47,23 +63,23 @@ function AdministrationDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
 
     console.log(query);
 
-    // request
-    //   .get(`certificate`, {
-    //     params: {
-    //       offset: dataBegin,
-    //       limit: rowsPerPage,
-    //       value: query,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setData(res.data.result);
-    //     setNumRecords(res.data.records);
-    //     setIsLoading(false);
-    //   });
+    request
+      .get(`administration/read`, {
+        params: {
+          offset: dataBegin,
+          limit: rowsPerPage,
+          value: query,
+        },
+      })
+      .then((res) => {
+        setData(res.data.data);
+        setNumRecords(res.data.total_page);
+        setIsLoading(false);
+      });
   };
 
   const handleAdministrationRowClicked = (row) => {
-    navigate(`/AdministrationDetail/${row.id}`);
+    navigate(`/AdministrationDetail/${row._id}`);
   };
 
   const actionButtons = [
@@ -71,7 +87,7 @@ function AdministrationDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       IconComponent: CreateSvg,
       color: "blue.500",
       handleClicked: (row) => {
-        navigate(row.name, {
+        navigate(row._id, {
           state: row,
         });
       },
