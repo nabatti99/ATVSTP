@@ -72,11 +72,11 @@ def administration_create():
         return response_status(fail_status, "Data error")
     new_administration = ad(name=data['name'],
                           phone_number=data['phone_number'],
-                          responsible=[])
+                          responsible=data['responsible'])
 
     try:
         administration_collection.insert_one(new_administration.to_dict())
-        response_status(success_status, new_administration.to_dict())
+        return response_status(success_status, new_administration.to_dict())
     except Exception as e:
         return {'Type Error': e}, 400
 
@@ -92,7 +92,7 @@ def administration_update():
         return response_status(fail_status, "Data not exist")
     new_administration = ad(name=data['name'],
                           phone_number=data['phone_number'],
-                          responsible=item_update['responsible'])
+                          responsible=data['responsible'])
     filter_update = {'_id': item_update['_id']}
     new_value = {"$set": new_administration.to_dict()}
     try:
