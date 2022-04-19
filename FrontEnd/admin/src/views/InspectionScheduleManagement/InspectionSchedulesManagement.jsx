@@ -4,6 +4,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 import InspectionScheduleSearchBar from "./InspectionScheduleSearchBar";
 import InspectionScheduleDataGrid from "./InspectionScheduleDataGrid";
+import { exportDate } from "utilities/formatDate";
 
 function InspectionSchedulesManagement() {
   // Handle table events
@@ -14,9 +15,19 @@ function InspectionSchedulesManagement() {
   };
 
   // Handle search bar events
-  const [query, setQuery] = useState("");
-  const handleChanged = (keyword) => {
-    setQuery(keyword);
+  const defaultStartDate = new Date();
+  defaultStartDate.setMonth(new Date().getMonth() - 3);
+
+  const defaultEndDate = new Date();
+  defaultEndDate.setMonth(new Date().getMonth() + 3);
+
+  const [query, setQuery] = useState({
+    dateStart: exportDate(defaultStartDate),
+    dateEnd: exportDate(defaultEndDate),
+    isDraft: true,
+  });
+  const handleChanged = (newQuery) => {
+    setQuery(newQuery);
 
     setShouldTableUpdate(true);
   };
@@ -36,7 +47,7 @@ function InspectionSchedulesManagement() {
         Quản lí Kế hoạch thanh tra
       </Typography>
 
-      <InspectionScheduleSearchBar onChange={handleChanged} />
+      <InspectionScheduleSearchBar query={query} onChange={handleChanged} />
 
       <InspectionScheduleDataGrid
         shouldTableUpdate={shouldTableUpdate}

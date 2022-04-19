@@ -13,6 +13,7 @@ import {
   NAME_CHANGE,
   PHONE_CHANGE,
   profileReducer,
+  ROLE_CHANGE,
   TYPE_MANAGER,
 } from "./profileReducer";
 
@@ -30,6 +31,7 @@ function AddNewProfileModal() {
     type_manager: "",
     avatar: "",
     work_from: "",
+    role: "",
   });
 
   // Handle Data modified
@@ -72,6 +74,13 @@ function AddNewProfileModal() {
     dispatch({
       type: PHONE_CHANGE,
       phone,
+    });
+  };
+
+  const handleRoleChanged = (role) => {
+    dispatch({
+      type: ROLE_CHANGE,
+      role,
     });
   };
 
@@ -134,6 +143,7 @@ function AddNewProfileModal() {
       onAddressChange={handleAddressChanged}
       onAddressWorkFromChange={handleAddressWorkFromChanged}
       onAvatarChange={handleAvatarChanged}
+      onRoleChange={handleRoleChanged}
     />
   );
 }

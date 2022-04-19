@@ -2,8 +2,9 @@ import { Paper, Stack, TextField, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { exportDate, importDate } from "utilities/formatDate";
 
-function InspectionScheduleSearchBar({ onChange }) {
+function InspectionScheduleSearchBar({ query = {}, onChange = () => {} }) {
   return (
     <Paper elevation={2}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -13,7 +14,10 @@ function InspectionScheduleSearchBar({ onChange }) {
           </Typography>
           <DatePicker
             label="THỜI GIAN BẮT ĐẦU"
-            onChange={(value) => {}}
+            onChange={(value) => {
+              onChange({ ...query, dateStart: exportDate(new Date(value)) });
+            }}
+            value={importDate(query.dateStart)}
             renderInput={(params) => <TextField sx={{ marginRight: 2 }} {...params} />}
           />
           <Typography color="gray.700" variant="regular" mr={2}>
@@ -21,7 +25,10 @@ function InspectionScheduleSearchBar({ onChange }) {
           </Typography>
           <DatePicker
             label="THỜI GIAN KẾT THÚC"
-            onChange={(value) => {}}
+            onChange={(value) => {
+              onChange({ ...query, dateEnd: exportDate(new Date(value)) });
+            }}
+            value={importDate(query.dateEnd)}
             renderInput={(params) => <TextField sx={{ marginRight: 2 }} {...params} />}
           />
         </Stack>

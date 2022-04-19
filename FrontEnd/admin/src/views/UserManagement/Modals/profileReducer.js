@@ -3,6 +3,7 @@ export const EMAIL_CHANGE = "EMAIL_CHANGE";
 export const TYPE_MANAGER = "TYPE_MANAGER";
 export const PHONE_CHANGE = "PHONE_CHANGE";
 export const ADDRESS_CHANGE = "ADDRESS_CHANGE";
+export const ROLE_CHANGE = "ROLE_CHANGE";
 export const ADDRESS_WORK_FROM_CHANGE = "ADDRESS_WORK_FROM_CHANGE";
 export const AVATAR_CHANGE = "AVATAR_CHANGE";
 
@@ -42,6 +43,12 @@ export function profileReducer(state, action) {
       return {
         ...state,
         work_from: action.addressWorkFrom,
+      };
+
+    case ROLE_CHANGE:
+      return {
+        ...state,
+        role: action.role,
       };
 
     case AVATAR_CHANGE:

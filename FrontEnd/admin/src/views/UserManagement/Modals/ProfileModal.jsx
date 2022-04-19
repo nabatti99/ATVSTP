@@ -1,5 +1,6 @@
 import { Box, Button, debounce, MenuItem, Stack, TextField, Typography } from "@mui/material";
-import { useRef, useState } from "react";
+import useRequest from "hooks/useRequest";
+import { useEffect, useRef, useState } from "react";
 import AppModal from "../../../components/AppModal";
 import Image from "../../../components/Image";
 import { ADD_NEW_PROFILE, EDIT_PROFILE } from "./profileActionTypes";
@@ -16,9 +17,11 @@ function ProfileModal({
   onPhoneChange = () => {},
   onAddressChange = () => {},
   onAddressWorkFromChange = () => {},
+  onRoleChange = () => {},
   onAvatarChange = () => {},
   onOkButtonClick = () => {},
 }) {
+  const request = useRequest();
   const avatarFileRef = useRef();
 
   // Make event debounced
@@ -26,7 +29,6 @@ function ProfileModal({
   const handleEmailChangedDebounced = debounce(onEmailChange, 1000);
   const handlePhoneChangedDebounced = debounce(onPhoneChange, 1000);
   const handleAddressChangedDebounced = debounce(onAddressChange, 1000);
-  const handleAddressWorkFromChangedDebounced = debounce(onAddressWorkFromChange, 1000);
 
   // Handle Events
   function handleChooseFileButtonClicked() {
@@ -48,6 +50,21 @@ function ProfileModal({
     shouldEnableEmail: true,
   };
 
+  // Handle Administrations
+  const [availableAdministrations, setAvailableAdministrations] = useState([]);
+  useEffect(() => {
+    request
+      .get("administration/read", {
+        params: {
+          offset: 0,
+          limit: 1000,
+        },
+      })
+      .then((res) => {
+        setAvailableAdministrations(res.data.data);
+      });
+  }, []);
+
   switch (modalType) {
     case ADD_NEW_PROFILE:
       renderInfo.title = "Thêm mới người dùng";
@@ -62,7 +79,7 @@ function ProfileModal({
       throw new Error("Lệnh không đúng");
   }
 
-  const { avatar, name, email, type_manager, phone, address, work_from, image_url } = profileData;
+  const { avatar, name, email, type_manager, phone, address, work_from, role, image_url } = profileData;
   const imageSrc = (avatar && URL.createObjectURL(avatar)) || image_url;
 
   return (
@@ -114,12 +131,34 @@ function ProfileModal({
           defaultValue={address}
         />
         <TextField
-          label="ĐỊA CHỈ LÀM VIỆC"
+          label="LÀM VIỆC TẠI"
+          select
           variant="standard"
           sx={{ marginBottom: 4 }}
-          onChange={(event) => handleAddressWorkFromChangedDebounced(event.target.value)}
-          defaultValue={work_from}
-        />
+          onChange={(event) => onAddressWorkFromChange(event.target.value)}
+          value={work_from}
+        >
+          {availableAdministrations.map(({ name }) => (
+            <MenuItem key={name} value={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          label="CHỨC VỤ"
+          select
+          variant="standard"
+          sx={{ marginBottom: 4 }}
+          onChange={(event) => onRoleChange(event.target.value)}
+          value={role}
+        >
+          {["Giám đốc", "Phó giám đốc", "Thanh tra viên"].map((name) => (
+            <MenuItem key={name} value={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </TextField>
         <Stack>
           <Typography variant="strong" color="gray.500">
             AVATAR

@@ -12,6 +12,7 @@ import {
   NAME_CHANGE,
   PHONE_CHANGE,
   profileReducer,
+  ROLE_CHANGE,
 } from "./profileReducer";
 
 function EditProfileModal() {
@@ -50,6 +51,13 @@ function EditProfileModal() {
     dispatch({
       type: PHONE_CHANGE,
       phone,
+    });
+  };
+
+  const handleRoleChanged = (role) => {
+    dispatch({
+      type: ROLE_CHANGE,
+      role,
     });
   };
 
@@ -110,6 +118,7 @@ function EditProfileModal() {
       onAddressChange={handleAddressChanged}
       onAddressWorkFromChange={handleAddressWorkFromChanged}
       onAvatarChange={handleAvatarChanged}
+      onRoleChange={handleRoleChanged}
     />
   );
 }

@@ -9,7 +9,7 @@ import AlarmOnSvg from "../../components/Icons/AlarmOnSvg";
 import Image from "../../components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
-import { DELETE_CERTIFICATE } from "./Modals/certificateActionTypes";
+import { DELETE_CERTIFICATE } from "./Modals/inspectionScheduleActionTypes";
 
 function CertificateDetails() {
   const request = useRequest();

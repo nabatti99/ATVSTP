@@ -33,6 +33,8 @@ import EditAdministrationModal from "views/AdministrationManagement/Modals/EditA
 
 import { connectAppContext } from "./contexts/appContext/appContext";
 import AdministrationDetails from "views/AdministrationManagement/AdministrationDetails";
+import AddNewInspectionScheduleModal from "views/InspectionScheduleManagement/Modals/AddNewInspectionScheduleModal";
+import EditInspectionScheduleModal from "views/InspectionScheduleManagement/Modals/EditInspectionScheduleModal";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -75,9 +77,9 @@ function Navigator({ appContext }) {
             </Route>
 
             <Route path="InspectionSchedulesManagement" element={<InspectionSchedulesManagement />}>
-              {/* <Route path=":name" element={<EditCertificateModal />} />
-              <Route path="Add" element={<AddNewCertificateModal />} />
-              <Route path="Delete" element={<DeleteCertificateModal />} /> */}
+              <Route path=":name" element={<EditInspectionScheduleModal />} />
+              <Route path="Add" element={<AddNewInspectionScheduleModal />} />
+              {/* <Route path="Delete" element={<DeleteCertificateModal />} /> */}
             </Route>
             {/* <Route path="CertificateDetail/:name" element={<CertificateDetails />}>
               <Route path="Edit" element={<EditCertificateModal />} />

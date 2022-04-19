@@ -1,4 +1,4 @@
-import { Paper } from "@mui/material";
+import { Link, Paper, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,12 +9,13 @@ import CreateSvg from "../../components/Icons/CreateSvg";
 import AddSvg from "../../components/Icons/AddSvg";
 
 import useRequest from "../../hooks/useRequest";
+import { exportDate } from "utilities/formatDate";
 
 const headers = [
   {
     field: "schedule",
     headerName: "THỜI GIAN",
-    minWidth: 100,
+    minWidth: 120,
     color: "gray.500",
   },
   {
@@ -28,6 +29,17 @@ const headers = [
     headerName: "ĐƠN VỊ CẦN THANH TRA",
     minWidth: 200,
     color: "gray.500",
+    transform: function (groceries) {
+      return (
+        <Stack>
+          {groceries.map((grocery) => (
+            <Typography variant="regular" mb={1} key={grocery}>
+              {grocery}
+            </Typography>
+          ))}
+        </Stack>
+      );
+    },
   },
 
   {
@@ -35,6 +47,17 @@ const headers = [
     headerName: "PHÂN CÔNG",
     minWidth: 150,
     color: "gray.500",
+    transform: function (inspectors) {
+      return (
+        <Stack>
+          {inspectors.map((email) => (
+            <Typography variant="regular" mb={1} key={email}>
+              <Link href={`/UserDetail/${email}`}>{email}</Link>
+            </Typography>
+          ))}
+        </Stack>
+      );
+    },
   },
   {
     field: "updated_by",
@@ -60,19 +83,22 @@ function InspectionScheduleDataGrid({ shouldTableUpdate, query, onTableUpdate })
 
     console.log(query);
 
-    // request
-    //   .get(`certificate`, {
-    //     params: {
-    //       offset: dataBegin,
-    //       limit: rowsPerPage,
-    //       value: query,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setData(res.data.result);
-    //     setNumRecords(res.data.records);
-    //     setIsLoading(false);
-    //   });
+    request
+      .get(`inspection_schedule`, {
+        params: {
+          offset: dataBegin,
+          limit: rowsPerPage,
+          date_start: query.dateStart,
+          date_end: query.dateEnd,
+          is_draft: query.isDraft,
+        },
+      })
+      .then((res) => {
+        const result = res.data.result.map((item) => ({ ...item, schedule: exportDate(new Date(item.schedule)) }));
+        setData(result);
+        setNumRecords(res.data.records);
+        setIsLoading(false);
+      });
   };
 
   const handleInspectionScheduleRowClicked = (row) => {
@@ -84,7 +110,7 @@ function InspectionScheduleDataGrid({ shouldTableUpdate, query, onTableUpdate })
       IconComponent: CreateSvg,
       color: "blue.500",
       handleClicked: (row) => {
-        navigate(row.name, {
+        navigate(row._id, {
           state: row,
         });
       },

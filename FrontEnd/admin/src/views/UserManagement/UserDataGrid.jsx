@@ -9,6 +9,8 @@ import CreateSvg from "../../components/Icons/CreateSvg";
 import AddSvg from "../../components/Icons/AddSvg";
 
 import useRequest from "../../hooks/useRequest";
+import { connectAppContext } from "contexts/appContext/appContext";
+import { updateAccessToken } from "contexts/appContext/appActions";
 
 const headers = [
   {
@@ -61,7 +63,7 @@ const headers = [
   },
 ];
 
-function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
+function UserDataGrid({ shouldTableUpdate, query, onTableUpdate, appContext, dispatch }) {
   const request = useRequest();
   const navigate = useNavigate();
 
@@ -93,6 +95,15 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
         setData(res.data.result);
         setNumRecords(res.data.records);
         setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        if (err.response.status == 401) {
+          dispatch(updateAccessToken(null));
+          navigate("/Login", {
+            replace: true,
+          });
+        }
       });
   };
 
@@ -145,4 +156,4 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
   );
 }
 
-export default UserDataGrid;
+export default connectAppContext(UserDataGrid);
