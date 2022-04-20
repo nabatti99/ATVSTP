@@ -1,6 +1,5 @@
 from datetime import time
 from routes import app, manager_required
-from bson import ObjectId
 from flask import request
 import time
 from .pagination import pagination
@@ -60,17 +59,22 @@ def create_certificate(current_manager=None):
     data = request.get_json()
     seconds = time.time()
     last_update_time = time.ctime(seconds)
-    new_certificate = Certificate(name=data['name'],
-                                  manager=data['manager'],
-                                  effective_time=data['effective_time'],
-                                  last_update=last_update_time)
-    try:
-        certificate_collection.insert_one(new_certificate.to_dict())
-        return {'Status': 'Success',
-                'Message': 'Add successfully'}
-    except Exception as e:
+    logger = check_input(data)
+    if not logger:
+        new_certificate = Certificate(name=data['name'],
+                                      manager=data['manager'],
+                                      effective_time=data['effective_time'],
+                                      last_update=last_update_time)
+        try:
+            certificate_collection.insert_one(new_certificate.to_dict())
+            return {'Status': 'Success',
+                    'Message': 'Add successfully'}
+        except Exception as e:
+            return {'Status': 'Fail',
+                    'Message': 'Can not insert data'}, 400
+    else:
         return {'Status': 'Fail',
-                'Message': 'Can not insert data'}, 400
+                'Message': logger}, 401
 
 
 @app.route('/certificate/<string:certificate_name>', methods=["PUT"])
@@ -124,3 +128,24 @@ def load_image_certificate(current_manager=None, name: str = ''):
         print(e)
         return {'Status': 'Fail',
                 'Message': 'Have some error'}, 400
+
+
+def check_input(new_certificate):
+    logger = {}
+    try:
+        new_certificate['name']
+    except:
+        logger['name'] = "No name"
+
+    try:
+        new_certificate['manager']
+    except:
+        logger['manager'] = "No manager"
+
+    try:
+        new_certificate['effective_time']
+    except:
+        logger['effective_time'] = "No effective time"
+
+    return logger
+

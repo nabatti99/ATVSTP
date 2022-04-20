@@ -23,12 +23,10 @@ def get_grocery(current_manager=None):
         if all_groceries:
             for gr in all_groceries:
                 list_groceries.append(gr)
-            records = int(len(list_groceries) / limit) + (len(list_groceries) % limit > 0)
             return pagination(path_dir=f'/grocery/search',
                               offset=offset,
                               limit=limit,
                               value=search_value,
-                              records=records,
                               list_database=list_groceries)
         else:
             return {'Status': 'Fail',
@@ -58,20 +56,25 @@ def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
 @manager_required("level_one")
 def add_grocery(current_manager=None):
     data = request.get_json()
-    new_grocery = Grocery(name=data['name'],
-                          owner=data['owner'],
-                          phone_number=data['phone_number'],
-                          address=data['address'],
-                          item=data['item'],
-                          status=data['status'],
-                          certificate=data['certificate'])
-    try:
-        grocery_collection.insert_one(new_grocery.to_dict())
-        return {'Status': 'Success',
-                'Message': 'Add successfully'}
-    except Exception as e:
+    logger = check_input(data)
+    if not logger:
+        new_grocery = Grocery(name=data['name'],
+                              owner=data['owner'],
+                              phone_number=data['phone_number'],
+                              address=data['address'],
+                              item=data['item'],
+                              status=data['status'],
+                              certificate=data['certificate'])
+        try:
+            grocery_collection.insert_one(new_grocery.to_dict())
+            return {'Status': 'Success',
+                    'Message': 'Add successfully'}
+        except Exception as e:
+            return {'Status': 'Fail',
+                    'Message': 'Can not insert data'}, 400
+    else:
         return {'Status': 'Fail',
-                'Message': 'Can not insert data'}, 400
+                'Message': logger}, 401
 
 
 @app.route('/grocery/<string:grocery_name>', methods=['PUT'])
@@ -134,5 +137,41 @@ def load_image_grocery(current_manager=None, name: str = ''):
     except Exception as e:
         return {'Status': 'Fail',
                 'Message': e}, 400
+
+
+def check_input(new_grocery):
+    logger = {}
+    try:
+        new_grocery['name']
+    except:
+        logger['name'] = 'No name'
+    try:
+        new_grocery['owner']
+    except:
+        logger['owner'] = 'No owner'
+    try:
+        new_grocery['phone_number']
+    except:
+        logger['phone_number'] = 'No phone number'
+    try:
+        new_grocery['address']
+    except:
+        logger['address'] = 'No address'
+    try:
+        new_grocery['status']
+    except:
+        logger['status'] = 'No status'
+    try:
+        new_grocery['item']
+    except:
+        logger['item'] = 'No item'
+    try:
+        new_grocery['certificate']
+    except:
+        logger['certificate'] = 'No certificate'
+    return logger
+
+
+
 
 
