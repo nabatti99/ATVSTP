@@ -27,5 +27,5 @@ class InspectionSchedule:
             'assigned_to': self.__assigned_to,
             'schedule': self.__schedule,
             'updated_by': self.__updated_by,
-            'is_dratf': self.__is_draft
+            'is_draft': self.__is_draft
         }
