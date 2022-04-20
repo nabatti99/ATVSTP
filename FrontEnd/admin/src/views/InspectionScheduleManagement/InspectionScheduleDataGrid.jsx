@@ -17,6 +17,9 @@ const headers = [
     headerName: "THỜI GIAN",
     minWidth: 120,
     color: "gray.500",
+    transform: function (schedule) {
+      return exportDate(new Date(schedule));
+    },
   },
   {
     field: "authority",
@@ -94,15 +97,14 @@ function InspectionScheduleDataGrid({ shouldTableUpdate, query, onTableUpdate })
         },
       })
       .then((res) => {
-        const result = res.data.result.map((item) => ({ ...item, schedule: exportDate(new Date(item.schedule)) }));
-        setData(result);
+        setData(res.data.result);
         setNumRecords(res.data.records);
         setIsLoading(false);
       });
   };
 
   const handleInspectionScheduleRowClicked = (row) => {
-    navigate(`/InspectionScheduleDetail/${row.id}`);
+    navigate(`/InspectionScheduleDetail/${row._id}`);
   };
 
   const actionButtons = [

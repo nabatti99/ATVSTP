@@ -114,7 +114,7 @@ function AddNewProfileModal() {
               },
             })
         )
-        .then(() =>
+        .finally(() =>
           navigate("../", {
             replace: true,
             state: {

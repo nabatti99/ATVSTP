@@ -27,7 +27,7 @@ function EditInspectionScheduleModal() {
   const handleScheduleChanged = (schedule) => {
     dispatch({
       type: SCHEDULE_CHANGE,
-      schedule: exportDate(new Date(schedule)),
+      schedule: schedule,
     });
   };
 
@@ -65,7 +65,10 @@ function EditInspectionScheduleModal() {
   const handleModalClosed = () => {
     if (isSubmitted)
       request
-        .put(`inspection_schedule/${state._id}`, inspectionScheduleData)
+        .put(`inspection_schedule/${state._id}`, {
+          ...inspectionScheduleData,
+          schedule: exportDate(inspectionScheduleData.schedule),
+        })
         .then(() =>
           navigate("../", {
             replace: true,

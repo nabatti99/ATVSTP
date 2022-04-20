@@ -29,7 +29,7 @@ function CertificateDetails() {
   const getCertificate = async () => {
     setIsLoading(true);
     const { data } = await request.get(`certificate/${name}`);
-    setCertificate(data);
+    setCertificate(data.Certificate);
     setIsLoading(false);
   };
 
@@ -83,7 +83,9 @@ function CertificateDetails() {
               </Stack>
             </Stack>
 
-            <Typography variant="strong">Cập nhật lần cuối: {isLoading ? skeleton : last_update}</Typography>
+            <Typography variant="strong" mt={2}>
+              Cập nhật lần cuối: {isLoading ? skeleton : last_update}
+            </Typography>
           </Stack>
 
           <Stack>

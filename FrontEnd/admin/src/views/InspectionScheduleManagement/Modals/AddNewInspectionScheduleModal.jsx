@@ -24,7 +24,7 @@ function AddNewInspectionScheduleModal() {
     groceries: [],
     content: "",
     assigned_to: [],
-    schedule: exportDate(new Date()),
+    schedule: new Date(),
     updated_by: "",
     is_draft: true,
   });
@@ -71,7 +71,10 @@ function AddNewInspectionScheduleModal() {
   const handleModalClosed = () => {
     if (isSubmitted)
       request
-        .post("inspection_schedule", inspectionScheduleData)
+        .post("inspection_schedule", {
+          ...inspectionScheduleData,
+          schedule: exportDate(inspectionScheduleData.schedule),
+        })
         .then(() =>
           navigate("../", {
             replace: true,

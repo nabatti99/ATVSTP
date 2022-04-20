@@ -50,7 +50,12 @@ function UserDetails() {
         return;
       }
 
-      getProfile();
+      getProfile().catch((err) => {
+        console.log(err.response);
+        navigate("/NotFound", {
+          replace: true,
+        });
+      });
     }
   }, [state]);
 

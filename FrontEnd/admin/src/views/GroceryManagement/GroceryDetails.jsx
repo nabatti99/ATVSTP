@@ -33,7 +33,7 @@ function GroceryDetails() {
   const getGrocery = async () => {
     setIsLoading(true);
     const { data } = await request.get(`grocery/${name}`);
-    setGrocery(data);
+    setGrocery(data.Grocery);
     setIsLoading(false);
   };
 
@@ -78,9 +78,16 @@ function GroceryDetails() {
                   {isLoading ? (
                     skeleton
                   ) : (
-                    <Box bgcolor="green.100" py={1} px={2}>
+                    <Typography
+                      bgcolor={status == "active" ? "green.100" : "red.100"}
+                      color={status == "active" ? "green.500" : "red.500"}
+                      borderRadius="20px"
+                      py={1}
+                      px={2}
+                      variant="small"
+                    >
                       {status == "active" ? "Đang hoạt động" : "Ngừng hoạt động"}
-                    </Box>
+                    </Typography>
                   )}
                 </Stack>
 
@@ -103,9 +110,18 @@ function GroceryDetails() {
               {isLoading
                 ? skeleton
                 : item.map((_item) => (
-                    <Box key={_item.name} bgcolor={_item.is_allowed ? "green.100" : "red.100"} px={1} mr={1}>
+                    <Typography
+                      key={_item.name}
+                      bgcolor={_item.is_allowed ? "green.100" : "red.100"}
+                      color={_item.is_allowed ? "green.500" : "red.500"}
+                      variant="small"
+                      py="2px"
+                      px={1}
+                      borderRadius="16px"
+                      mr={1}
+                    >
                       {_item.name}
-                    </Box>
+                    </Typography>
                   ))}
             </Stack>
 
@@ -116,9 +132,18 @@ function GroceryDetails() {
               {isLoading
                 ? skeleton
                 : certificate.map((_certificate) => (
-                    <Box key={_certificate.name} bgcolor="green.100" px={1} mr={1}>
+                    <Typography
+                      key={_certificate.name}
+                      bgcolor="green.100"
+                      color="green.500"
+                      variant="small"
+                      py="2px"
+                      px={1}
+                      borderRadius="16px"
+                      mr={1}
+                    >
                       {_certificate.name}
-                    </Box>
+                    </Typography>
                   ))}
             </Stack>
           </Stack>

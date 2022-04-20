@@ -17,7 +17,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import CloseSvg from "components/Icons/CloseSvg";
 import useRequest from "hooks/useRequest";
 import { useEffect, useRef, useState } from "react";
-import { importDate } from "utilities/formatDate";
+import { exportDate, importDate } from "utilities/formatDate";
 import AppModal from "../../../components/AppModal";
 import { ADD_NEW_SCHEDULE, EDIT_SCHEDULE } from "./inspectionScheduleActionTypes";
 
@@ -35,78 +35,56 @@ function InspectionScheduleModal({
 }) {
   const request = useRequest();
 
-  // Make event debounced
-  // const handleScheduleChangedDebounced = debounce(onScheduleChange, 1000);
-
   // Handle Authorities
   const [availableAuthorities, setAvailableAuthorities] = useState([]);
   useEffect(() => {
-    // request
-    //   .get("administration/read", {
-    //     params: {
-    //       offset: 0,
-    //       limit: 1000,
-    //       value: "",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setAvailableAuthorities(res.data.result);
-    //   });
-    setAvailableAuthorities([
-      {
-        name: "A1",
-      },
-      {
-        name: "A2",
-      },
-      {
-        name: "A3",
-      },
-    ]);
+    request
+      .get("administration/read", {
+        params: {
+          offset: 0,
+          limit: 1000,
+          value: "",
+        },
+      })
+      .then((res) => {
+        setAvailableAuthorities(res.data.data);
+      });
   }, []);
 
   // Handle Groceries
   const [availableGroceries, setAvailableGroceries] = useState([]);
   useEffect(() => {
-    // request
-    //   .get("grocery", {
-    //     params: {
-    //       offset: 0,
-    //       limit: 1000,
-    //       value: "",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setAvailableGroceries(res.data.result);
-    //   });
-    setAvailableGroceries([
-      {
-        name: "G1",
-      },
-      {
-        name: "G2",
-      },
-      {
-        name: "G3",
-      },
-    ]);
+    request
+      .get("grocery", {
+        params: {
+          offset: 0,
+          limit: 1000,
+          value: "",
+        },
+      })
+      .then((res) => {
+        setAvailableGroceries(res.data.result);
+      });
   }, []);
 
   // Handle Inspectors
   const [availableInspectors, setAvailableInspectors] = useState([]);
   useEffect(() => {
-    // request
-    //   .get("manager/get_all_manager", {
-    //     params: {
-    //       offset: 0,
-    //       limit: 1000,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setAvailableInspectors(res.data.result);
-    //   });
-
-    setAvailableInspectors([{ email: "admin@gmail.com" }, { email: "minh@gmail.com" }]);
+    request
+      .post(
+        `manager/search`,
+        {},
+        {
+          params: {
+            offset: 0,
+            limit: 1000,
+            value: "",
+          },
+        }
+      )
+      .then((res) => {
+        setAvailableInspectors(res.data.result);
+      });
   }, []);
 
   const renderInfo = {
@@ -131,7 +109,7 @@ function InspectionScheduleModal({
     groceries = [],
     content,
     assigned_to = [],
-    schedule = "",
+    schedule = new Date(),
     updated_by,
     is_draft = true,
   } = inspectionScheduleData;
@@ -147,8 +125,8 @@ function InspectionScheduleModal({
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <DatePicker
             label="THỜI GIAN"
-            value={importDate(schedule)}
-            onChange={(value) => onScheduleChange(value)}
+            value={schedule}
+            onChange={(value) => onScheduleChange(new Date(value))}
             renderInput={(params) => <TextField variant="standard" sx={{ marginRight: 2 }} {...params} />}
           />
         </LocalizationProvider>

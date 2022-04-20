@@ -1,5 +1,6 @@
 import { Box, Button, debounce, MenuItem, Stack, TextField, Typography } from "@mui/material";
-import { useRef, useState } from "react";
+import useRequest from "hooks/useRequest";
+import { useEffect, useRef, useState } from "react";
 import AppModal from "../../../components/AppModal";
 import Image from "../../../components/Image";
 import { ADD_NEW_CERTIFICATE, EDIT_CERTIFICATE } from "./certificateActionTypes";
@@ -16,11 +17,11 @@ function CertificateModal({
   onAvatarChange = () => {},
   onOkButtonClick = () => {},
 }) {
+  const request = useRequest();
   const avatarFileRef = useRef();
 
   // Make event debounced
   const handleNameChangedDebounced = debounce(onNameChange, 1000);
-  const handleManagerChangedDebounced = debounce(onManagerChange, 1000);
   const handleEffectiveTimeChangedDebounced = debounce(onEffectiveTimeChange, 1000);
 
   // Handle Events
@@ -37,6 +38,21 @@ function CertificateModal({
     onAvatarChange(files[0]);
     console.log(files[0]);
   }
+
+  // Handle Administrations
+  const [availableAdministrations, setAvailableAdministrations] = useState([]);
+  useEffect(() => {
+    request
+      .get("administration/read", {
+        params: {
+          offset: 0,
+          limit: 1000,
+        },
+      })
+      .then((res) => {
+        setAvailableAdministrations(res.data.data);
+      });
+  }, []);
 
   const renderInfo = {
     title: "",
@@ -79,10 +95,17 @@ function CertificateModal({
         <TextField
           label="ĐƠN VỊ PHÁT HÀNH"
           variant="standard"
+          select
           sx={{ marginBottom: 2 }}
-          onChange={(event) => handleManagerChangedDebounced(event.target.value)}
-          defaultValue={manager}
-        />
+          onChange={(event) => onManagerChange(event.target.value)}
+          value={manager}
+        >
+          {availableAdministrations.map(({ name }) => (
+            <MenuItem key={name} value={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
           label="THỜI GIAN HIỆU LỰC (THÁNG)"
           variant="standard"

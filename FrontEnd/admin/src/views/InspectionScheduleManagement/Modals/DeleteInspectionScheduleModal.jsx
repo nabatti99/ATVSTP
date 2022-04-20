@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import useRequest from "hooks/useRequest";
 import AppModal from "../../../components/AppModal";
+import { DELETE_SCHEDULE } from "./inspectionScheduleActionTypes";
 
 function DeleteInspectionScheduleModal() {
   const navigate = useNavigate();
@@ -22,10 +23,11 @@ function DeleteInspectionScheduleModal() {
 
   const handleModalClosed = () => {
     if (isSubmitted)
-      request.delete(`/certificate/${state.name}`).then(() =>
+      request.delete(`/inspection_schedule/${state._id}`).then(() =>
         navigate("../", {
           replace: true,
           state: {
+            action: DELETE_SCHEDULE,
             isSubmitted,
           },
         })
@@ -45,13 +47,13 @@ function DeleteInspectionScheduleModal() {
     >
       <Stack color="gray.500">
         <Typography variant="regular">
-          Bạn đang thực hiện xoá chứng nhận có tên là:&nbsp;
+          Bạn đang thực hiện xoá kế hoạch thanh tra được lên lịch vào ngày:&nbsp;
           <Typography component="span" variant="strong" color="gray.700">
-            {state.name}
+            {state.schedule}
           </Typography>
         </Typography>
         <Typography variant="regular" mt={1}>
-          Chứng nhận này sẽ không thể tiếp tục sử dụng được nữa. Bạn có muốn tiếp tục?
+          Kế hoạch này sẽ bị xoá vĩnh viễn khỏi hệ thống. Bạn có muốn tiếp tục?
         </Typography>
 
         <Stack justifyContent="flex-end" direction="row" mt={2}>
