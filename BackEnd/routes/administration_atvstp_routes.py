@@ -48,7 +48,7 @@ def administration_read():
             ]
         }).skip(offset).limit(int(row_limit))
     list_data = list(data)
-    result = {"data": list_data, "total_page": total_page}
+    result = {"data": list_data, "records": total_row}
     return result
 
 

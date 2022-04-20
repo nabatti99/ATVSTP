@@ -55,7 +55,7 @@ def feedback_read():
     list_data = list(data)
     if len(list_data) == 0:
         return {'result': 'no data'}
-    result = {"data": list_data, "total_page": total_page}
+    result = {"data": list_data, "records": total_row}
     return result
 
 
