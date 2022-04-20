@@ -36,8 +36,8 @@ def get_superior_reporting(current_manager=None):
 
         some_superior_reporting = superior_reporting.find({
             "updated_at": {
-                "$gte": datetime.strptime(date_start, '%d-%m-%Y'),
-                "$lte": datetime.strptime(date_end, '%d-%m-%Y'),
+                "$gte": datetime.strptime(date_start, '%Y-%m-%d'),
+                "$lte": datetime.strptime(date_end, '%Y-%m-%d'),
             },
             # 'is_draft': is_draft,
         })
@@ -71,7 +71,7 @@ def create_superior_reporting(current_manager=None):
         if loggers:
             return response_status(status=fail_status, message=loggers), 401
         else:
-            updated_at = datetime.strptime(current_time(), '%d-%m-%Y')
+            updated_at = datetime.strptime(current_time(), '%Y-%m-%d')
 
             new_report = SuperiorReporting(title=db['title'],
                                            writer=current_manager['email'],
@@ -102,7 +102,7 @@ def update_superior_reporting(current_manager=None, _id: str = ''):
         if loggers:
             return response_status(status=fail_status, message=loggers), 401
         else:
-            updated_at = datetime.strptime(current_time(), '%d-%m-%Y')
+            updated_at = datetime.strptime(current_time(), '%Y-%m-%d')
 
             current_report = SuperiorReporting(title=db['title'],
                                                writer=current_manager['email'],
@@ -182,4 +182,4 @@ def check_superior_reporting(db):
 
 
 def current_time():
-    return datetime.now().strftime("%d-%m-%Y")
+    return datetime.now().strftime("%Y-%m-%d")
