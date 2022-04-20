@@ -34,7 +34,7 @@ def create_an_inspection_schedule(current_manager=None):
             return response_status(status=fail_status, message=loggers), 401
         else:
             updated_by = f'{current_time()} by {current_manager["email"]}'
-            schedule = datetime.strptime(db['schedule'], '%d-%m-%Y')
+            schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
             new_inspection_schedule = InspectionSchedule(authority=db['authority'],
                                                          schedule=schedule,
                                                          groceries=db['groceries'],
@@ -64,8 +64,8 @@ def get_inspection_schedule(current_manager=None):
         is_draft = bool(request.args['is_draft'])
         some_inspection_schedule = inspection_schedule.find({
             "schedule": {
-                "$gte": datetime.strptime(date_start, '%d-%m-%Y'),
-                "$lte": datetime.strptime(date_end, '%d-%m-%Y'),
+                "$gte": datetime.strptime(date_start, '%Y-%m-%d'),
+                "$lte": datetime.strptime(date_end, '%Y-%m-%d'),
             },
             # 'is_draft': is_draft
         })
@@ -100,9 +100,9 @@ def update_inspection_schedule(current_manager=None, _id: str = ''):
             return response_status(status=fail_status, message=loggers), 401
         else:
             updated_by = f'{current_time()} by {current_manager["email"]}'
-
+            schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
             current_inspection_schedule = InspectionSchedule(authority=db['authority'],
-                                                             schedule=db['schedule'],
+                                                             schedule=schedule,
                                                              groceries=db['groceries'],
                                                              updated_by=updated_by,
                                                              assigned_to=db['assigned_to'],
@@ -172,4 +172,4 @@ def check_inspection_schedule(db):
 
 
 def current_time():
-    return datetime.now().strftime("%H:%M:%S %d-%m-%Y")
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S ")
