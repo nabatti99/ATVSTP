@@ -31,7 +31,6 @@ def feedback_read():
         return response_status(fail_status, "Format error from URL")
     total_row = feedback_collection.count_documents({})
     offset = getOffset(int(current_page), int(row_limit))
-    total_page = getTotalPage(total_row, int(row_limit))
     data = feedback_collection.find().skip(offset).limit(int(row_limit))
     # check xem co tim kiem khong
     search_value = data_from_client.get('value')
@@ -44,7 +43,6 @@ def feedback_read():
             ]
         })
         offset = getOffset(int(current_page), int(row_limit))
-        total_page = getTotalPage(total_row, int(row_limit))
         data = feedback_collection.find({
             "$or": [
                 {"fullname": {'$regex':search_value, '$options' : 'i'}},

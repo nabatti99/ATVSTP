@@ -23,12 +23,10 @@ def get_grocery(current_manager=None):
         if all_groceries:
             for gr in all_groceries:
                 list_groceries.append(gr)
-            records = int(len(list_groceries) / limit) + (len(list_groceries) % limit > 0)
             return pagination(path_dir=f'/grocery/search',
                               offset=offset,
                               limit=limit,
                               value=search_value,
-                              records=records,
                               list_database=list_groceries)
         else:
             return {'Status': 'Fail',

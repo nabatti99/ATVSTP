@@ -31,7 +31,6 @@ def information_read():
         return response_status(fail_status, "Format error from URL")
     total_row = information_collection.count_documents({})
     offset = getOffset(int(current_page), int(row_limit))
-    total_page = getTotalPage(total_row, int(row_limit))
     data = information_collection.find().skip(offset).limit(int(row_limit))
     # check xem co tim kiem khong
     search_value = data_from_client.get('value')
@@ -43,7 +42,6 @@ def information_read():
             ]
         })
         offset = getOffset(int(current_page), int(row_limit))
-        total_page = getTotalPage(total_row, int(row_limit))
         data = information_collection.find({
             "$or": [
                 {'title': {'$regex':search_value, '$options' : 'i'}},
