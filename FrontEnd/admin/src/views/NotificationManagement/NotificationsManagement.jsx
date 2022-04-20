@@ -2,11 +2,28 @@ import { useEffect, useState } from "react";
 import { Stack, Typography, Grid, Tabs, Tab, Paper, Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import NotificationTab from "./NotificationTab";
+import useRequest from "hooks/useRequest";
 
-const fakeData = [
-  {
-    tab: "NỘI BỘ",
-    notifications: [
+function NotificationsManagement() {
+  const request = useRequest();
+
+  const [privateNotifications, setPrivateNotifications] = useState([]);
+  const [feedbackNotifications, setFeedbackNotifications] = useState([]);
+
+  useEffect(() => {
+    request
+      .get("feedback/read", {
+        params: {
+          offset: 0,
+          limit: 1000,
+          value: "",
+        },
+      })
+      .then(({ data }) => {
+        setFeedbackNotifications(data.data);
+      });
+
+    setPrivateNotifications([
       {
         id: "ldd",
         title: "Thông báo họp tuần 32",
@@ -46,15 +63,20 @@ const fakeData = [
           },
         ],
       },
-    ],
-  },
-  {
-    tab: "NGƯỜI DÂN",
-    notifications: [],
-  },
-];
+    ]);
+  }, []);
 
-function NotificationsManagement() {
+  const data = [
+    {
+      tab: "NỘI BỘ",
+      notifications: privateNotifications,
+    },
+    {
+      tab: "NGƯỜI DÂN",
+      notifications: feedbackNotifications,
+    },
+  ];
+
   return (
     <Stack>
       <Typography variant="h4" color="gray.700" mb={4}>
@@ -64,7 +86,7 @@ function NotificationsManagement() {
       <Paper elevation={2} sx={{ borderRadius: 4 }}>
         <Grid container>
           <Grid item xs={3} bgcolor="blue.50" borderRight={1} borderColor="gray.300" height="80vh">
-            <NotificationTab data={fakeData} />
+            <NotificationTab data={data} />
           </Grid>
 
           <Grid item xs={9}>

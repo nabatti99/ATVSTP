@@ -5,7 +5,7 @@ import SendSvg from "components/Icons/SendSvg";
 import StarBorderSvg from "components/Icons/StarBorderSvg";
 import Notification from "components/Notification";
 
-function NotificationDetail() {
+function PrivateNotificationDetail() {
   return (
     <Stack height="100%">
       <Box py={3} px={4} borderBottom={1} borderColor="gray.300">
@@ -74,4 +74,4 @@ function NotificationDetail() {
   );
 }
 
-export default NotificationDetail;
+export default PrivateNotificationDetail;

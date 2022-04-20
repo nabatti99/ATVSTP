@@ -22,7 +22,7 @@ import CertificateDetails from "views/CertificateManagement/CertificateDetails";
 import InspectionSchedulesManagement from "views/InspectionScheduleManagement/InspectionSchedulesManagement";
 import AdministrationsManagement from "views/AdministrationManagement/AdministrationsManagement";
 import NotificationsManagement from "views/NotificationManagement/NotificationsManagement";
-import NotificationDetail from "views/NotificationManagement/NotificationDetail";
+import PrivateNotificationDetail from "views/NotificationManagement/PrivateNotificationDetail";
 import PostsManagement from "views/PostManagement/PostsManagement";
 import EditPostModal from "views/PostManagement/Modals/EditPostModal";
 import AddNewPostModal from "views/PostManagement/Modals/AddNewPostModal";
@@ -37,6 +37,7 @@ import AddNewInspectionScheduleModal from "views/InspectionScheduleManagement/Mo
 import EditInspectionScheduleModal from "views/InspectionScheduleManagement/Modals/EditInspectionScheduleModal";
 import InspectionScheduleDetails from "views/InspectionScheduleManagement/InspectionScheduleDetails";
 import DeleteInspectionScheduleModal from "views/InspectionScheduleManagement/Modals/DeleteInspectionScheduleModal";
+import FeedbackNotificationDetail from "views/NotificationManagement/FeedbackNotificationDetail";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -109,7 +110,8 @@ function Navigator({ appContext }) {
             </Route>
 
             <Route path="NotificationsManagement" element={<NotificationsManagement />}>
-              <Route path=":id" element={<NotificationDetail />} />
+              <Route path="Private/:id" element={<PrivateNotificationDetail />} />
+              <Route path="Feedback/:id" element={<FeedbackNotificationDetail />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

@@ -13,7 +13,7 @@ function Notification({ label = "", children, ...props }) {
           borderRadius="50%"
         >
           <Typography variant="regular" fontSize="1.5rem" color="white">
-            LD
+            {label}
           </Typography>
         </Stack>
       </Box>

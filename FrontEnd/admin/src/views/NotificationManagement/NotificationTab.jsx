@@ -15,8 +15,12 @@ function NotificationTab({ data = [] }) {
   const { id } = useParams();
 
   const navigate = useNavigate();
-  const handleNotificationClicked = (notificationId) => {
-    navigate(notificationId);
+  const handlePrivateNotificationClicked = (id) => {
+    navigate(`Private/${id}`);
+  };
+
+  const handleFeedbackNotificationClicked = (id) => {
+    navigate(`Feedback/${id}`);
   };
 
   return (
@@ -47,7 +51,7 @@ function NotificationTab({ data = [] }) {
                   sx={{
                     backgroundColor: id == notification.id ? "white" : "transparent",
                   }}
-                  onClick={() => handleNotificationClicked(notification.id)}
+                  onClick={() => handlePrivateNotificationClicked(notification.id)}
                 >
                   <Stack
                     key={notification.id}
@@ -89,7 +93,44 @@ function NotificationTab({ data = [] }) {
           })}
       </List>
 
-      {tabValue == 1 && null}
+      {tabValue == 1 &&
+        data[1].notifications.map(({ _id, content, create_at, department, email, fullname, phone_number }) => {
+          return (
+            <ListItem disablePadding disableGutters divider>
+              <ListItemButton
+                disableGutters
+                sx={{
+                  backgroundColor: id == _id ? "white" : "transparent",
+                }}
+                onClick={() => handleFeedbackNotificationClicked(_id)}
+              >
+                <Stack key={_id} width="100%" direction="row" alignItems="center" spacing={2} px={2} py={2}>
+                  <Stack
+                    width={52}
+                    height={52}
+                    justifyContent="center"
+                    alignItems="center"
+                    bgcolor="blue.500"
+                    borderRadius="50%"
+                  >
+                    <Typography variant="regular" fontSize="1.5rem" color="white">
+                      {makeAvatarName(fullname)}
+                    </Typography>
+                  </Stack>
+
+                  <Stack>
+                    <Typography variant="regular" color="gray.500" mb={1}>
+                      {email}
+                    </Typography>
+                    <Typography variant="strong" color="gray.900" mb="2px">
+                      {makeTextEllipsis(content, 6)}
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
     </Fragment>
   );
 }
