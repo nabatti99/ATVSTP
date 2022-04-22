@@ -1,4 +1,4 @@
-import { Link, Paper, Stack, Typography } from "@mui/material";
+import { Box, Link, Paper, Stack } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,45 +9,74 @@ import CreateSvg from "../../components/Icons/CreateSvg";
 import AddSvg from "../../components/Icons/AddSvg";
 
 import useRequest from "../../hooks/useRequest";
+import { exportDate } from "utilities/formatDate";
 
 const headers = [
   {
-    field: "name",
-    headerName: "TÊN TỔ CHỨC",
-    minWidth: 200,
+    field: "title",
+    headerName: "TIÊU ĐỀ BÁO CÁO",
+    minWidth: 250,
+    color: "gray.700",
+  },
+  {
+    field: "reporting_area",
+    headerName: "KHU VỰC BÁO CÁO",
+    minWidth: 240,
     color: "gray.500",
   },
   {
-    field: "phone_number",
-    headerName: "LIÊN HỆ",
+    field: "inspected_groceries",
+    headerName: "ĐỐI TƯỢNG BÁO CÁO",
+    minWidth: 280,
+    color: "gray.500",
+    transform: function (groceries) {
+      return (
+        <Stack>
+          {groceries.map((grocery) => (
+            <Link href={`/GroceryDetail/${grocery}`} key={grocery} mb={1}>
+              {grocery}
+            </Link>
+          ))}
+        </Stack>
+      );
+    },
+  },
+  {
+    field: "writer",
+    headerName: "TÁC GIẢ",
     minWidth: 120,
     color: "gray.500",
+    transform: function (email) {
+      return <Link href={`/UserDetail/${email}`}>{email}</Link>;
+    },
   },
   {
-    field: "responsible",
-    headerName: "CHỨC VỤ",
+    field: "regulator_agency",
+    headerName: "NƠI NHẬN BÁO CÁO",
     minWidth: 200,
     color: "gray.500",
-    transform: function (responsible) {
-      return Object.keys(responsible).map((key) => (
-        <Stack key={key}>
-          <Stack direction="row">
-            <Typography variant="regular" color="gray.500">
-              {key}:&nbsp;
-            </Typography>
-            {responsible[key].map((email) => (
-              <Link href={`/UserDetail/${email}`} key={email} mr={1}>
-                {email}
-              </Link>
-            ))}
-          </Stack>
-        </Stack>
-      ));
+  },
+  {
+    field: "is_draft",
+    headerName: "TRẠNG THÁI",
+    minWidth: 100,
+    color: "gray.500",
+    transform: function (is_draft) {
+      return <Box color={!is_draft ? "green.500" : "red.500"}>{!is_draft ? "Đã gửi" : "Bản nháp"}</Box>;
+    },
+  },
+  {
+    field: "updated_at",
+    headerName: "LẦN CUỐI CẬP NHẬT",
+    minWidth: 150,
+    color: "gray.500",
+    transform: function (updated_at) {
+      return exportDate(new Date(updated_at));
     },
   },
 ];
 
-function AdministrationDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
+function SuperiorReportDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
   const request = useRequest();
   const navigate = useNavigate();
 
@@ -64,22 +93,24 @@ function AdministrationDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
     console.log(query);
 
     request
-      .get(`administration/read`, {
+      .get(`superior_reporting`, {
         params: {
           offset: dataBegin,
           limit: rowsPerPage,
-          value: query,
+          date_start: query.dateStart,
+          date_end: query.dateEnd,
+          is_draft: query.isDraft,
         },
       })
       .then((res) => {
-        setData(res.data.data);
+        setData(res.data.result);
         setNumRecords(res.data.records);
         setIsLoading(false);
       });
   };
 
-  const handleAdministrationRowClicked = (row) => {
-    navigate(`/AdministrationDetail/${row._id}`);
+  const handleSuperiorReportRowClicked = (row) => {
+    navigate(`/SuperiorReportDetail/${row._id}`);
   };
 
   const actionButtons = [
@@ -115,7 +146,7 @@ function AdministrationDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       <DataGrid
         headers={headers}
         data={data}
-        onRowClick={handleAdministrationRowClicked}
+        onRowClick={handleSuperiorReportRowClicked}
         shouldUpdate={shouldTableUpdate}
         isLoading={isLoading}
         count={numRecords}
@@ -127,4 +158,4 @@ function AdministrationDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
   );
 }
 
-export default AdministrationDataGrid;
+export default SuperiorReportDataGrid;

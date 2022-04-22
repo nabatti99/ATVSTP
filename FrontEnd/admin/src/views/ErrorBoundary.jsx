@@ -6,17 +6,26 @@ class ErrorBoundary extends React.Component {
     errorMessage: null,
   };
 
-  handleClosedAlert() {
-    this.setState({ error: null });
+  handlePromiseRejection = ({ reason }) => {
+    this.setState({
+      errorMessage: reason.message,
+    });
+  };
+
+  componentDidMount() {
+    window.addEventListener("unhandledrejection", this.handlePromiseRejection);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("unhandledrejection", this.handlePromiseRejection);
   }
 
   static getDerivedStateFromError(error) {
-    console.error(error);
     return { errorMessage: error.message };
   }
 
   componentDidCatch(error, info) {
-    setTimeout(this.handleClosedAlert.bind(this), 3000);
+    console.error(error);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -27,10 +36,10 @@ class ErrorBoundary extends React.Component {
   render() {
     return (
       <Fragment>
-        {this.state.error && (
-          <Box position="fixed" right={8} top={64}>
-            <Alert color="error" severity="error">
-              {this.state.error.message}
+        {this.state.errorMessage && (
+          <Box position="fixed" right={16} top={72}>
+            <Alert color="error" severity="error" onClose={() => this.setState({ errorMessage: null })}>
+              {this.state.errorMessage}
             </Alert>
           </Box>
         )}

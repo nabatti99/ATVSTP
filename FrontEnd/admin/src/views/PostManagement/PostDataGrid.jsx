@@ -89,7 +89,7 @@ function PostDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
       })
       .then((res) => {
         setData(res.data.data);
-        setNumRecords(res.data.total_page);
+        setNumRecords(res.data.records);
         setIsLoading(false);
       });
   };

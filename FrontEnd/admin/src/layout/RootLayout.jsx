@@ -1,19 +1,24 @@
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { Outlet } from "react-router-dom";
 import ErrorBoundary from "../views/ErrorBoundary";
 import LeftDrawer from "./LeftDrawer";
 import Main from "./Main";
 
 function RootLayout() {
-  return (
-    <ErrorBoundary>
-      <Main>
-        <Outlet />
-      </Main>
+  const body = useMemo(
+    () => (
+      <Fragment>
+        <Main>
+          <Outlet />
+        </Main>
 
-      <LeftDrawer />
-    </ErrorBoundary>
+        <LeftDrawer />
+      </Fragment>
+    ),
+    []
   );
+
+  return <ErrorBoundary>{body}</ErrorBoundary>;
 }
 
 export default RootLayout;

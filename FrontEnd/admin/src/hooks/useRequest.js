@@ -3,8 +3,7 @@ import axios from "axios";
 
 function createRequest(accessToken) {
   return axios.create({
-    baseURL: "http://127.0.0.1:5000/",
-    // baseURL: "https://atvstp-api.herokuapp.com",
+    baseURL: process.env.NODE_ENV == "development" ? "http://127.0.0.1:5000/" : "https://atvstp-api.herokuapp.com",
     timeout: 10000,
     headers: {
       "access-token": accessToken,

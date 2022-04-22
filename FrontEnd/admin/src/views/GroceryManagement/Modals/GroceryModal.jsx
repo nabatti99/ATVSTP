@@ -9,6 +9,7 @@ import AppModal from "../../../components/AppModal";
 import AddSvg from "../../../components/Icons/AddSvg";
 import Image from "../../../components/Image";
 import { ADD_NEW_GROCERY, EDIT_GROCERY } from "./groceryActionTypes";
+import makeSelections from "utilities/makeSelections";
 
 function GroceryModal({
   isModalOpened = true,
@@ -225,7 +226,7 @@ function GroceryModal({
                 value={_certificate.name}
                 onChange={(event) => handleCertificateChanged(index, event.target.value, _certificate.date)}
               >
-                {availableCertificates.map(({ name }) => (
+                {makeSelections(availableCertificates, certificate, "name", _certificate).map(({ name }) => (
                   <MenuItem key={name} value={name}>
                     {name}
                   </MenuItem>

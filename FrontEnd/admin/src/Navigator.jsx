@@ -38,6 +38,12 @@ import EditInspectionScheduleModal from "views/InspectionScheduleManagement/Moda
 import InspectionScheduleDetails from "views/InspectionScheduleManagement/InspectionScheduleDetails";
 import DeleteInspectionScheduleModal from "views/InspectionScheduleManagement/Modals/DeleteInspectionScheduleModal";
 import FeedbackNotificationDetail from "views/NotificationManagement/FeedbackNotificationDetail";
+import Default from "views/Default";
+import SuperiorReportsManagement from "views/SuperiorReportManagement/SuperiorReportsManagement";
+import SuperiorReportDetails from "views/SuperiorReportManagement/SuperiorReportDetails";
+import AddNewSuperiorReportModal from "views/SuperiorReportManagement/Modals/AddNewSuperiorReportModal";
+import EditSuperiorReportModal from "views/SuperiorReportManagement/Modals/EditSuperiorReportModal";
+import DeleteSuperiorReportModal from "views/SuperiorReportManagement/Modals/DeleteSuperiorReportModal";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -47,7 +53,9 @@ function Navigator({ appContext }) {
       {accessToken ? (
         <Routes>
           <Route path="/" element={<RootLayout />}>
-            <Route index element={<Statistic />} />
+            <Route index element={<Default />} />
+
+            <Route path="Statistic" element={<Statistic />} />
 
             <Route path="UsersManagement" element={<UsersManagement />}>
               <Route path=":email" element={<EditProfileModal />} />
@@ -97,6 +105,16 @@ function Navigator({ appContext }) {
             <Route path="AdministrationDetail/:_id" element={<AdministrationDetails />}>
               <Route path="Edit" element={<EditAdministrationModal />} />
               <Route path="Delete" element={<DeleteAdministrationModal />} />
+            </Route>
+
+            <Route path="SuperiorReportsManagement" element={<SuperiorReportsManagement />}>
+              <Route path=":_id" element={<EditSuperiorReportModal />} />
+              <Route path="Add" element={<AddNewSuperiorReportModal />} />
+              <Route path="Delete" element={<DeleteSuperiorReportModal />} />
+            </Route>
+            <Route path="SuperiorReportDetail/:_id" element={<SuperiorReportDetails />}>
+              <Route path="Edit" element={<EditSuperiorReportModal />} />
+              <Route path="Delete" element={<DeleteSuperiorReportModal />} />
             </Route>
 
             <Route path="PostsManagement" element={<PostsManagement />}>
