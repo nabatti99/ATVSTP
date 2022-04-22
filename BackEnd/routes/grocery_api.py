@@ -136,7 +136,7 @@ def load_image_grocery(current_manager=None, name: str = ''):
 
     except Exception as e:
         return {'Status': 'Fail',
-                'Message': e}, 400
+                'Message': f'{e}'}, 400
 
 
 def check_input(new_grocery):

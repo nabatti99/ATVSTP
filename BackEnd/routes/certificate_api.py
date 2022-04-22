@@ -1,4 +1,3 @@
-from datetime import time
 from routes import app, manager_required
 from flask import request
 import time
@@ -38,7 +37,7 @@ def get_certificate(current_manager=None):
 
 
 @app.route('/certificate/<string:certificate_name>', methods=["GET"])
-# @manager_required("level_one")
+@manager_required("level_one")
 def get_certificate_by_name(current_manager=None, certificate_name=''):
     try:
         certificate = certificate_collection.find_one({'name': certificate_name})
@@ -127,7 +126,7 @@ def load_image_certificate(current_manager=None, name: str = ''):
     except Exception as e:
         print(e)
         return {'Status': 'Fail',
-                'Message': 'Have some error'}, 400
+                'Message': f'{e}'}, 400
 
 
 def check_input(new_certificate):

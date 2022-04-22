@@ -30,4 +30,4 @@ CORS(app)
 
 
 from routes.management_user import manager_required
-from routes import management_email, management_user, pagination, grocery_api, certificate_api
+from routes import management_email, management_user, pagination, grocery_api, certificate_api, notification_api
