@@ -4,12 +4,14 @@ from flask import request
 from .pagination import pagination
 from models.grocery import Grocery
 from models.firebase import storage
+import time
+from datetime import datetime
 
 grocery_collection = app.db.grocery
 
 
 @app.route('/grocery', methods=['GET'])
-@manager_required("level_one")
+# @manager_required("level_one")
 def get_grocery(current_manager=None):
     offset = int(request.args['offset'])
     limit = int(request.args['limit'])
@@ -37,7 +39,7 @@ def get_grocery(current_manager=None):
 
 
 @app.route('/grocery/<string:grocery_name>', methods=['GET'])
-@manager_required("level_one")
+# @manager_required("level_one")
 def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
     try:
         grocery = grocery_collection.find_one({'name': grocery_name})
@@ -53,9 +55,10 @@ def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
 
 
 @app.route('/grocery', methods=['POST'])
-@manager_required("level_one")
+# @manager_required("level_one")
 def add_grocery(current_manager=None):
     data = request.get_json()
+    created_time = time.strftime("%H:%M:%S %d-%m-%Y", time.localtime())
     logger = check_input(data)
     if not logger:
         new_grocery = Grocery(name=data['name'],
@@ -64,14 +67,15 @@ def add_grocery(current_manager=None):
                               address=data['address'],
                               item=data['item'],
                               status=data['status'],
-                              certificate=data['certificate'])
+                              certificate=data['certificate'],
+                              created_time=created_time)
         try:
             grocery_collection.insert_one(new_grocery.to_dict())
             return {'Status': 'Success',
                     'Message': 'Add successfully'}
         except Exception as e:
             return {'Status': 'Fail',
-                    'Message': 'Can not insert data'}, 400
+                    'Message': f'{e}'}, 400
     else:
         return {'Status': 'Fail',
                 'Message': logger}, 401
@@ -137,6 +141,44 @@ def load_image_grocery(current_manager=None, name: str = ''):
     except Exception as e:
         return {'Status': 'Fail',
                 'Message': f'{e}'}, 400
+
+
+@app.route('/grocery/count/<string:condition>', methods=['GET'])
+# @manager_required('level_one')
+def count_groceries(current_manager=None, condition=''):
+    try:
+        list_groceries = grocery_collection.find({})
+        dict_count_groceries = {}
+        for grocery in list_groceries:
+            list_certificates = grocery['certificate']
+            if condition == 'general' or (
+                    condition == 'have_cer' and len(list_certificates)>0) or (
+                    condition == 'not_have_cer' and len(list_certificates)==0):
+                created_time = datetime.strptime(grocery['created_time'], '%H:%M:%S %d-%m-%Y')
+                year = created_time.year
+                month = created_time.month
+                value_in_year = dict_count_groceries.get(year, None)
+
+                if value_in_year is None:
+                    dict_in_year = {}
+                    dict_in_year[month] = 1
+                    dict_count_groceries[year] = dict_in_year
+                else:
+                    dict_in_year = value_in_year
+                    value_in_month = dict_in_year.get(month, None)
+                    if value_in_month is None:
+                        dict_count_groceries[year][month] = 1
+                    else:
+                        value = dict_count_groceries[year][month]
+                        value += 1
+                        dict_count_groceries[year][month] = value
+
+        return {'Status': 'Success',
+                'Result': dict_count_groceries}
+    except Exception as e:
+        print(e)
+        return {'Status': 'Fail',
+                'Message': 'Have some error'}
 
 
 def check_input(new_grocery):
