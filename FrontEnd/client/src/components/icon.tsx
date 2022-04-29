@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import {View, Colors, ViewProps} from 'react-native-ui-lib';
-import {FontAwesome} from '@expo/vector-icons';
+import {AntDesign} from '@expo/vector-icons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 type IconProps = {
@@ -23,7 +23,7 @@ export const Icon: React.FC<IconProps> = ({
   const Icon = useMemo(
     () => (
       <View {...viewProps}>
-        <FontAwesome name={name} size={size} color={color} />
+        <AntDesign name={name} size={size} color={color} />
       </View>
     ),
     [viewProps, name, size, color],

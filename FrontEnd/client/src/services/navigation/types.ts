@@ -1,5 +1,6 @@
 import {BottomTabNavigationOptions} from '@react-navigation/bottom-tabs';
 import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
+import {string} from 'yup';
 
 import {Modal, Screen, Tabs} from '../../screens';
 

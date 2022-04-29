@@ -23,8 +23,10 @@ export const Main: React.FC = observer(({}) => {
   }, []);
 
   return (
-    <View flex bg-bgColor>
-      <Text h1>Home</Text>
+    <View flex bg-background>
+      <Text h1 textColor>
+        Home
+      </Text>
       <ActivityIndicator />
     </View>
   );
