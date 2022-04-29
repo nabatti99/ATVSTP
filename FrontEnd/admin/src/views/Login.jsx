@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import useRequest from "../hooks/useRequest";
 import { connectAppContext } from "../contexts/appContext/appContext";
-import { updateAccessToken } from "../contexts/appContext/appActions";
+import { deleteAccessToken, updateAccessToken } from "../contexts/appContext/appActions";
 
 function Login({ dispatch }) {
   const request = useRequest();
@@ -38,46 +38,51 @@ function Login({ dispatch }) {
       })
       .catch((error) => {
         console.error(error);
-        dispatch(updateAccessToken(null));
+        dispatch(deleteAccessToken(null));
         alert(error);
       });
   };
 
   return (
-    <Stack justifyContent="center" alignItems="center" height="100vh">
-      <Paper elevation={4} sx={{ borderRadius: 4 }}>
-        <Stack px={8} py={8}>
-          <Typography variant="h3" color="blue.500" mb={4}>
-            ATVSTP - Admin
-          </Typography>
+    <Stack
+      flexGrow={1}
+      sx={{ backgroundImage: "url('/BgLogin.jpg')", backgroundBlendMode: "multiply", backgroundColor: "blue.500" }}
+    >
+      <Stack justifyContent="center" alignItems="center" height="100vh">
+        <Paper elevation={4} sx={{ borderRadius: 4 }}>
+          <Stack px={8} py={8}>
+            <Typography variant="h3" color="blue.500" mb={4}>
+              ATVSTP - Admin
+            </Typography>
 
-          <form onSubmit={handleSubmit}>
-            <Stack>
-              <TextField
-                label="EMAIL"
-                type="email"
-                name="email"
-                variant="standard"
-                sx={{ marginBottom: 2 }}
-                placeholder="email@gmail.com"
-              />
+            <form onSubmit={handleSubmit}>
+              <Stack>
+                <TextField
+                  label="EMAIL"
+                  type="email"
+                  name="email"
+                  variant="standard"
+                  sx={{ marginBottom: 2 }}
+                  placeholder="email@gmail.com"
+                />
 
-              <TextField
-                label="MẬT KHẨU"
-                name="password"
-                variant="standard"
-                type="password"
-                sx={{ marginBottom: 4 }}
-                placeholder="Mật khẩu của bạn"
-              />
+                <TextField
+                  label="MẬT KHẨU"
+                  name="password"
+                  variant="standard"
+                  type="password"
+                  sx={{ marginBottom: 4 }}
+                  placeholder="Mật khẩu của bạn"
+                />
 
-              <Button disabled={isLoading} type="submit" variant="contained">
-                {isLoading ? "Đang xử lý" : "Đăng nhập"}
-              </Button>
-            </Stack>
-          </form>
-        </Stack>
-      </Paper>
+                <Button disabled={isLoading} type="submit" variant="contained">
+                  {isLoading ? "Đang xử lý" : "Đăng nhập"}
+                </Button>
+              </Stack>
+            </form>
+          </Stack>
+        </Paper>
+      </Stack>
     </Stack>
   );
 }

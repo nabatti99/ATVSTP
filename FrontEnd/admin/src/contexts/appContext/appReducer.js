@@ -1,4 +1,4 @@
-import { SET_DRAWER_WIDTH, UPDATE_ACCESS_TOKEN } from "./appActionTypes";
+import { DELETE_ACCESS_TOKEN, SET_DRAWER_WIDTH, UPDATE_ACCESS_TOKEN } from "./appActionTypes";
 
 const appReducer = (state, action) => {
   switch (action.type) {
@@ -13,6 +13,13 @@ const appReducer = (state, action) => {
       return {
         ...state,
         accessToken: action.accessToken,
+      };
+
+    case DELETE_ACCESS_TOKEN:
+      localStorage.removeItem("access-token");
+      return {
+        ...state,
+        accessToken: null,
       };
 
     default:

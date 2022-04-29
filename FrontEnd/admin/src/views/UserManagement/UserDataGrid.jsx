@@ -10,7 +10,7 @@ import AddSvg from "../../components/Icons/AddSvg";
 
 import useRequest from "../../hooks/useRequest";
 import { connectAppContext } from "contexts/appContext/appContext";
-import { updateAccessToken } from "contexts/appContext/appActions";
+import { deleteAccessToken } from "contexts/appContext/appActions";
 
 const headers = [
   {
@@ -99,7 +99,7 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate, appContext, dis
       .catch((err) => {
         console.error(err);
         if (err.response.status == 401) {
-          dispatch(updateAccessToken(null));
+          dispatch(deleteAccessToken());
           navigate("/Login", {
             replace: true,
           });
