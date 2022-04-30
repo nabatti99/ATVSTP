@@ -30,5 +30,6 @@ class Grocery:
             'item': self.item,
             'certificate': self.certificate,
             'image_url': self.image_url,
-            'created_time': self.created_time
+            'created_time': self.created_time,
+            'is_deleted': False
         }

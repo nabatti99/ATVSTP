@@ -9,6 +9,14 @@ from datetime import datetime
 
 grocery_collection = app.db.grocery
 
+#add TTL index for delete grocery
+# keys = {'lastModifiedDate': 1};
+# options = {
+#     'expireAfterSeconds': 3600,
+#     'partialFilterExpression': {'is_deleted': True}
+# };
+# grocery_collection.createIndex(keys, options);
+
 
 @app.route('/grocery', methods=['GET'])
 # @manager_required("level_one")
@@ -104,13 +112,18 @@ def update_a_grocery(current_manager=None, grocery_name: str = ''):
 
 
 @app.route('/grocery/<string:grocery_name>', methods=['DELETE'])
-@manager_required("level_one")
+# @manager_required("level_one")
 def delete_grocery(current_manager=None, grocery_name: str = ''):
     try:
-        deleted_grocery = grocery_collection.find_one_and_delete({'name': grocery_name})
+        deleted_grocery = grocery_collection.find_one({'name': grocery_name})
         if deleted_grocery:
+            delete_time = datetime.now()
+            grocery_collection.find_one_and_update({'name': grocery_name},
+                                                   {'$set':
+                                                        {'is_deleted': True,
+                                                         'delete_time': delete_time}})
             return {'Status': 'Success',
-                    'Message': f'Deleted {grocery_name}'}
+                    'Message': f'Deleted grocery: {grocery_name}'}
         else:
             return {'Status': 'Fail',
                     'Message': f'Do not have grocery {grocery_name} in database'}, 401
