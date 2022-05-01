@@ -53,3 +53,23 @@ type LanguageAction = {
 type CounterGetResponse = {
   value: number;
 };
+
+// Models
+type Certificate = {
+  name: string;
+  date: Date;
+};
+
+type Grocery = {
+  name: string;
+  address: string;
+  phone_number: string;
+  owner: string;
+  certificates: Certificate[];
+};
+
+type News = {
+  title: string;
+  date: Date;
+  authors: string[];
+};

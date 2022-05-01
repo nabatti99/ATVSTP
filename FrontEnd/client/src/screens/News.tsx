@@ -17,19 +17,13 @@ import {useStores} from '../stores';
 import {Icon} from '@app/components/icon';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-type NewsInfo = {
-  title: string;
-  date: Date;
-  authors: string[];
-};
-
 const {width: windowWidth, height: windowHeight}: ScaledSize = Dimensions.get('screen');
 
 export const News: React.FC = observer(({}) => {
   const {nav, translate, api} = useServices();
   const {counter, ui} = useStores();
 
-  const [news, setNews] = useState<NewsInfo[]>();
+  const [news, setNews] = useState<News[]>();
 
   useEffect(() => {
     setNews([
@@ -56,7 +50,10 @@ export const News: React.FC = observer(({}) => {
       </View>
 
       <Card enableShadow elevation={8} style={{shadowColor: '#00000022'}} marginT-16>
-        <Card.Section imageSource={Assets.demo.logo} imageStyle={{width: '100%', height: 200}} />
+        <Card.Section
+          imageSource={{uri: 'https://picsum.photos/400/200'}}
+          imageStyle={{width: '100%', height: 200}}
+        />
         <View margin-12>
           <Text strong gray700>
             Tình hình giá bắp cải ở Đà Nẵng
@@ -84,8 +81,10 @@ export const News: React.FC = observer(({}) => {
         data={news}
         numColumns={1}
         keyExtractor={item => item.title}
-        contentContainerStyle={{marginTop: 24, backgroundColor: Colors.gray500}}
+        style={{marginTop: 24}}
         containerWidth={windowWidth - 24 * 2}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
           <ListItem onPress={() => {}} style={{height: 108}} activeOpacity={0.6}>
             <ListItem.Part left>

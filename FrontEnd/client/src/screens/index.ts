@@ -4,6 +4,7 @@ import {News} from './News';
 import {Personal} from './Personal';
 import {genRootNavigator, genStackNavigator, genTabNavigator} from '../services/navigation/help';
 import {screenDefaultOptions, tabBarDefaultOptions} from '../services/navigation/options';
+import {Stores} from './Stores';
 
 // Describe your screens here
 export type Tabs = 'Stores' | 'News' | 'Personal';
@@ -23,7 +24,7 @@ export type ScreenProps = {
 const screens: ScreenLayouts = {
   Stores: {
     name: 'Cửa hàng uy tín',
-    component: News,
+    component: Stores,
     options: () => ({
       title: 'Cửa Hàng',
       ...screenDefaultOptions(),

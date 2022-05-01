@@ -11,7 +11,7 @@ export default function (): PVoid {
     BeVNProExtraBold: require('@assets/fonts/BeVietnamPro/BeVietnamPro-ExtraBold.ttf'),
   }).then((): void => {
     Typography.loadTypographies({
-      h1: {fontSize: 28, fontFamily: 'BeVNProSemiBold'},
+      h1: {fontSize: 24, fontFamily: 'BeVNProSemiBold'},
       h2: {fontSize: 20, fontFamily: 'BeVNProSemiBold'},
       strong: {fontSize: 14, fontFamily: 'BeVNProExtraBold'},
       regular: {fontSize: 14, fontFamily: 'BeVNProSemiBold'},
