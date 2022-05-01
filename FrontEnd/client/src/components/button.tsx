@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {View, Text, MarginModifiers} from 'react-native-ui-lib';
 
 type ButtonProps = MarginModifiers & {

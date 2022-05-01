@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text} from 'react-native-ui-lib';
 import Animated, {withSpring, useAnimatedStyle, useSharedValue} from 'react-native-reanimated';
 
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 type Reanimated2Props = {
   stID?: string;

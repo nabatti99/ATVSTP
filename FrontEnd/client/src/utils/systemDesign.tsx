@@ -4,7 +4,6 @@ import {Colors, Typography} from 'react-native-ui-lib';
 
 import {stores} from '../stores';
 import loadColors from '../config/loadColors';
-import loadFonts from '../config/loadFonts';
 
 const baseColors: DesignSystemColors = loadColors();
 
@@ -24,9 +23,14 @@ export const configureDesignSystem = (): void => {
   const {ui} = stores;
 
   if (ui.isSystemAppearance) {
+    console.log('AÁdlkashasdkasdkja');
+
     Colors.loadColors(baseColors);
     Colors.loadSchemes(themes);
   } else {
+    console.log(themes[ui.appearance]);
+    console.log(123971628);
+
     Colors.loadColors({...baseColors, ...themes[ui.appearance]});
     Colors.loadSchemes({dark: {}, light: {}});
   }

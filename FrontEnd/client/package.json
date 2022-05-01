@@ -1,9 +1,9 @@
 {
-  "name": "expo-starter",
+  "name": "atvstp-client",
   "version": "3.5.0",
-  "description": "Production-ready starter for Expo (React Native) App! Powered by cli-rn, React Navigation (v6), RN UI lib, Mobx, Reanimated 2, Dark Mode, Localization, and much more.",
+  "description": "The client app for Danang's food and hygiene safety.",
   "license": "MIT",
-  "author": "Batyr <dev@batyr.io>",
+  "author": "anhminh2122000@gmail.com",
   "scripts": {
     "start": "expo start --dev-client",
     "start:dc": "expo start --dev-client",

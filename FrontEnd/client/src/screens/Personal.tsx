@@ -11,7 +11,7 @@ type PickersState = {
 };
 type PickersStateKey = keyof Omit<PickersState, 'show' | 'hide'>;
 
-export const Settings: React.FC = observer(() => {
+export const Personal: React.FC = observer(() => {
   return (
     <View flex bg-bgColor>
       <Text h1>Setting</Text>

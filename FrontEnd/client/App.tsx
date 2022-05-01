@@ -19,6 +19,7 @@ export default (): JSX.Element => {
 
     await hydrateStores();
     await initServices();
+
     configureDesignSystem();
 
     setReady(true);

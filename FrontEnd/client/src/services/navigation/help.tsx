@@ -17,7 +17,10 @@ export const genStackNavigator = (screens: GenStackNavigatorProps): JSX.Element 
   return <Stack.Navigator>{stackScreens}</Stack.Navigator>;
 };
 
-export const genTabNavigator = (screens: GenTabNavigatorProps): JSX.Element => {
+export const genTabNavigator = (
+  screens: GenTabNavigatorProps,
+  initialRouteName: string | undefined,
+): JSX.Element => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useColorScheme(); // needs to be here to correctly change tab bar appearance
 
@@ -26,7 +29,7 @@ export const genTabNavigator = (screens: GenTabNavigatorProps): JSX.Element => {
     <Tab.Screen key={it.name} name={it.name} component={it.component} options={it.options()} />
   ));
 
-  return <Tab.Navigator>{tabScreens}</Tab.Navigator>;
+  return <Tab.Navigator initialRouteName={initialRouteName}>{tabScreens}</Tab.Navigator>;
 };
 
 export const genRootNavigator = (app: React.FC, modals: ModalScreenInfo[]): JSX.Element => {

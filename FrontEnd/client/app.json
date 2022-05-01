@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Expo Starter",
-    "slug": "expo-starter",
+    "name": "ATVSTP",
+    "slug": "atvstp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,14 +19,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.batyr.expo-starter"
+      "bundleIdentifier": "io.atvstp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F7FAFC"
       },
-      "package": "io.batyr.expostarter"
+      "package": "io.atvstp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

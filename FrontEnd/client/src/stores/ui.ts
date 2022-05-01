@@ -8,10 +8,8 @@ export class UIStore implements IStore {
     this.appLaunches += v;
   };
 
-  isSystemAppearance = true;
+  isSystemAppearance = false;
   appearance: AppearanceMode = 'light';
-  // isSystemAppearance = false;
-  // appearance: AppearanceMode = 'dark';
   setAppearanceMode = (v: UIAppearance): void => {
     const {nav} = services;
 
@@ -30,7 +28,7 @@ export class UIStore implements IStore {
     return v === 'Light' ? 'light' : 'dark';
   };
 
-  isSystemLanguage = true;
+  isSystemLanguage = false;
   language: Language = 'en';
   setLanguage = (v: UILanguage): void => {
     const {nav} = services;

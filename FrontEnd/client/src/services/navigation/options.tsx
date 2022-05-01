@@ -6,9 +6,11 @@ import {Colors, Typography} from 'react-native-ui-lib';
 
 import {getHeaderBlurEffect} from '../../utils/systemDesign';
 import {Icon} from '../../components/icon';
+import {useStores} from '@app/stores';
 
 export const screenDefaultOptions = (): NativeStackNavigationOptions => ({
   headerShadowVisible: false,
+  headerShown: false,
   headerTintColor: Colors.textColor,
 
   // this setup makes large title work on iOS
@@ -29,7 +31,6 @@ export const tabBarDefaultOptions = (
 ): BottomTabNavigationOptions => ({
   headerShown: false,
   tabBarActiveTintColor: Colors.green500,
-  tabBarInactiveTintColor: Colors.gray50,
   tabBarLabelStyle: {
     ...Typography.small,
     marginBottom: 4,

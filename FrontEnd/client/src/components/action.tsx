@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {View, Text, Colors} from 'react-native-ui-lib';
 import {Icon} from './icon';
 
