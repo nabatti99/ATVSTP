@@ -7,6 +7,7 @@ type IconProps = {
   name: string;
   size?: number;
   color?: string;
+  isButton?: boolean;
   viewProps?: ViewProps;
   onPress?: PureFunc;
 };
@@ -17,6 +18,7 @@ export const Icon: React.FC<IconProps> = ({
   name,
   size = ICON_SIZE,
   color = Colors.textColor,
+  isButton = false,
   viewProps,
   onPress,
 }: IconProps) => {
@@ -29,9 +31,11 @@ export const Icon: React.FC<IconProps> = ({
     [viewProps, name, size, color],
   );
 
-  return (
-    <TouchableOpacity onPress={onPress} disabled={!!!onPress}>
+  return isButton ? (
+    <TouchableOpacity onPress={onPress} disabled={!!!onPress} activeOpacity={0.65}>
       {Icon}
     </TouchableOpacity>
+  ) : (
+    Icon
   );
 };

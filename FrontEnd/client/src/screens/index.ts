@@ -1,68 +1,79 @@
 import {ModalScreenLayouts, ScreenLayouts, TabScreenLayouts} from '../services/navigation/types';
 
-import {News} from './News';
-import {Personal} from './Personal';
+import {News} from './News/News';
+import {Personal} from './Personal/Personal';
 import {genRootNavigator, genStackNavigator, genTabNavigator} from '../services/navigation/help';
 import {screenDefaultOptions, tabBarDefaultOptions} from '../services/navigation/options';
-import {Stores} from './Stores';
+import {Stores} from './Store/Stores';
+import {NewsDetail} from './News/NewsDetail';
 
 // Describe your screens here
 export type Tabs = 'Stores' | 'News' | 'Personal';
 export type Modal = 'ExampleModal';
-export type Screen = 'Stores' | 'News' | 'Personal' | 'Feedback';
+export type Screen = 'Stores' | 'News' | 'NewsDetail' | 'Personal' | 'Feedback';
 
 export type ModalProps = {
   ExampleModal: undefined;
 };
 export type ScreenProps = {
-  Main: undefined;
-  Example: ExampleScreenProps;
+  Stores: undefined;
+  News: undefined;
+  NewsDetail: undefined;
   Personal: undefined;
+  Feedback: undefined;
 } & ModalProps;
 
 // Screens
 const screens: ScreenLayouts = {
   Stores: {
-    name: 'Cửa hàng uy tín',
+    name: 'Stores',
     component: Stores,
     options: () => ({
-      title: 'Cửa Hàng',
+      title: 'Cửa hàng uy tín',
       ...screenDefaultOptions(),
     }),
   },
   News: {
-    name: 'Tin tức mới cập nhật',
+    name: 'News',
     component: News,
     options: () => ({
-      title: 'Tin Tức',
+      title: 'Tin tức mới cập nhật',
+      ...screenDefaultOptions(),
+    }),
+  },
+  NewsDetail: {
+    name: 'NewsDetail',
+    component: NewsDetail,
+    options: () => ({
+      title: 'Tin tức chi tiết',
       ...screenDefaultOptions(),
     }),
   },
   Personal: {
-    name: 'Cá nhân và cài đặt',
+    name: 'Personal',
     component: Personal,
     options: () => ({
-      title: 'Phản hồi',
+      title: 'Cá nhân và cài đặt',
       ...screenDefaultOptions(),
     }),
   },
   Feedback: {
-    name: 'Phản hồi người dùng',
+    name: 'Feedback',
     component: News,
     options: () => ({
-      title: 'Phản hồi',
+      title: 'Phản hồi người dùng',
       ...screenDefaultOptions(),
     }),
   },
 };
 const StoresStack = () => genStackNavigator([screens.Stores]);
-const HomeStack = () => genStackNavigator([screens.News]);
+const NewsStack = () => genStackNavigator([screens.News, screens.NewsDetail]);
 const SettingsStack = () => genStackNavigator([screens.Personal, screens.Feedback]);
 
 // Tabs
 const tabs: TabScreenLayouts = {
   Stores: {
-    name: 'Stores',
+    name: 'StoresTab',
     component: StoresStack,
     options: () => ({
       title: 'Cửa Hàng',
@@ -70,15 +81,15 @@ const tabs: TabScreenLayouts = {
     }),
   },
   News: {
-    name: 'News',
-    component: HomeStack,
+    name: 'NewsTab',
+    component: NewsStack,
     options: () => ({
       title: 'Tin Tức',
       ...tabBarDefaultOptions('check', 'checkcircle'),
     }),
   },
   Personal: {
-    name: 'Personal',
+    name: 'PersonalTab',
     component: SettingsStack,
     options: () => ({
       title: 'Cá nhân',
@@ -92,7 +103,7 @@ const TabNavigator = () => genTabNavigator([tabs.Stores, tabs.News, tabs.Persona
 const modals: ModalScreenLayouts = {
   ExampleModal: {
     name: 'ExampleModal',
-    component: HomeStack,
+    component: NewsStack,
     options: () => ({
       title: 'ExampleModal',
     }),

@@ -12,8 +12,8 @@ import {
 import {Dimensions, ScaledSize} from 'react-native';
 import {observer} from 'mobx-react';
 
-import {useServices} from '../services';
-import {useStores} from '../stores';
+import {useServices} from '../../services';
+import {useStores} from '../../stores';
 import {Icon} from '@app/components/icon';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -43,8 +43,8 @@ export const News: React.FC = observer(({}) => {
   return (
     <View flex bg-background paddingH-24 paddingT-16>
       <View row centerV>
-        <View width={18} height={18} style={{borderRadius: 100}} bg-green500 marginT-2 marginR-4 />
-        <Text h2 gray700>
+        <View width={20} height={20} style={{borderRadius: 100}} bg-green500 marginT-6 marginR-8 />
+        <Text h1 green500>
           Tin tức
         </Text>
       </View>
@@ -86,7 +86,11 @@ export const News: React.FC = observer(({}) => {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (
-          <ListItem onPress={() => {}} style={{height: 108}} activeOpacity={0.6}>
+          <ListItem
+            onPress={() => nav.push('NewsDetail')}
+            style={{height: 108}}
+            activeOpacity={0.6}
+          >
             <ListItem.Part left>
               <Image
                 source={{uri: 'https://picsum.photos/200'}}

@@ -23,14 +23,9 @@ export const configureDesignSystem = (): void => {
   const {ui} = stores;
 
   if (ui.isSystemAppearance) {
-    console.log('AÁdlkashasdkasdkja');
-
     Colors.loadColors(baseColors);
     Colors.loadSchemes(themes);
   } else {
-    console.log(themes[ui.appearance]);
-    console.log(123971628);
-
     Colors.loadColors({...baseColors, ...themes[ui.appearance]});
     Colors.loadSchemes({dark: {}, light: {}});
   }

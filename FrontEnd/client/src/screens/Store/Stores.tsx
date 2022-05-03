@@ -53,7 +53,7 @@ export const Stores: React.FC = observer(({}) => {
 
   return (
     <View flex bg-background paddingH-24 paddingT-16>
-      <Text h1 green500>
+      <Text h1 gray500>
         Cửa hàng
       </Text>
 
