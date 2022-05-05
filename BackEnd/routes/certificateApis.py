@@ -7,7 +7,7 @@ from .pagination import pagination
 from models.certificate import Certificate
 from models.firebase import storage
 
-certificate_collection = app.db.certificate_atvstp;
+certificate_collection = app.db.certificate_atvstp
 
 
 @app.route('/certificate', methods=["GET"])

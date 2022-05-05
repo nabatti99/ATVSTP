@@ -135,10 +135,32 @@ def update_superior_reporting(current_manager=None, _id: str = ''):
 @manager_required('level_one')
 def delete_superior_reporting(current_manager=None, _id: str = ''):
     try:
-        deleted_superior_reporting = superior_reporting.delete_one({'_id': ObjectId(_id)})
+        # deleted_superior_reporting = superior_reporting.delete_one({'_id': ObjectId(_id)})
+        deleted_superior_reporting = superior_reporting.update_one({'_id': ObjectId(_id)},
+                                                                   {'$set': {
+                                                                       'date_delete': datetime.utcnow()
+                                                                   }})
         if deleted_superior_reporting:
             return response_status(status=success_status,
                                    message=f'Deleted report {_id}')
+        else:
+            return response_status(status=fail_status,
+                                   message=f'Do not have report {_id} in database'), 401
+    except Exception as e:
+        return {'Type Error': e}, 400
+
+
+@app.route('/superior_reporting/restore_report/<string:_id>', methods=['PUT'])
+@manager_required("level_two")
+def restore_superior_reporting(current_manager=None, _id: str = ''):
+    try:
+
+        restored_superior_reporting = superior_reporting.find_one({'_id': ObjectId(_id)},
+                                                                  {"$unset": {'date_delete': 1}})
+
+        if restored_superior_reporting:
+            return response_status(status=success_status,
+                                   message=f'Restored report {_id}')
         else:
             return response_status(status=fail_status,
                                    message=f'Do not have report {_id} in database'), 401

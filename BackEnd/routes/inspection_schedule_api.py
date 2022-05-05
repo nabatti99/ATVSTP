@@ -10,7 +10,7 @@ inspection_schedule = app.db.inspection_schedule
 
 
 @app.route('/inspection_schedule/<string:_id>', methods=['GET'])
-# @manager_required('level_two')
+@manager_required('level_two')
 def get_inspection_schedule_by_id(current_manager=None, _id: str = ''):
     try:
         current_inspection_schedule = inspection_schedule.find_one({'_id': ObjectId(_id)})
@@ -54,7 +54,7 @@ def create_an_inspection_schedule(current_manager=None):
 
 
 @app.route('/inspection_schedule', methods=['GET'])
-# @manager_required('level_two')
+@manager_required('level_two')
 def get_inspection_schedule(current_manager=None):
     try:
         date_start = request.args['date_start']
@@ -128,13 +128,34 @@ def update_inspection_schedule(current_manager=None, _id: str = ''):
 
 
 @app.route('/inspection_schedule/<string:_id>', methods=['DELETE'])
-# @manager_required('level_two')
+@manager_required('level_two')
 def delete_inspection_schedule(current_manager=None, _id: str = ''):
     try:
-        deleted_inspection_schedule = inspection_schedule.delete_one({'_id': ObjectId(_id)})
+        # deleted_inspection_schedule = inspection_schedule.delete_one({'_id': ObjectId(_id)})
+        deleted_inspection_schedule = inspection_schedule.update_one({'_id': ObjectId(_id)},
+                                                                     {'$set': {
+                                                                         'date_delete': datetime.utcnow()
+                                                                     }})
         if deleted_inspection_schedule:
             return response_status(status=success_status,
                                    message=f'Deleted inspection schedule {_id}')
+        else:
+            return response_status(status=fail_status,
+                                   message=f'Do not have inspection schedule {_id} in database'), 401
+    except Exception as e:
+        return {'Type Error': e}, 400
+
+
+@app.route('/inspection_schedule/restore_schedule/<string:_id>', methods=['PUT'])
+@manager_required('level_two')
+def restore_inspection_schedule(current_manager=None, _id: str = ''):
+
+    try:
+        restored_inspection_schedule = inspection_schedule.find_one({'_id': ObjectId(_id)},
+                                                                    {"$unset": {'date_delete': 1}})
+        if restored_inspection_schedule:
+            return response_status(status=success_status,
+                                   message=f'Restored inspection schedule {_id}')
         else:
             return response_status(status=fail_status,
                                    message=f'Do not have inspection schedule {_id} in database'), 401

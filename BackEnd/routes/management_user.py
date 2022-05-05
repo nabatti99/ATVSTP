@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import functools
 from flask import request, make_response, render_template, jsonify
 from routes import app
@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 
 manager_collection = app.db.manager
-admin_avtitp = app.db.administration_atvstp
+admin_atvstp = app.db.administration_atvstp
 
 
 fail_status = 'Fail'
@@ -128,7 +128,7 @@ def create_new_manager(current_manager=None):
                                    message='username is not unique!'), 401
 
         try:
-            current_admin_atvstp = admin_avtitp.find_one_and_update({'name': new_register['work_from']},
+            current_admin_atvstp = admin_atvstp.find_one_and_update({'name': new_register['work_from']},
                                                                     {
                                                                         '$push': {
                                                                             f'responsible.{new_register["role"]}':
@@ -248,7 +248,8 @@ def delete_a_manager(current_manager=None, email: str = ''):
             if the_manager['image_url']:
                 storage.delete(f'manager/{the_manager["_id"]}.jpg', None)
 
-            deleted_manager = manager_collection.delete_one({'email': email})
+            # deleted_manager = manager_collection.delete_one({'email': email})
+            deleted_manager = manager_collection.update_one({'email': email}, {"$set": {'date_delete': datetime.utcnow()}})
 
             if deleted_manager:
                 return response_status(status=success_status,
@@ -256,6 +257,24 @@ def delete_a_manager(current_manager=None, email: str = ''):
             else:
                 return response_status(status=fail_status,
                                        message=f'Do not have user {email} in database'), 401
+    except Exception as e:
+        return {'Type Error': e}, 400
+
+
+@app.route('/manager/restore_a_manager/<string:email>', methods=['PUT'])
+@manager_required("level_two")
+def restore_a_manager(current_manager=None, email: str = ''):
+    try:
+
+        restored_manager = manager_collection.find_one({'email': email},
+                                                       {"$unset": {'date_delete': 1}})
+
+        if restored_manager:
+            return response_status(status=success_status,
+                                   message=f'Restored user {email}')
+        else:
+            return response_status(status=fail_status,
+                                   message=f'Do not have user {email} in database'), 401
     except Exception as e:
         return {'Type Error': e}, 400
 
