@@ -30,6 +30,6 @@ CORS(app)
 
 
 from routes.management_user import manager_required, response_status, fail_status, success_status
-from routes import management_email, management_user, pagination, groceryApis, \
+from routes import management_email, management_user, pagination, grocery_api, \
     inspection_schedule_api, superior_reporting_api, information_atvstp_routes, administration_atvstp_routes, \
-    feedback_of_people_routes, certificateApis, general_situation
+    feedback_of_people_routes, certificate_api, general_situation
