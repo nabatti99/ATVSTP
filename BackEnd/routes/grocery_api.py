@@ -117,7 +117,7 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
     try:
         deleted_grocery = grocery_collection.find_one({'name': grocery_name})
         if deleted_grocery:
-            delete_time = datetime.now()
+            delete_time = datetime.utcnow()
             grocery_collection.find_one_and_update({'name': grocery_name},
                                                    {'$set':
                                                         {'is_deleted': True,

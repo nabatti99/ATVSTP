@@ -9,7 +9,7 @@ certificate_collection = app.db.certificate_atvstp;
 
 
 @app.route('/certificate', methods=["GET"])
-@manager_required("level_one")
+# @manager_required("level_one")
 def get_certificate(current_manager=None):
     list_certificate = []
 
@@ -56,8 +56,7 @@ def get_certificate_by_name(current_manager=None, certificate_name=''):
 @manager_required("level_one")
 def create_certificate(current_manager=None):
     data = request.get_json()
-    seconds = time.time()
-    last_update_time = time.ctime(seconds)
+    last_update_time = datetime.utcnow()
     logger = check_input(data)
     if not logger:
         new_certificate = Certificate(name=data['name'],
@@ -80,8 +79,7 @@ def create_certificate(current_manager=None):
 @manager_required("level_one")
 def update_certificate(current_manager=None, certificate_name=''):
     data = request.get_json()
-    seconds = time.time()
-    last_update_time = time.ctime(seconds)
+    last_update_time = datetime.utcnow()
     update = {'name': certificate_name,
               'manager': data['manager'],
               'effective_time': data['effective_time'],
@@ -95,7 +93,7 @@ def update_certificate(current_manager=None, certificate_name=''):
 
 
 @app.route('/certificate/<string:certificate_name>', methods=["DELETE"])
-@manager_required("level_one")
+# @manager_required("level_one")
 def delete_certificate(current_manager=None, certificate_name=''):
     try:
         deleted_certificate = certificate_collection.find_one({'name': certificate_name})
