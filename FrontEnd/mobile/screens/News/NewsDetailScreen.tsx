@@ -10,9 +10,9 @@ import { Icon } from "../../components/Icon";
 const { window } = Layout;
 const HEADER_HEIGHT: number = 280;
 
-export const NewsDetailScreen: React.FC<NewsStackScreenProps<"NewsDetail">> = ({ navigation }) => {
+export function NewsDetailScreen({ navigation }: NewsStackScreenProps<"NewsDetail">) {
   return (
-    <View flex bg-background>
+    <View flex bg-bgPrimary>
       <Card borderRadius={0} enableShadow={false}>
         <Card.Section
           imageSource={{ uri: "https://picsum.photos/460/400" }}
@@ -114,4 +114,4 @@ export const NewsDetailScreen: React.FC<NewsStackScreenProps<"NewsDetail">> = ({
       </View>
     </View>
   );
-};
+}

@@ -16,16 +16,16 @@ export default function loadColors() {
 
   const colorSchemes: Schemes = {
     light: {
-      bg: baseColors.gray50,
-      cardBg: baseColors.white,
-      textColor: baseColors.gray500,
-      headingColor: baseColors.gray700,
+      bgPrimary: baseColors.gray50,
+      bgSecondary: baseColors.white,
+      textPrimary: baseColors.gray500,
+      textSecondary: baseColors.gray700,
     },
     dark: {
-      bg: baseColors.gray700,
-      cardBg: baseColors.gray500,
-      textColor: baseColors.gray50,
-      headingColor: baseColors.white,
+      bgPrimary: baseColors.gray700,
+      bgSecondary: baseColors.gray500,
+      textPrimary: baseColors.gray50,
+      textSecondary: baseColors.white,
     },
   };
 

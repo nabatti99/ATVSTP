@@ -4,6 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import loadColors from "../config/loadColors";
 import loadFonts from "../config/loadFonts";
+import loadImages from "../config/loadImages";
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -15,6 +16,7 @@ export default function useCachedResources() {
         SplashScreen.preventAutoHideAsync();
 
         await loadFonts();
+        loadImages();
         loadColors();
       } catch (e) {
         // We might want to provide this error information to an error reporting service

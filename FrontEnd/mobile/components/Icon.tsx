@@ -16,7 +16,7 @@ const ICON_SIZE = 26;
 export const Icon: React.FC<IconProps> = ({
   name,
   size = ICON_SIZE,
-  color = Colors.textColor,
+  color = Colors.textPrimary,
   isButton = false,
   viewProps,
   onPress,

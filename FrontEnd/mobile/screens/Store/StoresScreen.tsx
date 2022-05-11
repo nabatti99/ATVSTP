@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, GridList, TouchableOpacity } from "react-native-ui-lib";
+import { View, Text, Image, GridList, TouchableOpacity, Fader, Colors } from "react-native-ui-lib";
 
 import { Icon } from "../../components/Icon";
 import Layout from "../../constants/Layout";
+import { StoresStackScreenProps } from "../../navigation/types";
 import { Certificate, Store } from "./types";
 
 const { window } = Layout;
 
-export default function StoresScreen({}) {
+export default function StoresScreen({ navigation }: StoresStackScreenProps<"Stores">) {
   const [groceries, setGroceries] = useState<Store[]>();
 
   useEffect(() => {
@@ -44,41 +45,43 @@ export default function StoresScreen({}) {
   }, []);
 
   return (
-    <View flex bg-background paddingH-24 paddingT-16>
-      <Text h1 gray500>
-        Cửa hàng
-      </Text>
+    <View flex bg-bgPrimary paddingT-16>
+      <View paddingH-24>
+        <Text h1 textPrimary>
+          Cửa hàng
+        </Text>
+      </View>
 
       <GridList
         data={groceries}
         numColumns={1}
         keyExtractor={(item) => item.name}
-        style={{ marginTop: 16 }}
+        style={{ marginTop: 16, paddingHorizontal: 24 }}
         containerWidth={window.width - 24 * 2}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => {}} activeOpacity={0.6}>
+          <TouchableOpacity onPress={() => navigation.push("StoreDetail", { id: index })} activeOpacity={0.6}>
             <View>
               <Image
                 source={{ uri: "https://picsum.photos/400" }}
                 style={{ width: "100%", height: 258, borderRadius: 16, marginRight: 12 }}
               />
 
-              <Text h1 gray700>
+              <Text h1 textSecondary>
                 {item.name}
               </Text>
 
               <View row centerV marginT-8>
                 <Icon name="enviromento" size={14} />
-                <Text regular gray500 marginL-4>
+                <Text regular textPrimary marginL-4>
                   {item.address}
                 </Text>
               </View>
 
               <View row centerV marginT-2>
                 <Icon name="phone" size={14} />
-                <Text regular gray500 marginL-4>
+                <Text regular textPrimary marginL-4>
                   {`${item.owner} - ${item.phone_number}`}
                 </Text>
               </View>
@@ -106,6 +109,7 @@ export default function StoresScreen({}) {
           </TouchableOpacity>
         )}
       />
+      <Fader position={Fader.position.BOTTOM} visible tintColor={Colors.bgPrimary} />
     </View>
   );
 }

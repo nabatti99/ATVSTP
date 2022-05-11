@@ -14,7 +14,7 @@ export default function loadFonts() {
   }).then((): void => {
     Typography.loadTypographies({
       h1: { fontSize: 24, fontFamily: "BeVNProSemiBold" },
-      h2: { fontSize: 20, fontFamily: "BeVNProSemiBold" },
+      h2: { fontSize: 18, fontFamily: "BeVNProSemiBold" },
       strong: { fontSize: 14, fontFamily: "BeVNProBold" },
       regular: { fontSize: 14, fontFamily: "BeVNProSemiBold" },
       small: { fontSize: 10, fontFamily: "BeVNProExtraBold" },

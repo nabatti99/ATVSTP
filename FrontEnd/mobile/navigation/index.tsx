@@ -28,6 +28,7 @@ import StoresScreen from "../screens/Store/StoresScreen";
 import NewsScreen from "../screens/News/NewsScreen";
 import { NewsDetailScreen } from "../screens/News/NewsDetailScreen";
 import PersonalScreen from "../screens/Personal/PersonalScreen";
+import { StoreDetailScreen } from "../screens/Store/StoreDetailScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const navigationRef = useNavigationContainerRef();
@@ -68,8 +69,6 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
       initialRouteName="NewsTab"
@@ -83,7 +82,7 @@ function BottomTabNavigator() {
           height: 64,
           paddingBottom: 8,
           paddingTop: 8,
-          backgroundColor: Colors.cardBg,
+          backgroundColor: Colors.bgSecondary,
         },
       }}
     >
@@ -137,6 +136,7 @@ function StoresStackNavigator() {
   return (
     <StoresStack.Navigator screenOptions={stackNavigationOptions}>
       <StoresStack.Screen name="Stores" component={StoresScreen} />
+      <StoresStack.Screen name="StoreDetail" component={StoreDetailScreen} />
     </StoresStack.Navigator>
   );
 }

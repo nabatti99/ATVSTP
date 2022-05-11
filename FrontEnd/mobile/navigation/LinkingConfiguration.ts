@@ -18,6 +18,7 @@ const linking: LinkingOptions<RootStackParamList> = {
           StoresTab: {
             screens: {
               Stores: "Stores",
+              StoreDetail: "StoreDetail",
             },
           },
           NewsTab: {

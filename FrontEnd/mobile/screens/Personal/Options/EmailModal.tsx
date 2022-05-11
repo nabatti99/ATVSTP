@@ -32,6 +32,8 @@ export function EmailModal({ navigation }: PersonalStackScreenProps<"EmailModal"
               floatingPlaceholder
               validate={["email"]}
               validationMessage={["Email không hợp lệ"]}
+              style={Typography.regular}
+              floatingPlaceholderStyle={Typography.regular}
             />
           </View>
           <Icon name="mail" size={32} color={Colors.gray700} />
