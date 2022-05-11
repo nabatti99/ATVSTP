@@ -149,10 +149,9 @@ def delete_inspection_schedule(current_manager=None, _id: str = ''):
 @app.route('/inspection_schedule/restore_schedule/<string:_id>', methods=['PUT'])
 @manager_required('level_two')
 def restore_inspection_schedule(current_manager=None, _id: str = ''):
-
     try:
-        restored_inspection_schedule = inspection_schedule.find_one({'_id': ObjectId(_id)},
-                                                                    {"$unset": {'date_delete': 1}})
+        restored_inspection_schedule = inspection_schedule.update_one({'_id': ObjectId(_id)},
+                                                                      {"$unset": {'date_delete': 1}})
         if restored_inspection_schedule:
             return response_status(status=success_status,
                                    message=f'Restored inspection schedule {_id}')

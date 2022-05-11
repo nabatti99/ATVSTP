@@ -155,8 +155,8 @@ def delete_superior_reporting(current_manager=None, _id: str = ''):
 def restore_superior_reporting(current_manager=None, _id: str = ''):
     try:
 
-        restored_superior_reporting = superior_reporting.find_one({'_id': ObjectId(_id)},
-                                                                  {"$unset": {'date_delete': 1}})
+        restored_superior_reporting = superior_reporting.update_one({'_id': ObjectId(_id)},
+                                                                    {"$unset": {'date_delete': 1}})
 
         if restored_superior_reporting:
             return response_status(status=success_status,

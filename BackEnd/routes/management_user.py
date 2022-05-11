@@ -13,7 +13,6 @@ import jwt
 manager_collection = app.db.manager
 admin_atvstp = app.db.administration_atvstp
 
-
 fail_status = 'Fail'
 success_status = 'Success'
 
@@ -245,11 +244,18 @@ def delete_a_manager(current_manager=None, email: str = ''):
         else:
 
             # delete profile manager in firebase
-            if the_manager['image_url']:
-                storage.delete(f'manager/{the_manager["_id"]}.jpg', None)
+            # if the_manager['image_url']:
+            #     storage.delete(f'manager/{the_manager["_id"]}.jpg', None)
+
+            # delete field current manager in collection 'admin_atvstp'
+            admin_atvstp.update_one({'name': the_manager['work_from']},
+                                    {'$pull': {
+                                        f'responsible.{the_manager["role"]}': the_manager['email']
+                                    }})
 
             # deleted_manager = manager_collection.delete_one({'email': email})
-            deleted_manager = manager_collection.update_one({'email': email}, {"$set": {'date_delete': datetime.utcnow()}})
+            deleted_manager = manager_collection.update_one({'email': email},
+                                                            {"$set": {'date_delete': datetime.utcnow()}})
 
             if deleted_manager:
                 return response_status(status=success_status,
@@ -265,10 +271,14 @@ def delete_a_manager(current_manager=None, email: str = ''):
 @manager_required("level_two")
 def restore_a_manager(current_manager=None, email: str = ''):
     try:
+        restored_manager = manager_collection.find_one_and_update({'email': email},
+                                                                  {"$unset": {'date_delete': 1}})
 
-        restored_manager = manager_collection.find_one({'email': email},
-                                                       {"$unset": {'date_delete': 1}})
-
+        # restore role of current manager in 'admin_atvstp'
+        x = admin_atvstp.update_one({'name': restored_manager['work_from']},
+                                    {'$push': {
+                                        f'responsible.{restored_manager["role"]}': restored_manager['email']
+                                    }})
         if restored_manager:
             return response_status(status=success_status,
                                    message=f'Restored user {email}')

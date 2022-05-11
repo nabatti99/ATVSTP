@@ -1,12 +1,11 @@
-from datetime import time
 from routes import app, manager_required
 from flask import request
 import time
 from .pagination import pagination
 from models.certificate import Certificate
 from models.firebase import storage
-
-certificate_collection = app.db.certificate_atvstp
+from datetime import datetime
+certificate_collection = app.db.certificate_atvstp;
 
 
 @app.route('/certificate', methods=["GET"])
@@ -38,7 +37,7 @@ def get_certificate(current_manager=None):
 
 
 @app.route('/certificate/<string:certificate_name>', methods=["GET"])
-# @manager_required("level_one")
+@manager_required("level_one")
 def get_certificate_by_name(current_manager=None, certificate_name=''):
     try:
         certificate = certificate_collection.find_one({'name': certificate_name})
@@ -99,10 +98,20 @@ def update_certificate(current_manager=None, certificate_name=''):
 @manager_required("level_one")
 def delete_certificate(current_manager=None, certificate_name=''):
     try:
-        certificate_collection.find_one_and_delete({'name': certificate_name})
-        return {'Status': 'Success'}
+        deleted_certificate = certificate_collection.find_one({'name': certificate_name})
+        if deleted_certificate:
+            delete_time = datetime.utcnow()
+            certificate_collection.find_one_and_update({'name': certificate_name},
+                                                       {'$set':
+                                                            {'is_deleted': True,
+                                                             'delete_time': delete_time}})
+            return {'Status': 'Success',
+                    'Message': f'Deleted certificate: {certificate_name}'}
+        else:
+            return {'Status': 'Fail',
+                    'Message': 'Can not find this grocery in database'}, 401
     except Exception:
-        return {'Status': 'Fail'}, 400
+        return {'Status': 'Can not delete'}, 400
 
 
 @app.route('/certificate/save_image/<string:name>', methods=['POST'])
@@ -127,7 +136,7 @@ def load_image_certificate(current_manager=None, name: str = ''):
     except Exception as e:
         print(e)
         return {'Status': 'Fail',
-                'Message': 'Have some error'}, 400
+                'Message': f'{e}'}, 400
 
 
 def check_input(new_certificate):
@@ -148,4 +157,3 @@ def check_input(new_certificate):
         logger['effective_time'] = "No effective time"
 
     return logger
-
