@@ -100,8 +100,8 @@ def delete_certificate(current_manager=None, certificate_name=''):
             delete_time = datetime.utcnow()
             certificate_collection.find_one_and_update({'name': certificate_name},
                                                        {'$set':
-                                                            {'is_deleted': True,
-                                                             'delete_time': delete_time}})
+                                                            {'date_delete': delete_time}})
+
             return {'Status': 'Success',
                     'Message': f'Deleted certificate: {certificate_name}'}
         else:
@@ -116,7 +116,7 @@ def delete_certificate(current_manager=None, certificate_name=''):
 def restore_certificate(current_manager=None, certificate_name: str = ''):
     try:
         restored_certificate = certificate_collection.update_one({'name': certificate_name},
-                                                                 {"$set": {'is_deleted': False}})
+                                                                 {"$unset": {'date_delete': 1}})
         if restored_certificate:
             return {'Status': 'Success',
                     'Message': f'Restored certificate: {certificate_name}'}

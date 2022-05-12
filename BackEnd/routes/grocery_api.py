@@ -111,8 +111,8 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
             delete_time = datetime.utcnow()
             grocery_collection.find_one_and_update({'name': grocery_name},
                                                    {'$set':
-                                                        {'is_deleted': True,
-                                                         'delete_time': delete_time}})
+                                                        {'date_delete': delete_time}})
+
             return {'Status': 'Success',
                     'Message': f'Deleted grocery: {grocery_name}'}
         else:
@@ -128,7 +128,7 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
 def restore_grocery(current_manager=None, grocery_name: str = ''):
     try:
         restored_grocery = grocery_collection.update_one({'name': grocery_name},
-                                                             {"$set": {'is_deleted': False}})
+                                                         {"$unset": {'date_delete': 1}})
         if restored_grocery:
             return {'Status': 'Success',
                     'Message': f'Restored grocery: {grocery_name}'}
