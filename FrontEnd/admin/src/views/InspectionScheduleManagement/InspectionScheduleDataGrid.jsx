@@ -9,7 +9,7 @@ import CreateSvg from "../../components/Icons/CreateSvg";
 import AddSvg from "../../components/Icons/AddSvg";
 
 import useRequest from "../../hooks/useRequest";
-import { exportDate } from "utilities/formatDate";
+import { importDate } from "utilities/formatDate";
 
 const headers = [
   {
@@ -18,7 +18,7 @@ const headers = [
     minWidth: 120,
     color: "gray.500",
     transform: function (schedule) {
-      return exportDate(new Date(schedule));
+      return importDate(schedule).toLocaleString();
     },
   },
   {

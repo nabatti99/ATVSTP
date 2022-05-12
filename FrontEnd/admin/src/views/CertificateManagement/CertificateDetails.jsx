@@ -10,6 +10,8 @@ import Image from "../../components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
 import { DELETE_CERTIFICATE } from "./Modals/certificateActionTypes";
+import { importDate } from "utilities/formatDate";
+import ReplaySvg from "components/Icons/ReplaySvg";
 
 function CertificateDetails() {
   const request = useRequest();
@@ -24,6 +26,7 @@ function CertificateDetails() {
     manager: "",
     effective_time: "",
     image_url: "",
+    date_delete: null,
   });
 
   const getCertificate = async () => {
@@ -49,7 +52,7 @@ function CertificateDetails() {
     }
   }, [state]);
 
-  const { manager, effective_time, image_url, last_update } = certificate;
+  const { manager, effective_time, image_url, last_update, date_delete } = certificate;
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
@@ -86,6 +89,12 @@ function CertificateDetails() {
             <Typography variant="strong" mt={2}>
               Cập nhật lần cuối: {isLoading ? skeleton : last_update}
             </Typography>
+
+            {date_delete && (
+              <Typography variant="strong" color="red.500" mt={4}>
+                Chứng nhận này sẽ bị xoá vĩnh viễn sau: {importDate(date_delete).toLocaleString()}
+              </Typography>
+            )}
           </Stack>
 
           <Stack>
@@ -101,18 +110,31 @@ function CertificateDetails() {
             >
               Chỉnh sửa
             </ButtonIcon>
-            <ButtonIcon
-              variant="contained"
-              color="red"
-              LeftIcon={DeleteSvg}
-              onClick={() => {
-                navigate("Delete", {
-                  state: certificate,
-                });
-              }}
-            >
-              Xoá
-            </ButtonIcon>
+            {date_delete ? (
+              <ButtonIcon
+                variant="contained"
+                color="red"
+                LeftIcon={ReplaySvg}
+                onClick={() => {
+                  // TODO: add restore API
+                }}
+              >
+                Xoá
+              </ButtonIcon>
+            ) : (
+              <ButtonIcon
+                variant="contained"
+                color="red"
+                LeftIcon={DeleteSvg}
+                onClick={() => {
+                  navigate("Delete", {
+                    state: certificate,
+                  });
+                }}
+              >
+                Xoá
+              </ButtonIcon>
+            )}
           </Stack>
         </Stack>
       </Paper>

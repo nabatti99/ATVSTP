@@ -10,6 +10,8 @@ import Image from "../../components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
 import { DELETE_GROCERY } from "./Modals/groceryActionTypes";
+import { importDate } from "utilities/formatDate";
+import ReplaySvg from "components/Icons/ReplaySvg";
 
 function GroceryDetails() {
   const request = useRequest();
@@ -28,6 +30,7 @@ function GroceryDetails() {
     item: [],
     certificate: [],
     image_url: "",
+    date_delete: null,
   });
 
   const getGrocery = async () => {
@@ -42,18 +45,16 @@ function GroceryDetails() {
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      if (state.action == DELETE_GROCERY) {
-        navigate("/GroceriesManagement/", {
+      getGrocery().catch((err) => {
+        console.log(err.response);
+        navigate("/NotFound", {
           replace: true,
         });
-        return;
-      }
-
-      getGrocery();
+      });
     }
   }, [state]);
 
-  const { owner, phone_number, address, status, item, certificate, image_url } = grocery;
+  const { owner, phone_number, address, status, item, certificate, image_url, date_delete } = grocery;
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
@@ -146,6 +147,12 @@ function GroceryDetails() {
                     </Typography>
                   ))}
             </Stack>
+
+            {date_delete && (
+              <Typography variant="strong" color="red.500" mt={4}>
+                Cửa hàng này sẽ bị xoá vĩnh viễn sau: {importDate(date_delete).toLocaleString()}
+              </Typography>
+            )}
           </Stack>
 
           <Stack>
@@ -161,18 +168,31 @@ function GroceryDetails() {
             >
               Chỉnh sửa
             </ButtonIcon>
-            <ButtonIcon
-              variant="contained"
-              color="red"
-              LeftIcon={DeleteSvg}
-              onClick={() => {
-                navigate("Delete", {
-                  state: grocery,
-                });
-              }}
-            >
-              Xoá
-            </ButtonIcon>
+            {date_delete ? (
+              <ButtonIcon
+                variant="contained"
+                color="green"
+                LeftIcon={ReplaySvg}
+                onClick={() => {
+                  // TODO: Add restore API
+                }}
+              >
+                Khôi phục
+              </ButtonIcon>
+            ) : (
+              <ButtonIcon
+                variant="contained"
+                color="red"
+                LeftIcon={DeleteSvg}
+                onClick={() => {
+                  navigate("Delete", {
+                    state: grocery,
+                  });
+                }}
+              >
+                Xoá
+              </ButtonIcon>
+            )}
           </Stack>
         </Stack>
       </Paper>

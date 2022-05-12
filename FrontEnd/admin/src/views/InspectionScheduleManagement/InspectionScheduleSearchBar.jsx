@@ -15,7 +15,7 @@ function InspectionScheduleSearchBar({ query = {}, onChange = () => {} }) {
           <DatePicker
             label="THỜI GIAN BẮT ĐẦU"
             onChange={(value) => {
-              onChange({ ...query, dateStart: exportDate(new Date(value)) });
+              onChange({ ...query, dateStart: exportDate(new Date(value)).slice(0, 10) });
             }}
             value={importDate(query.dateStart)}
             renderInput={(params) => <TextField sx={{ marginRight: 2 }} {...params} />}
@@ -26,7 +26,7 @@ function InspectionScheduleSearchBar({ query = {}, onChange = () => {} }) {
           <DatePicker
             label="THỜI GIAN KẾT THÚC"
             onChange={(value) => {
-              onChange({ ...query, dateEnd: exportDate(new Date(value)) });
+              onChange({ ...query, dateEnd: exportDate(new Date(value)).slice(0, 10) });
             }}
             value={importDate(query.dateEnd)}
             renderInput={(params) => <TextField sx={{ marginRight: 2 }} {...params} />}

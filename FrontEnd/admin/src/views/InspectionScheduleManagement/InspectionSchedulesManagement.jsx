@@ -22,8 +22,8 @@ function InspectionSchedulesManagement() {
   defaultEndDate.setMonth(new Date().getMonth() + 3);
 
   const [query, setQuery] = useState({
-    dateStart: exportDate(defaultStartDate),
-    dateEnd: exportDate(defaultEndDate),
+    dateStart: exportDate(defaultStartDate).slice(0, 10),
+    dateEnd: exportDate(defaultEndDate).slice(0, 10),
     isDraft: true,
   });
   const handleChanged = (newQuery) => {

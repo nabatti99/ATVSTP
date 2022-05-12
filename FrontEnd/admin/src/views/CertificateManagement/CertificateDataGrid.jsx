@@ -115,6 +115,10 @@ function CertificateDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
     },
   ];
 
+  const handleRestore = (row) => {
+    // return request.put(`manager/restore_a_manager/${row.email}`);
+  };
+
   // Render
   const FooterComponent = (
     <ButtonIcon variant="outlined" onClick={() => navigate("Add")} LeftIcon={AddSvg}>
@@ -134,6 +138,7 @@ function CertificateDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
         onUpdateTable={handleUpdateTable}
         actionButtons={actionButtons}
         FooterComponent={FooterComponent}
+        onRestore={handleRestore}
       />
     </Paper>
   );

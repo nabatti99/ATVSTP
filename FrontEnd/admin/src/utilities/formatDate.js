@@ -3,5 +3,6 @@ export function exportDate(date = new Date()) {
 }
 
 export function importDate(inputDate = "") {
+  console.log(inputDate);
   return new Date(inputDate);
 }

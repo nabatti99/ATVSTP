@@ -1,6 +1,5 @@
 import {
   Button,
-  debounce,
   MenuItem,
   Stack,
   TextField,
@@ -8,15 +7,14 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemButton,
   ListItemIcon,
   IconButton,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import CloseSvg from "components/Icons/CloseSvg";
 import useRequest from "hooks/useRequest";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { exportDate, importDate } from "utilities/formatDate";
 import AppModal from "../../../components/AppModal";
 import { ADD_NEW_SCHEDULE, EDIT_SCHEDULE } from "./inspectionScheduleActionTypes";
@@ -123,7 +121,7 @@ function InspectionScheduleModal({
     >
       <Stack>
         <LocalizationProvider dateAdapter={AdapterMoment}>
-          <DatePicker
+          <DateTimePicker
             label="THỜI GIAN"
             value={schedule}
             onChange={(value) => onScheduleChange(new Date(value))}
