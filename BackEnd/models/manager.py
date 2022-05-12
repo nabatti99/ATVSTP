@@ -47,5 +47,5 @@ class Manager:
             'work_from': database['work_from'],
             'image_url': database['image_url'],
             'role': database['role'],
-            'date_delete': database.get('data_delete', None)
+            'date_delete': database.get('date_delete', None)
         }
