@@ -3,15 +3,18 @@ import { Box, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import ButtonIcon from "../../components/ButtonIcon";
-import MailSvg from "../../components/Icons/MailSvg";
-import PhoneSvg from "../../components/Icons/PhoneSvg";
-import LocationPinSvg from "../../components/Icons/LocationPinSvg";
-import EventNoteSvg from "../../components/Icons/EventNoteSvg";
-import Image from "../../components/Image";
+
+import ButtonIcon from "components/ButtonIcon";
+import MailSvg from "components/Icons/MailSvg";
+import PhoneSvg from "components/Icons/PhoneSvg";
+import LocationPinSvg from "components/Icons/LocationPinSvg";
+import EventNoteSvg from "components/Icons/EventNoteSvg";
+import Image from "components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
+import ReplaySvg from "components/Icons/ReplaySvg";
 import { DELETE_PROFILE } from "./Modals/profileActionTypes";
+import { exportDate, importDate } from "utilities/formatDate";
 
 function UserDetails() {
   const request = useRequest();
@@ -29,6 +32,7 @@ function UserDetails() {
     type_manager: "",
     image_url: "",
     work_from: "",
+    date_delete: null,
   });
 
   const getProfile = async () => {
@@ -43,13 +47,6 @@ function UserDetails() {
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      if (state.action == DELETE_PROFILE) {
-        navigate("/UsersManagement/", {
-          replace: true,
-        });
-        return;
-      }
-
       getProfile().catch((err) => {
         console.log(err.response);
         navigate("/NotFound", {
@@ -59,7 +56,7 @@ function UserDetails() {
     }
   }, [state]);
 
-  const { name, phone, address, type_manager, image_url, work_from } = profile;
+  const { name, phone, address, type_manager, image_url, work_from, date_delete } = profile;
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
@@ -103,6 +100,12 @@ function UserDetails() {
               <EventNoteSvg size={16} mr={1} />
               <Typography variant="strong">Công tác tại: {isLoading ? skeleton : work_from}</Typography>
             </Stack>
+
+            {date_delete && (
+              <Typography variant="strong" color="red.500" mt={4}>
+                Tài khoản này sẽ bị xoá vĩnh viễn sau: {importDate(date_delete).toLocaleString()}
+              </Typography>
+            )}
           </Stack>
 
           <Stack>
@@ -118,18 +121,31 @@ function UserDetails() {
             >
               Chỉnh sửa
             </ButtonIcon>
-            <ButtonIcon
-              variant="contained"
-              color="red"
-              LeftIcon={DeleteSvg}
-              onClick={() => {
-                navigate("Delete", {
-                  state: profile,
-                });
-              }}
-            >
-              Xoá
-            </ButtonIcon>
+            {date_delete ? (
+              <ButtonIcon
+                variant="contained"
+                color="green"
+                LeftIcon={ReplaySvg}
+                onClick={() => {
+                  request.put(`manager/restore_a_manager/${email}`).then(() => getProfile());
+                }}
+              >
+                Khôi phục
+              </ButtonIcon>
+            ) : (
+              <ButtonIcon
+                variant="contained"
+                color="red"
+                LeftIcon={DeleteSvg}
+                onClick={() => {
+                  navigate("Delete", {
+                    state: profile,
+                  });
+                }}
+              >
+                Xoá
+              </ButtonIcon>
+            )}
           </Stack>
         </Stack>
       </Paper>

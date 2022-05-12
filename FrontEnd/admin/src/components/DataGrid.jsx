@@ -125,7 +125,7 @@ function DataGrid({
                             />
                           </IconButton>
                           <Typography variant="small" color="red.500">
-                            {exportDate(importDate(row.date_delete))}
+                            {importDate(row.date_delete).toLocaleString()}
                           </Typography>
                         </Stack>
                       ) : (
