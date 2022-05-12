@@ -1,6 +1,5 @@
 from routes import app, manager_required
 from flask import request
-import time
 from .pagination import pagination
 from models.certificate import Certificate
 from models.firebase import storage
@@ -56,8 +55,7 @@ def get_certificate_by_name(current_manager=None, certificate_name=''):
 @manager_required("level_one")
 def create_certificate(current_manager=None):
     data = request.get_json()
-    seconds = time.time()
-    last_update_time = time.ctime(seconds)
+    last_update_time = datetime.utcnow()
     logger = check_input(data)
     if not logger:
         new_certificate = Certificate(name=data['name'],
@@ -80,8 +78,7 @@ def create_certificate(current_manager=None):
 @manager_required("level_one")
 def update_certificate(current_manager=None, certificate_name=''):
     data = request.get_json()
-    seconds = time.time()
-    last_update_time = time.ctime(seconds)
+    last_update_time = datetime.utcnow()
     update = {'name': certificate_name,
               'manager': data['manager'],
               'effective_time': data['effective_time'],
@@ -103,8 +100,8 @@ def delete_certificate(current_manager=None, certificate_name=''):
             delete_time = datetime.utcnow()
             certificate_collection.find_one_and_update({'name': certificate_name},
                                                        {'$set':
-                                                            {'is_deleted': True,
-                                                             'delete_time': delete_time}})
+                                                            {'date_delete': delete_time}})
+
             return {'Status': 'Success',
                     'Message': f'Deleted certificate: {certificate_name}'}
         else:
@@ -112,6 +109,22 @@ def delete_certificate(current_manager=None, certificate_name=''):
                     'Message': 'Can not find this grocery in database'}, 401
     except Exception:
         return {'Status': 'Can not delete'}, 400
+
+
+@app.route('/certificate/restore/<string:certificate_name>', methods=['PUT'])
+@manager_required('level_one')
+def restore_certificate(current_manager=None, certificate_name: str = ''):
+    try:
+        restored_certificate = certificate_collection.update_one({'name': certificate_name},
+                                                                 {"$unset": {'date_delete': 1}})
+        if restored_certificate:
+            return {'Status': 'Success',
+                    'Message': f'Restored certificate: {certificate_name}'}
+        else:
+            return {'Status': 'Fail',
+                    'Message': 'Can not find this certificate in database'}, 401
+    except Exception as e:
+        return {'Type Error': e}, 400
 
 
 @app.route('/certificate/save_image/<string:name>', methods=['POST'])
@@ -157,3 +170,4 @@ def check_input(new_certificate):
         logger['effective_time'] = "No effective time"
 
     return logger
+

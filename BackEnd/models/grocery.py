@@ -7,7 +7,8 @@ class Grocery:
                  status: str = '',
                  item: dict = None,
                  certificate: str = '',
-                 image_url: str = ''):
+                 image_url: str = '',
+                 created_time=None):
 
         self.name = name
         self.owner = owner
@@ -17,6 +18,7 @@ class Grocery:
         self.item = item
         self.certificate = certificate
         self.image_url = image_url
+        self.created_time = created_time
 
     def to_dict(self):
         return {
@@ -27,5 +29,7 @@ class Grocery:
             'status': self.status,
             'item': self.item,
             'certificate': self.certificate,
-            'image_url': self.image_url
+            'image_url': self.image_url,
+            'created_time': self.created_time,
+            'is_deleted': False
         }
