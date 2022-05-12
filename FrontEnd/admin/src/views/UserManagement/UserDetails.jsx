@@ -13,8 +13,7 @@ import Image from "components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
 import ReplaySvg from "components/Icons/ReplaySvg";
-import { DELETE_PROFILE } from "./Modals/profileActionTypes";
-import { exportDate, importDate } from "utilities/formatDate";
+import { getDateDelete } from "utilities/formatDate";
 
 function UserDetails() {
   const request = useRequest();
@@ -37,8 +36,15 @@ function UserDetails() {
 
   const getProfile = async () => {
     setIsLoading(true);
-    const { data } = await request.get(`manager/get_a_manager/${email}`);
-    setProfile(data);
+    try {
+      const { data } = await request.get(`manager/get_a_manager/${email}`);
+      setProfile(data);
+    } catch (error) {
+      console.error(error);
+      navigate("/NotFound", {
+        replace: true,
+      });
+    }
     setIsLoading(false);
   };
 
@@ -47,12 +53,7 @@ function UserDetails() {
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      getProfile().catch((err) => {
-        console.log(err.response);
-        navigate("/NotFound", {
-          replace: true,
-        });
-      });
+      getProfile();
     }
   }, [state]);
 
@@ -103,7 +104,7 @@ function UserDetails() {
 
             {date_delete && (
               <Typography variant="strong" color="red.500" mt={4}>
-                Tài khoản này sẽ bị xoá vĩnh viễn sau: {importDate(date_delete).toLocaleString()}
+                Tài khoản này sẽ bị xoá vĩnh viễn sau: {getDateDelete(date_delete)}
               </Typography>
             )}
           </Stack>

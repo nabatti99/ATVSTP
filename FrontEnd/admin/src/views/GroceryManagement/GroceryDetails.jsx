@@ -9,8 +9,7 @@ import LocationPinSvg from "../../components/Icons/LocationPinSvg";
 import Image from "../../components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
-import { DELETE_GROCERY } from "./Modals/groceryActionTypes";
-import { importDate } from "utilities/formatDate";
+import { getDateDelete } from "utilities/formatDate";
 import ReplaySvg from "components/Icons/ReplaySvg";
 
 function GroceryDetails() {
@@ -150,7 +149,7 @@ function GroceryDetails() {
 
             {date_delete && (
               <Typography variant="strong" color="red.500" mt={4}>
-                Cửa hàng này sẽ bị xoá vĩnh viễn sau: {importDate(date_delete).toLocaleString()}
+                Cửa hàng này sẽ bị xoá vĩnh viễn sau: {getDateDelete(date_delete)}
               </Typography>
             )}
           </Stack>
@@ -174,7 +173,7 @@ function GroceryDetails() {
                 color="green"
                 LeftIcon={ReplaySvg}
                 onClick={() => {
-                  // TODO: Add restore API
+                  request.put(`grocery/restore/${name}`).then(() => getGrocery());
                 }}
               >
                 Khôi phục

@@ -11,7 +11,7 @@ import {
   inspectionScheduleReducer,
   SCHEDULE_CHANGE,
 } from "./inspectionScheduleReducer";
-import { exportDate } from "utilities/formatDate";
+import { exportDate, getOnlyDate } from "utilities/formatDate";
 
 function EditInspectionScheduleModal() {
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ function EditInspectionScheduleModal() {
       request
         .put(`inspection_schedule/${state._id}`, {
           ...inspectionScheduleData,
-          schedule: exportDate(inspectionScheduleData.schedule),
+          schedule: getOnlyDate(inspectionScheduleData.schedule),
         })
         .then(() =>
           navigate("../", {
@@ -77,11 +77,12 @@ function EditInspectionScheduleModal() {
             },
           })
         )
-        .catch((err) =>
+        .catch((err) => {
           navigate("../", {
             replace: true,
-          })
-        );
+          });
+          throw err;
+        });
     else
       navigate("../", {
         replace: true,

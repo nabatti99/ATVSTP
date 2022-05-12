@@ -10,7 +10,7 @@ import Image from "../../components/Image";
 import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
 import { DELETE_CERTIFICATE } from "./Modals/certificateActionTypes";
-import { importDate } from "utilities/formatDate";
+import { getDateDelete, importDate } from "utilities/formatDate";
 import ReplaySvg from "components/Icons/ReplaySvg";
 
 function CertificateDetails() {
@@ -86,13 +86,13 @@ function CertificateDetails() {
               </Stack>
             </Stack>
 
-            <Typography variant="strong" mt={2}>
-              Cập nhật lần cuối: {isLoading ? skeleton : last_update}
+            <Typography variant="strong" mt={2} color="gray.500">
+              Cập nhật lần cuối: {isLoading ? skeleton : importDate(last_update).toLocaleString()}
             </Typography>
 
             {date_delete && (
               <Typography variant="strong" color="red.500" mt={4}>
-                Chứng nhận này sẽ bị xoá vĩnh viễn sau: {importDate(date_delete).toLocaleString()}
+                Chứng nhận này sẽ bị xoá vĩnh viễn sau: {getDateDelete(date_delete)}
               </Typography>
             )}
           </Stack>
@@ -113,13 +113,13 @@ function CertificateDetails() {
             {date_delete ? (
               <ButtonIcon
                 variant="contained"
-                color="red"
+                color="green"
                 LeftIcon={ReplaySvg}
                 onClick={() => {
-                  // TODO: add restore API
+                  request.put(`certificate/restore/${name}`).then(() => getCertificate());
                 }}
               >
-                Xoá
+                Khôi phục
               </ButtonIcon>
             ) : (
               <ButtonIcon

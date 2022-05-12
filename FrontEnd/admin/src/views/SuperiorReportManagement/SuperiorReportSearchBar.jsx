@@ -15,9 +15,9 @@ function SuperiorReportSearchBar({ query = {}, onChange = () => {} }) {
           <DatePicker
             label="THỜI GIAN BẮT ĐẦU"
             onChange={(value) => {
-              onChange({ ...query, dateStart: exportDate(new Date(value)) });
+              onChange({ ...query, dateStart: exportDate(new Date(value)).slice(0, 10) });
             }}
-            value={importDate(query.dateStart)}
+            value={new Date(query.dateStart)}
             renderInput={(params) => <TextField sx={{ marginRight: 2 }} {...params} />}
           />
           <Typography color="gray.700" variant="regular" mr={2}>
@@ -26,9 +26,9 @@ function SuperiorReportSearchBar({ query = {}, onChange = () => {} }) {
           <DatePicker
             label="THỜI GIAN KẾT THÚC"
             onChange={(value) => {
-              onChange({ ...query, dateEnd: exportDate(new Date(value)) });
+              onChange({ ...query, dateEnd: exportDate(new Date(value)).slice(0, 10) });
             }}
-            value={importDate(query.dateEnd)}
+            value={new Date(query.dateEnd)}
             renderInput={(params) => <TextField sx={{ marginRight: 2 }} {...params} />}
           />
         </Stack>

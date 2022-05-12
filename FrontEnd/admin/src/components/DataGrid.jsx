@@ -14,7 +14,7 @@ import {
 import { Fragment, useEffect, useRef, useState } from "react";
 
 import ReplaySvg from "./Icons/ReplaySvg";
-import { exportDate, importDate } from "../utilities/formatDate";
+import { getDateDelete } from "../utilities/formatDate";
 
 function DataGrid({
   headers = [],
@@ -125,7 +125,7 @@ function DataGrid({
                             />
                           </IconButton>
                           <Typography variant="small" color="red.500">
-                            {importDate(row.date_delete).toLocaleString()}
+                            {getDateDelete(row.date_delete)}
                           </Typography>
                         </Stack>
                       ) : (

@@ -87,7 +87,9 @@ function InspectionScheduleDetails() {
               <LocalMallSvg size={16} mr={1} />
               <Stack color="gray.500">
                 {groceries.map((grocery) => (
-                  <Typography key="grocery">{grocery}</Typography>
+                  <Typography key="grocery" variant="strong">
+                    <Link href={`/GroceryDetail/${grocery}`}>{grocery}</Link>
+                  </Typography>
                 ))}
               </Stack>
             </Stack>

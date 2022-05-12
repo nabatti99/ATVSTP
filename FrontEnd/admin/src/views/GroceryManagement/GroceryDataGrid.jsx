@@ -158,7 +158,7 @@ function GroceryDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
   ];
 
   const handleRestore = (row) => {
-    // return request.put(`manager/restore_a_manager/${row.email}`);
+    return request.put(`grocery/restore/${row.name}`);
   };
 
   // Render

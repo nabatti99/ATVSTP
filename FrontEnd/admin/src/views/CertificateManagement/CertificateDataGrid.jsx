@@ -10,6 +10,7 @@ import AddSvg from "../../components/Icons/AddSvg";
 
 import useRequest from "../../hooks/useRequest";
 import Image from "../../components/Image";
+import { importDate } from "utilities/formatDate";
 
 const headers = [
   {
@@ -47,6 +48,9 @@ const headers = [
     headerName: "LẦN CUỐI CẬP NHẬT",
     minWidth: 120,
     color: "gray.500",
+    transform: function (value) {
+      return importDate(value).toLocaleString();
+    },
   },
   {
     field: "is_active",
@@ -116,7 +120,7 @@ function CertificateDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
   ];
 
   const handleRestore = (row) => {
-    // return request.put(`manager/restore_a_manager/${row.email}`);
+    return request.put(`certificate/restore/${row.name}`);
   };
 
   // Render

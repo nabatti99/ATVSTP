@@ -23,15 +23,19 @@ function DeleteProfileModal() {
 
   const handleModalClosed = () => {
     if (isSubmitted)
-      request.delete(`/manager/delete_a_manager/${state.email}`).then(() =>
+      request.delete(`/manager/delete_a_manager/${state.email}`).then(({ data }) => {
+        if (data.Status == "Fail") {
+          throw new Error(data.Message);
+        }
+
         navigate("../", {
           replace: true,
           state: {
             action: DELETE_PROFILE,
             isSubmitted,
           },
-        })
-      );
+        });
+      });
     else
       navigate("../", {
         replace: true,

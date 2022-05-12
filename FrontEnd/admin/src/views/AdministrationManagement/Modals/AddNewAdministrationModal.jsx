@@ -18,7 +18,7 @@ function AddNewAdministrationModal() {
     responsible: {
       "Giám Đốc": [],
       "Phó Giám Đốc": [],
-      "Thanh Tra": [],
+      "Thanh Tra Viên": [],
     },
   });
 
