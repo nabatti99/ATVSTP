@@ -9,17 +9,8 @@ from datetime import datetime
 
 grocery_collection = app.db.grocery
 
-#add TTL index for delete grocery
-# keys = {'lastModifiedDate': 1};
-# options = {
-#     'expireAfterSeconds': 3600,
-#     'partialFilterExpression': {'is_deleted': True}
-# };
-# grocery_collection.createIndex(keys, options);
-
-
 @app.route('/grocery', methods=['GET'])
-# @manager_required("level_one")
+@manager_required("level_one")
 def get_grocery(current_manager=None):
     offset = int(request.args['offset'])
     limit = int(request.args['limit'])
@@ -47,7 +38,7 @@ def get_grocery(current_manager=None):
 
 
 @app.route('/grocery/<string:grocery_name>', methods=['GET'])
-# @manager_required("level_one")
+@manager_required("level_one")
 def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
     try:
         grocery = grocery_collection.find_one({'name': grocery_name})
@@ -63,7 +54,7 @@ def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
 
 
 @app.route('/grocery', methods=['POST'])
-# @manager_required("level_one")
+@manager_required("level_one")
 def add_grocery(current_manager=None):
     data = request.get_json()
     created_time = time.strftime("%H:%M:%S %d-%m-%Y", time.localtime())
@@ -112,7 +103,7 @@ def update_a_grocery(current_manager=None, grocery_name: str = ''):
 
 
 @app.route('/grocery/<string:grocery_name>', methods=['DELETE'])
-# @manager_required("level_one")
+@manager_required("level_one")
 def delete_grocery(current_manager=None, grocery_name: str = ''):
     try:
         deleted_grocery = grocery_collection.find_one({'name': grocery_name})
@@ -130,6 +121,22 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
     except Exception as e:
         return {'Status': 'Fail',
                 'Message': 'Can not delete'}, 400
+
+
+@app.route('/grocery/restore/<string:grocery_name>', methods=['PUT'])
+@manager_required('level_one')
+def restore_grocery(current_manager=None, grocery_name: str = ''):
+    try:
+        restored_grocery = grocery_collection.update_one({'name': grocery_name},
+                                                             {"$set": {'is_deleted': False}})
+        if restored_grocery:
+            return {'Status': 'Success',
+                    'Message': f'Restored grocery: {grocery_name}'}
+        else:
+            return {'Status': 'Fail',
+                    'Message': 'Can not find this grocery in database'}, 401
+    except Exception as e:
+        return {'Type Error': e}, 400
 
 
 @app.route('/grocery/save_image/<string:name>', methods=['POST'])
@@ -157,7 +164,7 @@ def load_image_grocery(current_manager=None, name: str = ''):
 
 
 @app.route('/grocery/count/<string:condition>', methods=['GET'])
-# @manager_required('level_one')
+@manager_required('level_one')
 def count_groceries(current_manager=None, condition=''):
     try:
         list_groceries = grocery_collection.find({})

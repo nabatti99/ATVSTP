@@ -1,6 +1,5 @@
 from routes import app, manager_required
 from flask import request
-import time
 from .pagination import pagination
 from models.certificate import Certificate
 from models.firebase import storage
@@ -9,7 +8,7 @@ certificate_collection = app.db.certificate_atvstp;
 
 
 @app.route('/certificate', methods=["GET"])
-# @manager_required("level_one")
+@manager_required("level_one")
 def get_certificate(current_manager=None):
     list_certificate = []
 
@@ -93,7 +92,7 @@ def update_certificate(current_manager=None, certificate_name=''):
 
 
 @app.route('/certificate/<string:certificate_name>', methods=["DELETE"])
-# @manager_required("level_one")
+@manager_required("level_one")
 def delete_certificate(current_manager=None, certificate_name=''):
     try:
         deleted_certificate = certificate_collection.find_one({'name': certificate_name})
@@ -110,6 +109,22 @@ def delete_certificate(current_manager=None, certificate_name=''):
                     'Message': 'Can not find this grocery in database'}, 401
     except Exception:
         return {'Status': 'Can not delete'}, 400
+
+
+@app.route('/certificate/restore/<string:certificate_name>', methods=['PUT'])
+@manager_required('level_one')
+def restore_certificate(current_manager=None, certificate_name: str = ''):
+    try:
+        restored_certificate = certificate_collection.update_one({'name': certificate_name},
+                                                                 {"$set": {'is_deleted': False}})
+        if restored_certificate:
+            return {'Status': 'Success',
+                    'Message': f'Restored certificate: {certificate_name}'}
+        else:
+            return {'Status': 'Fail',
+                    'Message': 'Can not find this certificate in database'}, 401
+    except Exception as e:
+        return {'Type Error': e}, 400
 
 
 @app.route('/certificate/save_image/<string:name>', methods=['POST'])
