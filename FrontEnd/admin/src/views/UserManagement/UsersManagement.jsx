@@ -5,7 +5,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import UserDataGrid from "./UserDataGrid";
 
 import useRequest from "../../hooks/useRequest";
-import { EDIT_PROFILE, ADD_NEW_PROFILE, DELETE_PROFILE } from "./Modals/profileActionTypes";
 import UserSearchBar from "./UserSearchBar";
 
 function UsersManagement() {

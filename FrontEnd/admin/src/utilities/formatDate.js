@@ -1,5 +1,5 @@
 export function exportDate(date = new Date()) {
-  return date.toISOString().slice(0, 10);
+  return date.toLocaleString();
 }
 
 export function importDate(inputDate = "") {

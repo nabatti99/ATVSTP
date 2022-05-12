@@ -12,7 +12,9 @@ import {
   Typography,
 } from "@mui/material";
 import { Fragment, useEffect, useRef, useState } from "react";
-import usePrevious from "../hooks/usePrevious";
+
+import ReplaySvg from "./Icons/ReplaySvg";
+import { exportDate, importDate } from "../utilities/formatDate";
 
 function DataGrid({
   headers = [],
@@ -24,6 +26,7 @@ function DataGrid({
   FooterComponent = null,
   onUpdateTable,
   onRowClick = () => {},
+  onRestore = async () => {},
 }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
@@ -91,6 +94,7 @@ function DataGrid({
                     key={row.id}
                     sx={{
                       cursor: "pointer",
+                      backgroundColor: row.date_delete ? "red.50" : "white",
                       "&:hover": {
                         backgroundColor: "gray.50",
                       },
@@ -109,17 +113,34 @@ function DataGrid({
                     ))}
 
                     <TableCell align="center">
-                      {actionButtons.map(({ IconComponent, color, handleClicked }) => (
-                        <IconButton
-                          key={IconComponent.name}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleClicked(row);
-                          }}
-                        >
-                          <IconComponent color={color} />
-                        </IconButton>
-                      ))}
+                      {row.date_delete ? (
+                        <Stack direction="row" justifyContent="center" alignItems="center">
+                          <IconButton>
+                            <ReplaySvg
+                              color="blue.500"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                onRestore(row).then(() => updateTable(page, rowsPerPage));
+                              }}
+                            />
+                          </IconButton>
+                          <Typography variant="small" color="red.500">
+                            {exportDate(importDate(row.date_delete))}
+                          </Typography>
+                        </Stack>
+                      ) : (
+                        actionButtons.map(({ IconComponent, color, handleClicked }) => (
+                          <IconButton
+                            key={IconComponent.name}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleClicked(row);
+                            }}
+                          >
+                            <IconComponent color={color} />
+                          </IconButton>
+                        ))
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

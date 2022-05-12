@@ -1,5 +1,5 @@
 import { Paper } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ButtonIcon from "../../components/ButtonIcon";
@@ -71,6 +71,8 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate, appContext, dis
   const [numRecords, setNumRecords] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
+  const dataGridRef = useRef();
+
   console.log(`Render datagrid ${shouldTableUpdate}`);
 
   const handleUpdateTable = (dataBegin, rowsPerPage) => {
@@ -132,6 +134,10 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate, appContext, dis
     },
   ];
 
+  const handleRestore = (row) => {
+    return request.put(`manager/restore_a_manager/${row.email}`);
+  };
+
   // Render
   const FooterComponent = (
     <ButtonIcon variant="outlined" onClick={() => navigate("Add")} LeftIcon={AddSvg}>
@@ -151,6 +157,7 @@ function UserDataGrid({ shouldTableUpdate, query, onTableUpdate, appContext, dis
         onUpdateTable={handleUpdateTable}
         actionButtons={actionButtons}
         FooterComponent={FooterComponent}
+        onRestore={handleRestore}
       />
     </Paper>
   );
