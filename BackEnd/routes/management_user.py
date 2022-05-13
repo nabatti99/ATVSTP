@@ -275,10 +275,10 @@ def restore_a_manager(current_manager=None, email: str = ''):
                                                                   {"$unset": {'date_delete': 1}})
 
         # restore role of current manager in 'admin_atvstp'
-        x = admin_atvstp.update_one({'name': restored_manager['work_from']},
-                                    {'$push': {
-                                        f'responsible.{restored_manager["role"]}': restored_manager['email']
-                                    }})
+        admin_atvstp.update_one({'name': restored_manager['work_from']},
+                                {'$push': {
+                                    f'responsible.{restored_manager["role"]}': restored_manager['email']
+                                }})
         if restored_manager:
             return response_status(status=success_status,
                                    message=f'Restored user {email}')
