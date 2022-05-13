@@ -127,6 +127,12 @@ def create_new_manager(current_manager=None):
                                    message='username is not unique!'), 401
 
         try:
+            # add manager to admin_atvstp
+            admin_atvstp.update_one({'name': new_inspector['work_from']},
+                                    {'$push': {
+                                        f'responsible.{new_inspector["role"]}': new_inspector['email']
+                                    }})
+
             current_admin_atvstp = admin_atvstp.find_one_and_update({'name': new_register['work_from']},
                                                                     {
                                                                         '$push': {
@@ -203,7 +209,8 @@ def update_a_manager(current_manager=None, email: str = ''):
                                                                          'phone': updated_manager['phone'],
                                                                          'address': updated_manager['address'],
                                                                          'work_from': updated_manager['work_from'],
-                                                                         'type_manager': updated_manager['type_manager'],
+                                                                         'type_manager': updated_manager[
+                                                                             'type_manager'],
                                                                          'role': updated_manager['role']
                                                                      }})
             elif current_manager['type_manager'] == 'inspector':
@@ -275,10 +282,10 @@ def restore_a_manager(current_manager=None, email: str = ''):
                                                                   {"$unset": {'date_delete': 1}})
 
         # restore role of current manager in 'admin_atvstp'
-        x = admin_atvstp.update_one({'name': restored_manager['work_from']},
-                                    {'$push': {
-                                        f'responsible.{restored_manager["role"]}': restored_manager['email']
-                                    }})
+        admin_atvstp.update_one({'name': restored_manager['work_from']},
+                                {'$push': {
+                                    f'responsible.{restored_manager["role"]}': restored_manager['email']
+                                }})
         if restored_manager:
             return response_status(status=success_status,
                                    message=f'Restored user {email}')
