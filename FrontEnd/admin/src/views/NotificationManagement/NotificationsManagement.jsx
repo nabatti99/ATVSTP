@@ -1,81 +1,22 @@
 import { useEffect, useState } from "react";
 import { Stack, Typography, Grid, Tabs, Tab, Paper, Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import NotificationTab from "./NotificationTab";
-import useRequest from "hooks/useRequest";
+import PrivateTab from "./PrivateNotification/PrivateTab";
+import FeedbackTab from "./FeedbackNotification/FeedbackTab";
+
+const privateTab = {
+  index: 0,
+  id: "privateTab",
+  name: "NỘI BỘ",
+};
+const feedbackTab = {
+  index: 1,
+  id: "feedbackTab",
+  name: "NGƯỜI DÂN",
+};
 
 function NotificationsManagement() {
-  const request = useRequest();
-
-  const [privateNotifications, setPrivateNotifications] = useState([]);
-  const [feedbackNotifications, setFeedbackNotifications] = useState([]);
-
-  useEffect(() => {
-    request
-      .get("feedback/read", {
-        params: {
-          offset: 0,
-          limit: 1000,
-          value: "",
-        },
-      })
-      .then(({ data }) => {
-        setFeedbackNotifications(data.data);
-      });
-
-    setPrivateNotifications([
-      {
-        id: "ldd",
-        title: "Thông báo họp tuần 32",
-        receivers: ["Minh", "Thịnh", "Huyền"],
-        messages: [
-          {
-            from: "Lê Duy Dương",
-            message: `Chào cả nhóm, tuần này mình sẽ họp ban lectus faucibus bibendum eget eget non facilisi sed. Quisque
-            mauris cursus convallis ut consequat volutpat elit, enim. Egestas a bibendum condimentum ipsum sed
-            volutpat sollicitudin et nunc. Nam nisi gravida amet, dolor porttitor tellus, urna, massa. Nunc non
-            feugiat purus non lacus eget volutpat. Neque ac lacus sit volutpat praesent sit sagittis. Nam
-            bibendum vel sapien aenean imperdiet malesuada. Turpis pretium ante neque, tortor facilisis faucibus
-            magna. Purus cras tortor, lobortis imperdiet duis mi sagittis. Tincidunt mi, pulvinar diam in auctor
-            lacus, nascetur et. Amet, nunc, in mi quis vulputate eu volutpat ut quis. Sit tellus nisl euismod
-            arcu est amet. Et, amet, dictum arcu pellentesque nullam integer rutrum. Ac maecenas cras dui, turpis
-            nulla. Egestas id leo gravida massa facilisi dapibus.`,
-          },
-          {
-            from: "Minh",
-            message: `Tôi đã hiểu`,
-          },
-        ],
-      },
-      {
-        id: "adsoch",
-        title: "Thông báo thanh tra",
-        receivers: ["Minh"],
-        messages: [
-          {
-            from: "Trương Công Nam",
-            message: `Gửi Minh, tuần này có kế hoạch thanh tra tại Ac maecenas cras dui, turpis
-            nulla. Egestas id leo gravida massa facilisi dapibus.`,
-          },
-          {
-            from: "Minh",
-            message: `Tôi đã hiểu`,
-          },
-        ],
-      },
-    ]);
-  }, []);
-
-  const data = [
-    {
-      tab: "NỘI BỘ",
-      notifications: privateNotifications,
-    },
-    {
-      tab: "NGƯỜI DÂN",
-      notifications: feedbackNotifications,
-    },
-  ];
+  const [tabIndex, setTabValue] = useState(privateTab.index);
 
   return (
     <Stack>
@@ -86,7 +27,23 @@ function NotificationsManagement() {
       <Paper elevation={2} sx={{ borderRadius: 4 }}>
         <Grid container>
           <Grid item xs={3} bgcolor="blue.50" borderRight={1} borderColor="gray.300" height="80vh">
-            <NotificationTab data={data} />
+            <Stack height="100%">
+              <Tabs
+                variant="fullWidth"
+                value={tabIndex}
+                onChange={(event, tabIndex) => setTabValue(tabIndex)}
+                sx={{
+                  borderBottom: 1,
+                  borderColor: "gray.300",
+                }}
+              >
+                <Tab label={privateTab.name} id={privateTab.id} />
+                <Tab label={feedbackTab.name} id={feedbackTab.id} />
+              </Tabs>
+
+              <PrivateTab isShown={tabIndex == privateTab.index} />
+              <FeedbackTab isShown={tabIndex == feedbackTab.index} />
+            </Stack>
           </Grid>
 
           <Grid item xs={9}>

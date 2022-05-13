@@ -31,8 +31,15 @@ function CertificateDetails() {
 
   const getCertificate = async () => {
     setIsLoading(true);
-    const { data } = await request.get(`certificate/${name}`);
-    setCertificate(data.Certificate);
+    try {
+      const { data } = await request.get(`certificate/${name}`);
+      setCertificate(data.Certificate);
+    } catch (error) {
+      navigate("/UsersManagement/", {
+        replace: true,
+      });
+    }
+
     setIsLoading(false);
   };
 
@@ -41,13 +48,6 @@ function CertificateDetails() {
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      if (state.action == DELETE_CERTIFICATE) {
-        navigate("/UsersManagement/", {
-          replace: true,
-        });
-        return;
-      }
-
       getCertificate();
     }
   }, [state]);

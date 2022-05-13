@@ -11,5 +11,7 @@ export function getOnlyDate(date = new Date()) {
 }
 
 export function getDateDelete(inputDate = "") {
-  return new Date(inputDate + "+00:00").toLocaleString();
+  const date = new Date(inputDate + "+00:00");
+  date.setMinutes(date.getMinutes() + 1);
+  return date.toLocaleString();
 }

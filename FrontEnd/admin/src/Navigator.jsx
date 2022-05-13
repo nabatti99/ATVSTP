@@ -22,7 +22,6 @@ import CertificateDetails from "views/CertificateManagement/CertificateDetails";
 import InspectionSchedulesManagement from "views/InspectionScheduleManagement/InspectionSchedulesManagement";
 import AdministrationsManagement from "views/AdministrationManagement/AdministrationsManagement";
 import NotificationsManagement from "views/NotificationManagement/NotificationsManagement";
-import PrivateNotificationDetail from "views/NotificationManagement/PrivateNotificationDetail";
 import PostsManagement from "views/PostManagement/PostsManagement";
 import EditPostModal from "views/PostManagement/Modals/EditPostModal";
 import AddNewPostModal from "views/PostManagement/Modals/AddNewPostModal";
@@ -37,13 +36,14 @@ import AddNewInspectionScheduleModal from "views/InspectionScheduleManagement/Mo
 import EditInspectionScheduleModal from "views/InspectionScheduleManagement/Modals/EditInspectionScheduleModal";
 import InspectionScheduleDetails from "views/InspectionScheduleManagement/InspectionScheduleDetails";
 import DeleteInspectionScheduleModal from "views/InspectionScheduleManagement/Modals/DeleteInspectionScheduleModal";
-import FeedbackNotificationDetail from "views/NotificationManagement/FeedbackNotificationDetail";
 import Default from "views/Default";
 import SuperiorReportsManagement from "views/SuperiorReportManagement/SuperiorReportsManagement";
 import SuperiorReportDetails from "views/SuperiorReportManagement/SuperiorReportDetails";
 import AddNewSuperiorReportModal from "views/SuperiorReportManagement/Modals/AddNewSuperiorReportModal";
 import EditSuperiorReportModal from "views/SuperiorReportManagement/Modals/EditSuperiorReportModal";
 import DeleteSuperiorReportModal from "views/SuperiorReportManagement/Modals/DeleteSuperiorReportModal";
+import PrivateNotificationDetail from "views/NotificationManagement/PrivateNotification/PrivateDetail";
+import FeedbackNotificationDetail from "views/NotificationManagement/FeedbackNotification/FeedbackDetail";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;

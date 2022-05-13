@@ -34,8 +34,16 @@ function GroceryDetails() {
 
   const getGrocery = async () => {
     setIsLoading(true);
-    const { data } = await request.get(`grocery/${name}`);
-    setGrocery(data.Grocery);
+    try {
+      const { data } = await request.get(`grocery/${name}`);
+      setGrocery(data.Grocery);
+    } catch (error) {
+      console.error(error);
+      navigate("/NotFound", {
+        replace: true,
+      });
+    }
+
     setIsLoading(false);
   };
 
@@ -44,12 +52,7 @@ function GroceryDetails() {
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      getGrocery().catch((err) => {
-        console.log(err.response);
-        navigate("/NotFound", {
-          replace: true,
-        });
-      });
+      getGrocery();
     }
   }, [state]);
 

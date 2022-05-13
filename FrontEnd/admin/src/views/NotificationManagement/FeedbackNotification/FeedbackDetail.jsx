@@ -7,7 +7,7 @@ import SendSvg from "components/Icons/SendSvg";
 import StarBorderSvg from "components/Icons/StarBorderSvg";
 import Notification from "components/Notification";
 import useRequest from "hooks/useRequest";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import makeAvatarName from "utilities/makeAvatarName";
 
@@ -33,6 +33,7 @@ function FeedbackNotificationDetail() {
   }, [id]);
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
+  const iconSkeleton = <Skeleton variant="circular" animation="wave" width={16} height={16} />;
 
   const { content, create_at, department, email, fullname, phone_number } = feedbackData;
 
@@ -50,29 +51,42 @@ function FeedbackNotificationDetail() {
         </Stack>
 
         <Stack direction="row" mt={1}>
-          <MailSvg size={16} mr={1} />
-          <Typography variant="strong">
-            Email:&nbsp;
-            <Box component="span" color="blue.500">
-              {isLoading ? skeleton : email}
-            </Box>
+          {isLoading ? iconSkeleton : <MailSvg size={16} />}
+
+          <Typography variant="strong" ml={1}>
+            {isLoading ? (
+              skeleton
+            ) : (
+              <Fragment>
+                Email:&nbsp;
+                <Box component="span" color="blue.500">
+                  {isLoading ? skeleton : email}
+                </Box>
+              </Fragment>
+            )}
           </Typography>
         </Stack>
 
         <Stack direction="row" mt={1}>
-          <PhoneSvg size={16} mr={1} />
-          <Typography variant="strong">
-            Số điện thoại:&nbsp;
-            <Box component="span" color="blue.500">
-              {isLoading ? skeleton : phone_number}
-            </Box>
+          {isLoading ? iconSkeleton : <PhoneSvg size={16} />}
+          <Typography variant="strong" ml={1}>
+            {isLoading ? (
+              skeleton
+            ) : (
+              <Fragment>
+                Số điện thoại:&nbsp;
+                <Box component="span" color="blue.500">
+                  {phone_number}
+                </Box>
+              </Fragment>
+            )}
           </Typography>
         </Stack>
       </Box>
 
       <Stack py={3} px={4} flexGrow={1} justifyContent="space-between">
         <Stack>
-          <Notification label={makeAvatarName(fullname)}>
+          <Notification label={makeAvatarName(fullname)} isLoading={isLoading}>
             <Stack>
               <Typography variant="regular" color="gray.500" mb={1}>
                 {isLoading ? skeleton : fullname}
