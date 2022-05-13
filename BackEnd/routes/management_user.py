@@ -127,6 +127,7 @@ def create_new_manager(current_manager=None):
                                    message='username is not unique!'), 401
 
         try:
+
             current_admin_atvstp = admin_atvstp.find_one_and_update({'name': new_register['work_from']},
                                                                     {
                                                                         '$push': {
