@@ -8,6 +8,8 @@ import time
 from datetime import datetime
 
 grocery_collection = app.db.grocery
+certificate_collection = app.db.certificate_atvstp
+
 
 @app.route('/grocery', methods=['GET'])
 @manager_required("level_one")
@@ -69,6 +71,14 @@ def add_grocery(current_manager=None):
                               certificate=data['certificate'],
                               created_time=created_time)
         try:
+            for certificate in data['certificate']:
+                object_grocery = {'name': data['name'],
+                                  'date': certificate['date']}
+                certificate_collection.update_one({'name': certificate['name']},
+                                                  {'$push': {
+                                                      'list_groceries': object_grocery
+                                                  }})
+
             grocery_collection.insert_one(new_grocery.to_dict())
             return {'Status': 'Success',
                     'Message': 'Add successfully'}
@@ -109,6 +119,18 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
         deleted_grocery = grocery_collection.find_one({'name': grocery_name})
         if deleted_grocery:
             delete_time = datetime.utcnow()
+            list_certificates = deleted_grocery['certificate']
+            for certificate_object in list_certificates:
+                certificate = certificate_collection.find_one({'name': certificate_object['name']})
+                list_groceries = certificate['list_groceries']
+                for grocery in list_groceries:
+                    if grocery['name'] == grocery_name:
+                        list_groceries.remove(grocery)
+                        break
+                certificate_collection.find_one_and_update({'name': certificate_object['name']},
+                                                           {'$set': {
+                                                               'list_groceries': list_groceries
+                                                           }})
             grocery_collection.find_one_and_update({'name': grocery_name},
                                                    {'$set':
                                                         {'date_delete': delete_time}})
@@ -127,6 +149,15 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
 @manager_required('level_one')
 def restore_grocery(current_manager=None, grocery_name: str = ''):
     try:
+        grocery = grocery_collection.find_one({'name': grocery_name})
+        list_certificates = grocery['certificate']
+        for certificate_object in list_certificates:
+            grocery_object = {'name': grocery_name,
+                              'date': certificate_object['date']}
+            certificate_collection.update_one({'name': certificate_object['name']},
+                                              {'$push': {
+                                                  'list_groceries': grocery_object
+                                              }})
         restored_grocery = grocery_collection.update_one({'name': grocery_name},
                                                          {"$unset": {'date_delete': 1}})
         if restored_grocery:
@@ -172,8 +203,8 @@ def count_groceries(current_manager=None, condition=''):
         for grocery in list_groceries:
             list_certificates = grocery['certificate']
             if condition == 'general' or (
-                    condition == 'have_cer' and len(list_certificates)>0) or (
-                    condition == 'not_have_cer' and len(list_certificates)==0):
+                    condition == 'have_cer' and len(list_certificates) > 0) or (
+                    condition == 'not_have_cer' and len(list_certificates) == 0):
                 created_time = datetime.strptime(grocery['created_time'], '%H:%M:%S %d-%m-%Y')
                 year = created_time.year
                 month = created_time.month
@@ -232,8 +263,3 @@ def check_input(new_grocery):
     except:
         logger['certificate'] = 'No certificate'
     return logger
-
-
-
-
-

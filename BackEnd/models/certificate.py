@@ -5,13 +5,15 @@ class Certificate:
                  effective_time=1,
                  last_update=None,
                  is_active=True,
-                 image_url=''):
+                 image_url='',
+                 list_groceries = []):
         self.name = name
         self.manager = manager
         self.effective_time = effective_time
         self.last_update = last_update
         self.is_active = is_active
         self.image_url = image_url
+        self.list_groceries = list_groceries
 
     def to_dict(self):
         return {
@@ -20,5 +22,6 @@ class Certificate:
             'effective_time': self.effective_time,
             'last_update': self.last_update,
             'is_active': self.is_active,
-            'image_url': self.image_url
+            'image_url': self.image_url,
+            'list_groceries': self.list_groceries
         }
