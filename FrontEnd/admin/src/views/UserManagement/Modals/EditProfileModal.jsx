@@ -13,6 +13,7 @@ import {
   PHONE_CHANGE,
   profileReducer,
   ROLE_CHANGE,
+  TYPE_MANAGER,
 } from "./profileReducer";
 
 function EditProfileModal() {
@@ -30,6 +31,13 @@ function EditProfileModal() {
     dispatch({
       type: NAME_CHANGE,
       name,
+    });
+  };
+
+  const handleTypeManagerChanged = (type_manager) => {
+    dispatch({
+      type: TYPE_MANAGER,
+      type_manager,
     });
   };
 
@@ -116,6 +124,7 @@ function EditProfileModal() {
       onNameChange={handleNameChanged}
       onPhoneChange={handlePhoneChanged}
       onAddressChange={handleAddressChanged}
+      onTypeManagerChange={handleTypeManagerChanged}
       onAddressWorkFromChange={handleAddressWorkFromChanged}
       onAvatarChange={handleAvatarChanged}
       onRoleChange={handleRoleChanged}
