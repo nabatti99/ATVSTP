@@ -1,50 +1,68 @@
 import { Box, MenuItem, Paper, Stack, TextField, Typography, useTheme } from "@mui/material";
-import { Chart } from "chart.js";
+import Chart from "chart.js/auto";
 import { useEffect, useRef } from "react";
+import { makeDataset } from "utilities/chartHelper";
 
 function StatisticChart({ ...sx }) {
   const canvasRef = useRef();
-  const chartRef = useRef();
 
   const theme = useTheme();
 
   useEffect(() => {
-    // chartRef.current = new Chart(canvasRef.current, {
-    //   type: "bar",
-    //   data: {
-    //     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    //     datasets: [
-    //       {
-    //         label: "# of Votes",
-    //         data: [12, 19, 3, 5, 2, 3],
-    //         backgroundColor: [
-    //           "rgba(255, 99, 132, 0.2)",
-    //           "rgba(54, 162, 235, 0.2)",
-    //           "rgba(255, 206, 86, 0.2)",
-    //           "rgba(75, 192, 192, 0.2)",
-    //           "rgba(153, 102, 255, 0.2)",
-    //           "rgba(255, 159, 64, 0.2)",
-    //         ],
-    //         borderColor: [
-    //           "rgba(255, 99, 132, 1)",
-    //           "rgba(54, 162, 235, 1)",
-    //           "rgba(255, 206, 86, 1)",
-    //           "rgba(75, 192, 192, 1)",
-    //           "rgba(153, 102, 255, 1)",
-    //           "rgba(255, 159, 64, 1)",
-    //         ],
-    //         borderWidth: 1,
-    //       },
-    //     ],
-    //   },
-    //   options: {
-    //     scales: {
-    //       y: {
-    //         beginAtZero: true,
-    //       },
-    //     },
-    //   },
-    // });
+    const data = {
+      labels: [1, 2, 3, 4, 5],
+      datasets: [
+        makeDataset([0, 2, 3, 3, 4, 5], "Tổng số cửa hàng", theme.palette.blue[500]),
+        makeDataset([0, 1, 1, 2, 2, 5], "Cửa hàng đã được cấp giấy chứng nhận", theme.palette.green[500]),
+        makeDataset([0, 1, 2, 1, 2, 0], "Cửa hàng chưa được cấp giấy chứng nhận", theme.palette.red[500]),
+      ],
+    };
+
+    const context = canvasRef.current.getContext("2d");
+    const chart = new Chart(context, {
+      type: "line",
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Chart.js Line Chart - Cubic interpolation mode",
+          },
+          tooltip: {
+            bodyFont: {
+              family: theme.typography.regular.fontFamily,
+              size: theme.typography.regular.fontSize,
+            },
+            bodyColor: theme.palette.gray[500],
+            titleFont: {
+              family: theme.typography.regular.fontFamily,
+              size: theme.typography.regular.fontSize,
+            },
+            titleColor: theme.palette.gray[700],
+            backgroundColor: theme.palette.white,
+          },
+        },
+        interaction: {
+          intersect: false,
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+            },
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: "Value",
+            },
+          },
+        },
+      },
+    });
   }, []);
 
   return (
