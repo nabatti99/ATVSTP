@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import functools
 from flask import request, make_response, render_template, jsonify
 from routes import app
@@ -92,8 +92,8 @@ def login():
 def gen_token(_id):
     payload = {
         '_id': str(_id),
-        # 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=120),
-        # 'iat': datetime.datetime.utcnow()
+        'exp': datetime.utcnow() + timedelta(days=0, seconds=10),
+        'iat': datetime.utcnow()
     }
     token = jwt.encode(payload,
                        app.config['SECRET_KEY'],
