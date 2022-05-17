@@ -53,7 +53,8 @@ def manager_required(access_level):
                 if current_manager['type_manager'] in type_access:
                     return func(current_manager, *args, **kwargs)
                 else:
-                    return {'Message': f"No permissions for {current_manager['type_manager']}"}
+                    return response_status(status=fail_status,
+                                           message=f"No permissions for {current_manager['type_manager']}")
             except jwt.ExpiredSignatureError as e:
                 return {'Message': "Expired token. Reauthentication required.",
                         'authenticated': False}, 401
@@ -80,7 +81,9 @@ def login():
     })
     if check_password_hash(current_manager['hash_password'], auth.password):
         token = gen_token(current_manager['_id'])
-        return {'token': token}
+        return {'token': token,
+                'type_manager': current_manager['type_manager'],
+                'email': current_manager['email']}
     else:
         return make_response('Could not sign in', 401, {'WWW-authenticate': 'Basic realm="Wrong credential!"'})
 
