@@ -92,7 +92,7 @@ def login():
 def gen_token(_id):
     payload = {
         '_id': str(_id),
-        'exp': datetime.utcnow() + timedelta(days=0, seconds=10),
+        'exp': datetime.utcnow() + timedelta(days=0, minutes=5),
         'iat': datetime.utcnow()
     }
     token = jwt.encode(payload,

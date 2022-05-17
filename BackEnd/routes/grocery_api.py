@@ -12,7 +12,7 @@ certificate_collection = app.db.certificate_atvstp
 
 
 @app.route('/grocery', methods=['GET'])
-# @manager_required("level_one")
+@manager_required("level_one")
 def get_grocery(current_manager=None):
     offset = int(request.args['offset'])
     limit = int(request.args['limit'])
