@@ -5,7 +5,7 @@ import useRequest from "hooks/useRequest";
 import createImageFormData from "utilities/createImageFormData";
 import { ADD_NEW_POST } from "./postActionTypes";
 import PostModal from "./PostModal";
-import { CONTENT_CHANGE, postReducer, TITLE_CHANGE } from "./postReducer";
+import { CONTENTS_CHANGE, postReducer, TITLE_CHANGE } from "./postReducer";
 import { connectAppContext } from "contexts/appContext/appContext";
 
 function AddNewPostModal({ appContext }) {
@@ -17,8 +17,11 @@ function AddNewPostModal({ appContext }) {
   const [postData, dispatch] = useReducer(postReducer, {
     writer: appContext.userEmail,
     title: "",
-    content: "",
+    contents: [],
+    writer: appContext.userEmail,
   });
+
+  console.log(postData);
 
   // Handle Data modified
   const handleTitleChanged = (title) => {
@@ -28,10 +31,10 @@ function AddNewPostModal({ appContext }) {
     });
   };
 
-  const handleContentChanged = (content) => {
+  const handleContentsChanged = (contents) => {
     dispatch({
-      type: CONTENT_CHANGE,
-      content,
+      type: CONTENTS_CHANGE,
+      contents,
     });
   };
 
@@ -47,7 +50,7 @@ function AddNewPostModal({ appContext }) {
 
   const handleModalClosed = () => {
     if (isSubmitted)
-      request.post("/information/create", postData).then(() =>
+      request.post("/information/create", postData).finally(() =>
         navigate("../", {
           replace: true,
           state: {
@@ -70,7 +73,7 @@ function AddNewPostModal({ appContext }) {
       onCLoseButtonClick={handleCloseButtonClicked}
       onOkButtonClick={handleOkButtonClicked}
       onTitleChange={handleTitleChanged}
-      onContentChange={handleContentChanged}
+      onContentsChange={handleContentsChanged}
     />
   );
 }

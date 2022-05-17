@@ -2,13 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 function createRequest(accessToken) {
-  return axios.create({
+  const instance = axios.create({
     baseURL: process.env.NODE_ENV == "development" ? "http://127.0.0.1:5000/" : "https://atvstp-api.herokuapp.com",
     timeout: 10000,
     headers: {
       "access-token": accessToken,
     },
   });
+
+  instance.interceptors.response.use((response) => {
+    if (response.data.Status == "Fail") throw { response };
+
+    return response;
+  });
+
+  return instance;
 }
 
 function useRequest() {

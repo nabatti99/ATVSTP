@@ -1,5 +1,7 @@
 import React, { Fragment } from "react";
 import { Alert, Box } from "@mui/material";
+import { connectAppContext } from "contexts/appContext/appContext";
+import { deleteAccessToken } from "contexts/appContext/appActions";
 
 class ErrorBoundary extends React.Component {
   state = {
@@ -7,8 +9,15 @@ class ErrorBoundary extends React.Component {
   };
 
   handlePromiseRejection = ({ reason }) => {
+    const { Message, authenticated } = reason.response.data;
+
+    if (authenticated == false) {
+      const { dispatch } = this.props;
+      dispatch(deleteAccessToken());
+    }
+
     this.setState({
-      errorMessage: reason.message,
+      errorMessage: Message,
     });
   };
 
@@ -50,4 +59,4 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default ErrorBoundary;
+export default connectAppContext(ErrorBoundary);

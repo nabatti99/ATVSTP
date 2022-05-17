@@ -1,5 +1,5 @@
 export const TITLE_CHANGE = "TITLE_CHANGE";
-export const CONTENT_CHANGE = "CONTENT_CHANGE";
+export const CONTENTS_CHANGE = "CONTENTS_CHANGE";
 export const WRITER_CHANGE = "WRITER_CHANGE";
 
 export function postReducer(state, action) {
@@ -10,10 +10,10 @@ export function postReducer(state, action) {
         title: action.title,
       };
 
-    case CONTENT_CHANGE:
+    case CONTENTS_CHANGE:
       return {
         ...state,
-        content: action.content,
+        contents: action.contents,
       };
 
     case WRITER_CHANGE:

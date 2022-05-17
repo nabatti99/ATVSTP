@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useRequest from "hooks/useRequest";
 import { EDIT_POST } from "./postActionTypes";
 import PostModal from "./PostModal";
-import { CONTENT_CHANGE, postReducer, TITLE_CHANGE } from "./postReducer";
+import { CONTENTS_CHANGE, postReducer, TITLE_CHANGE } from "./postReducer";
 import { connectAppContext } from "contexts/appContext/appContext";
 
 function EditPostModal({ appContext }) {
@@ -28,7 +28,7 @@ function EditPostModal({ appContext }) {
 
   const handleContentChanged = (content) => {
     dispatch({
-      type: CONTENT_CHANGE,
+      type: CONTENTS_CHANGE,
       content,
     });
   };
