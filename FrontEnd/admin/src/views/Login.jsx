@@ -40,13 +40,19 @@ function Login({ dispatch }) {
         console.error(error);
         dispatch(deleteAccessToken(null));
         alert(error);
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
     <Stack
       flexGrow={1}
-      sx={{ backgroundImage: "url('/BgLogin.jpg')", backgroundBlendMode: "multiply", backgroundColor: "blue.500" }}
+      sx={{
+        backgroundImage: "url('/BgLogin.jpg')",
+        backgroundBlendMode: "multiply",
+        backgroundColor: "blue.500",
+        backgroundSize: "cover",
+      }}
     >
       <Stack justifyContent="center" alignItems="center" height="100vh">
         <Paper elevation={4} sx={{ borderRadius: 4 }}>

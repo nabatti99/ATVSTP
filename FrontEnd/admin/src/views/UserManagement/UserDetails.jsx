@@ -1,7 +1,7 @@
 import { Box, Paper, Skeleton, Stack, Typography } from "@mui/material";
 
 import useRequest from "hooks/useRequest";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import ButtonIcon from "components/ButtonIcon";
@@ -14,6 +14,7 @@ import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
 import ReplaySvg from "components/Icons/ReplaySvg";
 import { getDateDelete } from "utilities/formatDate";
+import KeySvg from "components/Icons/KeySvg";
 
 function UserDetails() {
   const request = useRequest();
@@ -134,18 +135,33 @@ function UserDetails() {
                 Khôi phục
               </ButtonIcon>
             ) : (
-              <ButtonIcon
-                variant="contained"
-                color="red"
-                LeftIcon={DeleteSvg}
-                onClick={() => {
-                  navigate("Delete", {
-                    state: profile,
-                  });
-                }}
-              >
-                Xoá
-              </ButtonIcon>
+              <Fragment>
+                <ButtonIcon
+                  variant="outlined"
+                  color="blue"
+                  LeftIcon={KeySvg}
+                  onClick={() => {
+                    navigate("ResetPassword", {
+                      state: profile,
+                    });
+                  }}
+                  sx={{ marginBottom: 2 }}
+                >
+                  Đặt lại mật khẩu
+                </ButtonIcon>
+                <ButtonIcon
+                  variant="contained"
+                  color="red"
+                  LeftIcon={DeleteSvg}
+                  onClick={() => {
+                    navigate("Delete", {
+                      state: profile,
+                    });
+                  }}
+                >
+                  Xoá
+                </ButtonIcon>
+              </Fragment>
             )}
           </Stack>
         </Stack>

@@ -44,6 +44,7 @@ import EditSuperiorReportModal from "views/SuperiorReportManagement/Modals/EditS
 import DeleteSuperiorReportModal from "views/SuperiorReportManagement/Modals/DeleteSuperiorReportModal";
 import PrivateNotificationDetail from "views/NotificationManagement/PrivateNotification/PrivateDetail";
 import FeedbackNotificationDetail from "views/NotificationManagement/FeedbackNotification/FeedbackDetail";
+import ResetPasswordModal from "views/UserManagement/Modals/ResetPasswordModal";
 
 function Navigator({ appContext }) {
   const { accessToken } = appContext;
@@ -65,6 +66,7 @@ function Navigator({ appContext }) {
             <Route path="UserDetail/:email" element={<UserDetails />}>
               <Route path="Edit" element={<EditProfileModal />} />
               <Route path="Delete" element={<DeleteProfileModal />} />
+              <Route path="ResetPassword" element={<ResetPasswordModal />} />
             </Route>
 
             <Route path="GroceriesManagement" element={<GroceriesManagement />}>
