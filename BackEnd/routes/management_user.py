@@ -392,6 +392,35 @@ def load_image_profile_manager(current_manager=None, email: str = ''):
         return {'Type Error': e}, 400
 
 
+@app.route('/manager/reset_password/<string:email>', methods=['POST'])
+@manager_required('level_two')
+def reset_password(current_manager=None, email: str = ''):
+    try:
+        password_db = request.get_json()
+
+        if check_password_hash(current_manager['hash_password'], password_db['current_password']):
+            the_manager = manager_collection.update_one({"email": email},
+                                                        {'$set': {
+                                                            'hash_password': generate_password_hash(
+                                                                password_db['new_password'],
+                                                                method='sha256')
+                                                        }})
+
+            if the_manager:
+                return response_status(status=success_status,
+                                       message='Change email success!')
+
+            else:
+                return response_status(status=fail_status,
+                                       message=f'Do not have manager {email} in database'), 401
+        else:
+            return response_status(status=fail_status,
+                                   message=f'Your password is incorrect!'), 401
+
+    except Exception as e:
+        return {'Type Error': e}, 400
+
+
 def checked_manager(new_manager):
     logger = {}
     try:
