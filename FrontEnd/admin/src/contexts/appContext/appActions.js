@@ -5,9 +5,11 @@ export const setDrawerWidth = (drawerWidth) => ({
   drawerWidth,
 });
 
-export const updateAccessToken = (accessToken) => ({
+export const updateAccessToken = (accessToken, userEmail, type_manager) => ({
   type: UPDATE_ACCESS_TOKEN,
   accessToken,
+  userEmail,
+  type_manager,
 });
 
 export const deleteAccessToken = () => ({

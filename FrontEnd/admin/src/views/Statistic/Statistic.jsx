@@ -12,7 +12,7 @@ function Statistic() {
 
       <GeneralStatistic mt={2} />
 
-      <StatisticChart mt={2} />
+      <StatisticChart mt={2} px={8} py={4} />
     </Box>
   );
 }

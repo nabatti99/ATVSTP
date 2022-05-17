@@ -1,4 +1,6 @@
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
+import useRequest from "hooks/useRequest";
+
 import appReducer from "./appReducer";
 
 const appContext = createContext();
@@ -6,8 +8,9 @@ const appContext = createContext();
 export function AppContextProvider({ children }) {
   const [value, dispatch] = useReducer(appReducer, {
     drawerWidth: 248,
-    accessToken: localStorage.getItem("access-token") == "null" ? null : localStorage.getItem("access-token"),
-    userEmail: "admin@gmail.com",
+    accessToken: localStorage.getItem("access-token"),
+    userEmail: localStorage.getItem("user-email"),
+    type_manager: localStorage.getItem("type-manager"),
   });
 
   const ContextProvider = appContext.Provider;

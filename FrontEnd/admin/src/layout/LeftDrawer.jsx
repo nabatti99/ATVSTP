@@ -15,7 +15,8 @@ function LeftDrawer({ appContext }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { drawerWidth } = appContext;
+  const { drawerWidth, type_manager } = appContext;
+  const isAdmin = type_manager == "admin";
 
   const navItems = [
     {
@@ -24,19 +25,19 @@ function LeftDrawer({ appContext }) {
       text: "Thống kê",
       matchRoutes: ["/Statistic"],
     },
-    {
+    isAdmin && {
       Icon: GroupSvg,
       path: "/UsersManagement/",
       text: "Nhân sự",
       matchRoutes: ["/UsersManagement", "/UserDetail"],
     },
-    {
+    isAdmin && {
       Icon: ApartmentSvg,
       path: "/AdministrationsManagement/",
       text: "Tổ chức thanh tra",
       matchRoutes: ["/AdministrationsManagement", "/AdministrationDetail"],
     },
-    {
+    isAdmin && {
       Icon: LocalMallSvg,
       path: "/GroceriesManagement/",
       text: "Cửa hàng",
@@ -72,7 +73,7 @@ function LeftDrawer({ appContext }) {
       text: "Thông báo, phản hồi",
       matchRoutes: ["/NotificationsManagement"],
     },
-  ];
+  ].filter((item) => item); // Remove undefined items
 
   return (
     <Drawer

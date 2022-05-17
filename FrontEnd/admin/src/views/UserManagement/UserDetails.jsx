@@ -15,8 +15,9 @@ import DeleteSvg from "components/Icons/DeleteSvg";
 import ReplaySvg from "components/Icons/ReplaySvg";
 import { getDateDelete } from "utilities/formatDate";
 import KeySvg from "components/Icons/KeySvg";
+import { connectAppContext } from "contexts/appContext/appContext";
 
-function UserDetails() {
+function UserDetails({ appContext }) {
   const request = useRequest();
   const navigate = useNavigate();
 
@@ -59,6 +60,65 @@ function UserDetails() {
   }, [state]);
 
   const { name, phone, address, type_manager, image_url, work_from, date_delete } = profile;
+
+  const isAdmin = appContext.type_manager == "admin" || appContext.userEmail == email;
+  let buttonELements = isAdmin && (
+    <Stack>
+      <ButtonIcon
+        variant="outlined"
+        color="blue"
+        LeftIcon={KeySvg}
+        onClick={() => {
+          navigate("ResetPassword", {
+            state: profile,
+          });
+        }}
+        sx={{ marginBottom: 2 }}
+      >
+        Đặt lại mật khẩu
+      </ButtonIcon>
+      <ButtonIcon
+        variant="contained"
+        LeftIcon={ModeSvg}
+        onClick={() => {
+          navigate("Edit", {
+            state: profile,
+          });
+        }}
+        sx={{ marginBottom: 2 }}
+      >
+        Chỉnh sửa
+      </ButtonIcon>
+
+      {date_delete ? (
+        <ButtonIcon
+          variant="contained"
+          color="green"
+          LeftIcon={ReplaySvg}
+          onClick={() => {
+            request.put(`manager/restore_a_manager/${email}`).then(() => getProfile());
+          }}
+        >
+          Khôi phục
+        </ButtonIcon>
+      ) : (
+        appContext.type_manager == "admin" && (
+          <ButtonIcon
+            variant="contained"
+            color="red"
+            LeftIcon={DeleteSvg}
+            onClick={() => {
+              navigate("Delete", {
+                state: profile,
+              });
+            }}
+          >
+            Xoá
+          </ButtonIcon>
+        )
+      )}
+    </Stack>
+  );
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
@@ -110,60 +170,7 @@ function UserDetails() {
             )}
           </Stack>
 
-          <Stack>
-            <ButtonIcon
-              variant="contained"
-              LeftIcon={ModeSvg}
-              onClick={() => {
-                navigate("Edit", {
-                  state: profile,
-                });
-              }}
-              sx={{ marginBottom: 2 }}
-            >
-              Chỉnh sửa
-            </ButtonIcon>
-            {date_delete ? (
-              <ButtonIcon
-                variant="contained"
-                color="green"
-                LeftIcon={ReplaySvg}
-                onClick={() => {
-                  request.put(`manager/restore_a_manager/${email}`).then(() => getProfile());
-                }}
-              >
-                Khôi phục
-              </ButtonIcon>
-            ) : (
-              <Fragment>
-                <ButtonIcon
-                  variant="outlined"
-                  color="blue"
-                  LeftIcon={KeySvg}
-                  onClick={() => {
-                    navigate("ResetPassword", {
-                      state: profile,
-                    });
-                  }}
-                  sx={{ marginBottom: 2 }}
-                >
-                  Đặt lại mật khẩu
-                </ButtonIcon>
-                <ButtonIcon
-                  variant="contained"
-                  color="red"
-                  LeftIcon={DeleteSvg}
-                  onClick={() => {
-                    navigate("Delete", {
-                      state: profile,
-                    });
-                  }}
-                >
-                  Xoá
-                </ButtonIcon>
-              </Fragment>
-            )}
-          </Stack>
+          {buttonELements}
         </Stack>
       </Paper>
 
@@ -173,4 +180,4 @@ function UserDetails() {
   );
 }
 
-export default UserDetails;
+export default connectAppContext(UserDetails);

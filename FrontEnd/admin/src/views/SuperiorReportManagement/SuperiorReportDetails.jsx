@@ -11,7 +11,7 @@ import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
 import { DELETE_REPORT } from "./Modals/superiorReportActionTypes";
 import LocalMallSvg from "components/Icons/LocalMallSvg";
-import { exportDate } from "utilities/formatDate";
+import { exportDate, importDate } from "utilities/formatDate";
 import FlagSvg from "components/Icons/FlagSvg";
 
 function SuperiorReportDetails() {
@@ -118,7 +118,7 @@ function SuperiorReportDetails() {
             </Typography>
 
             <Typography variant="strong" mt={2} color="gray.500">
-              Cập nhật lần cuối: {isLoading ? skeleton : exportDate(new Date(updated_at))}
+              Cập nhật lần cuối: {isLoading ? skeleton : importDate(updated_at).toLocaleString()}
             </Typography>
 
             {is_draft ? (

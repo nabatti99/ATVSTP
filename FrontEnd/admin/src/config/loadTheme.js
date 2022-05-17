@@ -30,6 +30,7 @@ const theme = createTheme({
 
     h3: {
       fontWeight: 700,
+      fontSize: 32,
       letterSpacing: "-0.05em",
     },
 

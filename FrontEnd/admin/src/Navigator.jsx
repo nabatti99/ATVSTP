@@ -45,9 +45,11 @@ import DeleteSuperiorReportModal from "views/SuperiorReportManagement/Modals/Del
 import PrivateNotificationDetail from "views/NotificationManagement/PrivateNotification/PrivateDetail";
 import FeedbackNotificationDetail from "views/NotificationManagement/FeedbackNotification/FeedbackDetail";
 import ResetPasswordModal from "views/UserManagement/Modals/ResetPasswordModal";
+import { Fragment } from "react";
 
 function Navigator({ appContext }) {
-  const { accessToken } = appContext;
+  const { accessToken, type_manager } = appContext;
+  const isAdmin = type_manager === "admin";
 
   return (
     <BrowserRouter>
@@ -58,26 +60,41 @@ function Navigator({ appContext }) {
 
             <Route path="Statistic" element={<Statistic />} />
 
-            <Route path="UsersManagement" element={<UsersManagement />}>
-              <Route path=":email" element={<EditProfileModal />} />
-              <Route path="Add" element={<AddNewProfileModal />} />
-              <Route path="Delete" element={<DeleteProfileModal />} />
-            </Route>
-            <Route path="UserDetail/:email" element={<UserDetails />}>
-              <Route path="Edit" element={<EditProfileModal />} />
-              <Route path="Delete" element={<DeleteProfileModal />} />
-              <Route path="ResetPassword" element={<ResetPasswordModal />} />
-            </Route>
+            {isAdmin ? (
+              <Fragment>
+                <Route path="UsersManagement" element={<UsersManagement />}>
+                  <Route path=":email" element={<EditProfileModal />} />
+                  <Route path="Add" element={<AddNewProfileModal />} />
+                  <Route path="Delete" element={<DeleteProfileModal />} />
+                </Route>
+                <Route path="UserDetail/:email" element={<UserDetails />}>
+                  <Route path="Edit" element={<EditProfileModal />} />
+                  <Route path="Delete" element={<DeleteProfileModal />} />
+                  <Route path="ResetPassword" element={<ResetPasswordModal />} />
+                </Route>
+              </Fragment>
+            ) : (
+              <Route path="UserDetail/:email" element={<UserDetails />}>
+                <Route path="Edit" element={<EditProfileModal />} />
+                <Route path="ResetPassword" element={<ResetPasswordModal />} />
+              </Route>
+            )}
 
-            <Route path="GroceriesManagement" element={<GroceriesManagement />}>
-              <Route path=":name" element={<EditGroceryModal />} />
-              <Route path="Add" element={<AddNewGroceryModal />} />
-              <Route path="Delete" element={<DeleteGroceryModal />} />
-            </Route>
-            <Route path="GroceryDetail/:name" element={<GroceryDetails />}>
-              <Route path="Edit" element={<EditGroceryModal />} />
-              <Route path="Delete" element={<DeleteGroceryModal />} />
-            </Route>
+            {isAdmin ? (
+              <Fragment>
+                <Route path="GroceriesManagement" element={<GroceriesManagement />}>
+                  <Route path=":name" element={<EditGroceryModal />} />
+                  <Route path="Add" element={<AddNewGroceryModal />} />
+                  <Route path="Delete" element={<DeleteGroceryModal />} />
+                </Route>
+                <Route path="GroceryDetail/:name" element={<GroceryDetails />}>
+                  <Route path="Edit" element={<EditGroceryModal />} />
+                  <Route path="Delete" element={<DeleteGroceryModal />} />
+                </Route>
+              </Fragment>
+            ) : (
+              <Route path="GroceryDetail/:name" element={<GroceryDetails />} />
+            )}
 
             <Route path="CertificatesManagement" element={<CertificatesManagement />}>
               <Route path=":name" element={<EditCertificateModal />} />
@@ -99,15 +116,19 @@ function Navigator({ appContext }) {
               <Route path="Delete" element={<DeleteInspectionScheduleModal />} />
             </Route>
 
-            <Route path="AdministrationsManagement" element={<AdministrationsManagement />}>
-              <Route path=":_id" element={<EditAdministrationModal />} />
-              <Route path="Add" element={<AddNewAdministrationModal />} />
-              <Route path="Delete" element={<DeleteAdministrationModal />} />
-            </Route>
-            <Route path="AdministrationDetail/:_id" element={<AdministrationDetails />}>
-              <Route path="Edit" element={<EditAdministrationModal />} />
-              <Route path="Delete" element={<DeleteAdministrationModal />} />
-            </Route>
+            {isAdmin && (
+              <Fragment>
+                <Route path="AdministrationsManagement" element={<AdministrationsManagement />}>
+                  <Route path=":_id" element={<EditAdministrationModal />} />
+                  <Route path="Add" element={<AddNewAdministrationModal />} />
+                  <Route path="Delete" element={<DeleteAdministrationModal />} />
+                </Route>
+                <Route path="AdministrationDetail/:_id" element={<AdministrationDetails />}>
+                  <Route path="Edit" element={<EditAdministrationModal />} />
+                  <Route path="Delete" element={<DeleteAdministrationModal />} />
+                </Route>
+              </Fragment>
+            )}
 
             <Route path="SuperiorReportsManagement" element={<SuperiorReportsManagement />}>
               <Route path=":_id" element={<EditSuperiorReportModal />} />

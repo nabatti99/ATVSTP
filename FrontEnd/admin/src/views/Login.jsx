@@ -32,8 +32,8 @@ function Login({ dispatch }) {
           },
         }
       )
-      .then((res) => {
-        dispatch(updateAccessToken(res.data.token));
+      .then(({ data }) => {
+        dispatch(updateAccessToken(data.token, data.email, data.type_manager));
         navigate("/");
       })
       .catch((error) => {
@@ -55,9 +55,9 @@ function Login({ dispatch }) {
       }}
     >
       <Stack justifyContent="center" alignItems="center" height="100vh">
-        <Paper elevation={4} sx={{ borderRadius: 4 }}>
+        <Paper elevation={4} sx={{ borderRadius: 4, minWidth: "32rem" }}>
           <Stack px={8} py={8}>
-            <Typography variant="h3" color="blue.500" mb={4}>
+            <Typography variant="h3" color="blue.500" mb={4} textAlign="center">
               ATVSTP - Admin
             </Typography>
 

@@ -9,7 +9,7 @@ import CreateSvg from "../../components/Icons/CreateSvg";
 import AddSvg from "../../components/Icons/AddSvg";
 
 import useRequest from "../../hooks/useRequest";
-import { exportDate } from "utilities/formatDate";
+import { exportDate, importDate } from "utilities/formatDate";
 
 const headers = [
   {
@@ -68,10 +68,10 @@ const headers = [
   {
     field: "updated_at",
     headerName: "LẦN CUỐI CẬP NHẬT",
-    minWidth: 150,
+    minWidth: 180,
     color: "gray.500",
     transform: function (updated_at) {
-      return exportDate(new Date(updated_at));
+      return importDate(updated_at).toLocaleString();
     },
   },
 ];
