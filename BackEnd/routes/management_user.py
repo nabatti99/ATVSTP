@@ -92,8 +92,8 @@ def login():
 def gen_token(_id):
     payload = {
         '_id': str(_id),
-        'exp': datetime.utcnow() + timedelta(days=0, minutes=5),
-        'iat': datetime.utcnow()
+        # 'exp': datetime.utcnow() + timedelta(days=0, minutes=5),
+        # 'iat': datetime.utcnow()
     }
     token = jwt.encode(payload,
                        app.config['SECRET_KEY'],
@@ -210,6 +210,9 @@ def update_a_manager(current_manager=None, email: str = ''):
                                                                              'type_manager'],
                                                                          'role': updated_manager['role']
                                                                      }})
+
+
+
             elif current_manager['type_manager'] == 'inspector':
                 del_conf_mn = manager_collection.find_one_and_update({'email': email},
                                                                      {'$set': {
@@ -221,6 +224,8 @@ def update_a_manager(current_manager=None, email: str = ''):
                 return response_status(status=fail_status,
                                        message=f'You is a {current_manager["type_manager"]}, '
                                                f'can not update to {updated_manager["type_manager"]}'), 401
+
+
 
             if del_conf_mn:
                 return response_status(status=success_status,
@@ -297,7 +302,6 @@ def restore_a_manager(current_manager=None, email: str = ''):
 @manager_required('level_two')
 def delete_all_manager(current_manager=None):
     try:
-        # TODO delete all images firebase
         all_manager = manager_collection.delete_many({})
         if all_manager:
             return response_status(status=success_status,
