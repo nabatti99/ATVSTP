@@ -14,7 +14,7 @@ function Image({ src = null, borderRadius = 8, alt = "image", borderColor, ...pr
           color: "transparent",
           borderWidth: 2,
           borderStyle: "solid",
-          borderColor: borderColor || theme.palette.gray[600],
+          borderColor: borderColor || theme.palette.gray[400],
           borderRadius: 8,
           boxSizing: "border-box",
         }}

@@ -46,6 +46,7 @@ import PrivateNotificationDetail from "views/NotificationManagement/PrivateNotif
 import FeedbackNotificationDetail from "views/NotificationManagement/FeedbackNotification/FeedbackDetail";
 import ResetPasswordModal from "views/UserManagement/Modals/ResetPasswordModal";
 import { Fragment } from "react";
+import PostDetails from "views/PostManagement/PostDetails";
 
 function Navigator({ appContext }) {
   const { accessToken, type_manager } = appContext;
@@ -145,9 +146,9 @@ function Navigator({ appContext }) {
               <Route path="Add" element={<AddNewPostModal />} />
               <Route path="Delete" element={<DeletePostModal />} />
             </Route>
-            <Route path="CertificateDetail/:name" element={<CertificateDetails />}>
-              <Route path="Edit" element={<EditCertificateModal />} />
-              <Route path="Delete" element={<DeleteCertificateModal />} />
+            <Route path="PostDetail/:_id" element={<PostDetails />}>
+              <Route path="Edit" element={<EditPostModal />} />
+              <Route path="Delete" element={<DeletePostModal />} />
             </Route>
 
             <Route path="NotificationsManagement" element={<NotificationsManagement />}>

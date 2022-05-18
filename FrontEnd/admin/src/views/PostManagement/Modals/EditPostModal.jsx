@@ -26,10 +26,10 @@ function EditPostModal({ appContext }) {
     });
   };
 
-  const handleContentChanged = (content) => {
+  const handleContentsChanged = (contents) => {
     dispatch({
       type: CONTENTS_CHANGE,
-      content,
+      contents,
     });
   };
 
@@ -45,7 +45,7 @@ function EditPostModal({ appContext }) {
 
   const handleModalClosed = () => {
     if (isSubmitted)
-      request.put(`/information/update`, postData).then(() =>
+      request.put(`/information/update`, postData).finally(() =>
         navigate("../", {
           replace: true,
           state: {
@@ -68,7 +68,7 @@ function EditPostModal({ appContext }) {
       onCLoseButtonClick={handleCloseButtonClicked}
       onOkButtonClick={handleOkButtonClicked}
       onTitleChange={handleTitleChanged}
-      onContentChange={handleContentChanged}
+      onContentsChange={handleContentsChanged}
     />
   );
 }

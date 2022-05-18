@@ -9,15 +9,31 @@ class ErrorBoundary extends React.Component {
   };
 
   handlePromiseRejection = ({ reason }) => {
-    const { Message, authenticated } = reason.response.data;
+    if (reason.isAxiosError) {
+      if (!reason.response) {
+        this.setState({
+          errorMessage: "Server không phản hồi",
+        });
 
-    if (authenticated == false) {
-      const { dispatch } = this.props;
-      dispatch(deleteAccessToken());
+        return;
+      }
+
+      const { Message, authenticated } = reason.response.data;
+
+      if (authenticated == false) {
+        const { dispatch } = this.props;
+        dispatch(deleteAccessToken());
+      }
+
+      this.setState({
+        errorMessage: Message,
+      });
+
+      return;
     }
 
     this.setState({
-      errorMessage: Message,
+      errorMessage: reason.message,
     });
   };
 

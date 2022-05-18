@@ -28,7 +28,7 @@ function DeletePostModal() {
             _id: state._id,
           },
         })
-        .then(() =>
+        .finally(() =>
           navigate("../", {
             replace: true,
             state: {
@@ -51,13 +51,17 @@ function DeletePostModal() {
     >
       <Stack color="gray.500">
         <Typography variant="regular">
-          Bạn đang thực hiện xoá chứng nhận có tên là:&nbsp;
+          Bạn đang thực hiện xoá bài đăng có tiêu đề&nbsp;
           <Typography component="span" variant="strong" color="gray.700">
-            {state.name}
+            {state.title}
+          </Typography>
+          &nbsp;của tác giả&nbsp;
+          <Typography component="span" variant="strong" color="gray.700">
+            {state.writer}
           </Typography>
         </Typography>
         <Typography variant="regular" mt={1}>
-          Chứng nhận này sẽ không thể tiếp tục sử dụng được nữa. Bạn có muốn tiếp tục?
+          Người dùng sẽ không thể xem bài đăng này được nữa. Bạn có muốn tiếp tục?
         </Typography>
 
         <Stack justifyContent="flex-end" direction="row" mt={2}>

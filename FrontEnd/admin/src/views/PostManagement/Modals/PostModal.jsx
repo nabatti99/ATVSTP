@@ -1,6 +1,7 @@
-import { Box, Button, debounce, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, debounce, IconButton, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import ButtonIcon from "components/ButtonIcon";
 import AddSvg from "components/Icons/AddSvg";
+import CloseSvg from "components/Icons/CloseSvg";
 import AppModal from "../../../components/AppModal";
 import Image from "../../../components/Image";
 import { ADD_NEW_POST, EDIT_POST } from "./postActionTypes";
@@ -39,6 +40,16 @@ function PostModal({
   const { title, contents } = postData;
 
   // Add buttons events
+  const handleAddHeaderButtonCLicked = () => {
+    onContentsChange([
+      ...contents,
+      {
+        type: "header",
+        value: "",
+      },
+    ]);
+  };
+
   const handleAddTextButtonCLicked = () => {
     onContentsChange([
       ...contents,
@@ -94,6 +105,10 @@ function PostModal({
     ]);
   };
 
+  const handleDeletedContent = (index) => {
+    onContentsChange([...contents.slice(0, index), ...contents.slice(index + 1)]);
+  };
+
   return (
     <AppModal
       isOpened={isModalOpened}
@@ -109,23 +124,30 @@ function PostModal({
           onChange={(event) => handleTitleChangedDebounced(event.target.value)}
           defaultValue={title}
         />
-        {contents.map((content, index) => {
-          if (content.type === "text")
-            return (
+        {contents.map((content, index) => (
+          <Stack key={content.value || content.url} direction="row" alignItems="center" mt={4}>
+            {content.type === "header" && (
               <TextField
-                key={index}
-                label="NỘI DUNG"
-                multiline
-                rows={5}
-                sx={{ marginTop: 2 }}
+                label="TIÊU ĐỀ"
+                sx={{ flexGrow: 1 }}
                 onChange={debounce((event) => handleTextContentChanged(index, event.target.value), 1000)}
                 defaultValue={content.value}
               />
-            );
+            )}
 
-          if (content.type === "image")
-            return (
-              <Stack key={index} gap={1} mt={2}>
+            {content.type === "text" && (
+              <TextField
+                label="NỘI DUNG"
+                multiline
+                rows={5}
+                sx={{ flexGrow: 1 }}
+                onChange={debounce((event) => handleTextContentChanged(index, event.target.value), 1000)}
+                defaultValue={content.value}
+              />
+            )}
+
+            {content.type === "image" && (
+              <Stack gap={1} flexGrow={1}>
                 <Stack direction="row" gap={1} alignItems="stretch">
                   <Image borderColor="gray.500" src={content.url} width={200} alt="Hình ảnh" />
                   <TextField
@@ -133,7 +155,7 @@ function PostModal({
                     multiline
                     rows={3}
                     onChange={debounce((event) => handleImageCaptionContentChanged(index, event.target.value))}
-                    defaultValue={content.value}
+                    defaultValue={content.caption}
                     sx={{ flexGrow: 1 }}
                   />
                 </Stack>
@@ -143,10 +165,20 @@ function PostModal({
                   defaultValue={content.url}
                 />
               </Stack>
-            );
-        })}
+            )}
+
+            <Box>
+              <IconButton onClick={() => handleDeletedContent(index)}>
+                <CloseSvg />
+              </IconButton>
+            </Box>
+          </Stack>
+        ))}
 
         <Stack direction="row" justifyContent="center" gap={4} mt={2}>
+          <ButtonIcon LeftIcon={AddSvg} variant="text" onClick={handleAddHeaderButtonCLicked}>
+            Tiêu đề
+          </ButtonIcon>
           <ButtonIcon LeftIcon={AddSvg} variant="text" onClick={handleAddTextButtonCLicked}>
             Đoạn văn
           </ButtonIcon>
