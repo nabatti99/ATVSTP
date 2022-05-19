@@ -5,7 +5,7 @@ class InspectionSchedule:
     def __init__(self,
                  authority: str,
                  groceries: list,
-                 content: list,
+                 content: str,
                  assigned_to: list,
                  schedule: datetime,
                  updated_by: str,
