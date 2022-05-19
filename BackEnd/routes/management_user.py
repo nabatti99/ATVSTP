@@ -92,8 +92,8 @@ def login():
 def gen_token(_id):
     payload = {
         '_id': str(_id),
-        # 'exp': datetime.utcnow() + timedelta(days=0, minutes=5),
-        # 'iat': datetime.utcnow()
+        'exp': datetime.utcnow() + timedelta(days=0, minutes=5),
+        'iat': datetime.utcnow()
     }
     token = jwt.encode(payload,
                        app.config['SECRET_KEY'],
