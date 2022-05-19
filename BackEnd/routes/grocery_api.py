@@ -12,7 +12,7 @@ certificate_collection = app.db.certificate_atvstp
 
 
 @app.route('/grocery', methods=['GET'])
-@manager_required("level_one")
+# @manager_required("level_one")
 def get_grocery(current_manager=None):
     offset = int(request.args['offset'])
     limit = int(request.args['limit'])
@@ -119,18 +119,21 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
         deleted_grocery = grocery_collection.find_one({'name': grocery_name})
         if deleted_grocery:
             delete_time = datetime.utcnow()
-            list_certificates = deleted_grocery['certificate']
-            for certificate_object in list_certificates:
-                certificate = certificate_collection.find_one({'name': certificate_object['name']})
-                list_groceries = certificate['list_groceries']
-                for grocery in list_groceries:
-                    if grocery['name'] == grocery_name:
-                        list_groceries.remove(grocery)
-                        break
-                certificate_collection.find_one_and_update({'name': certificate_object['name']},
-                                                           {'$set': {
-                                                               'list_groceries': list_groceries
-                                                           }})
+            try:
+                list_certificates = deleted_grocery['certificate']
+                for certificate_object in list_certificates:
+                    certificate = certificate_collection.find_one({'name': certificate_object['name']})
+                    list_groceries = certificate['list_groceries']
+                    for grocery in list_groceries:
+                        if grocery['name'] == grocery_name:
+                            list_groceries.remove(grocery)
+                            break
+                    certificate_collection.find_one_and_update({'name': certificate_object['name']},
+                                                               {'$set': {
+                                                                   'list_groceries': list_groceries
+                                                               }})
+            except:
+                print("This grocery does not have any certificate.")
             grocery_collection.find_one_and_update({'name': grocery_name},
                                                    {'$set':
                                                         {'date_delete': delete_time}})
@@ -150,14 +153,17 @@ def delete_grocery(current_manager=None, grocery_name: str = ''):
 def restore_grocery(current_manager=None, grocery_name: str = ''):
     try:
         grocery = grocery_collection.find_one({'name': grocery_name})
-        list_certificates = grocery['certificate']
-        for certificate_object in list_certificates:
-            grocery_object = {'name': grocery_name,
-                              'date': certificate_object['date']}
-            certificate_collection.update_one({'name': certificate_object['name']},
-                                              {'$push': {
-                                                  'list_groceries': grocery_object
-                                              }})
+        try:
+            list_certificates = grocery['certificate']
+            for certificate_object in list_certificates:
+                grocery_object = {'name': grocery_name,
+                                  'date': certificate_object['date']}
+                certificate_collection.update_one({'name': certificate_object['name']},
+                                                  {'$push': {
+                                                      'list_groceries': grocery_object
+                                                  }})
+        except:
+            print("This grocery does not have any certificate.")
         restored_grocery = grocery_collection.update_one({'name': grocery_name},
                                                          {"$unset": {'date_delete': 1}})
         if restored_grocery:
@@ -167,7 +173,7 @@ def restore_grocery(current_manager=None, grocery_name: str = ''):
             return {'Status': 'Fail',
                     'Message': 'Can not find this grocery in database'}, 401
     except Exception as e:
-        return {'Type Error': e}, 400
+        return {'Type Error': f'{e}'}, 400
 
 
 @app.route('/grocery/save_image/<string:name>', methods=['POST'])
@@ -191,7 +197,7 @@ def load_image_grocery(current_manager=None, name: str = ''):
 
     except Exception as e:
         return {'Status': 'Fail',
-                'Message': f'{e}'}, 400
+                'Message': 'Can not restore'}, 400
 
 
 @app.route('/grocery/count/<string:condition>', methods=['GET'])
@@ -205,7 +211,10 @@ def count_groceries(current_manager=None, condition=''):
             if condition == 'general' or (
                     condition == 'have_cer' and len(list_certificates) > 0) or (
                     condition == 'not_have_cer' and len(list_certificates) == 0):
-                created_time = datetime.strptime(grocery['created_time'], '%H:%M:%S %d-%m-%Y')
+                try:
+                    created_time = datetime.strptime(grocery['created_time'], '%H:%M:%S %d-%m-%Y')
+                except:
+                    continue
                 year = created_time.year
                 month = created_time.month
                 value_in_year = dict_count_groceries.get(year, None)
