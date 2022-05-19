@@ -46,7 +46,7 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> = Composit
  */
 export type StoresStackParamList = {
   Stores: undefined;
-  StoreDetail: { id: number };
+  StoreDetail: { name: string };
 };
 
 export type StoresStackScreenProps<Screen extends keyof StoresStackParamList> = NativeStackScreenProps<
