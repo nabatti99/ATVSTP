@@ -59,7 +59,7 @@ export type StoresStackScreenProps<Screen extends keyof StoresStackParamList> = 
  */
 export type NewsStackParamList = {
   News: undefined;
-  NewsDetail: undefined;
+  NewsDetail: { _id: string };
 };
 
 export type NewsStackScreenProps<Screen extends keyof NewsStackParamList> = NativeStackScreenProps<

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { View, Text, Card, Colors, Fader } from "react-native-ui-lib";
 import { ScrollView } from "react-native";
 
@@ -6,24 +6,49 @@ import Layout from "../../constants/Layout";
 import { NewsStackScreenProps } from "../../navigation/types";
 import { BackButton } from "../../components/BackButton";
 import { Icon } from "../../components/Icon";
+import useRequest from "../../hooks/useRequest";
+import { News } from "./types";
+import { AxiosResponse } from "axios";
 
 const { window } = Layout;
+
 const HEADER_HEIGHT: number = 280;
 
-export function NewsDetailScreen({ navigation }: NewsStackScreenProps<"NewsDetail">) {
+export function NewsDetailScreen({ navigation, route }: NewsStackScreenProps<"NewsDetail">) {
+  const { _id } = route.params;
+
+  const [news, setNews] = useState<News>({
+    _id: "",
+    contents: [],
+    edit_by: "",
+    title: "",
+    writer: "",
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const request = useRequest();
+
+  useEffect(() => {
+    setIsLoading(true);
+    request.get<any, AxiosResponse<News>>(`information/read/${_id}`).then(({ data }) => {
+      setNews(data);
+      setIsLoading(false);
+    });
+  }, []);
+
   return (
     <View flex bg-bgPrimary>
       <Card borderRadius={0} enableShadow={false}>
         <Card.Section
-          imageSource={{ uri: "https://picsum.photos/460/400" }}
+          imageSource={{ uri: news.contents.find((content) => content.url)?.url }}
           imageStyle={{ width: "100%", height: HEADER_HEIGHT }}
         />
-        <Fader position={Fader.position.BOTTOM} size={HEADER_HEIGHT} tintColor={Colors.green700} />
+        <Fader position={Fader.position.BOTTOM} size={HEADER_HEIGHT + 200} tintColor={Colors.green700} />
 
         <View absF paddingH-24 paddingT-16 style={{ zIndex: 10 }}>
           <View flexG paddingH-32 bottom>
             <Text h1 white center>
-              Tình hình giá bắp cải ở Đà Nẵng
+              {news.title}
             </Text>
           </View>
 
@@ -31,13 +56,13 @@ export function NewsDetailScreen({ navigation }: NewsStackScreenProps<"NewsDetai
             <View row>
               <Icon name="calendar" color={Colors.white} size={16} />
               <Text small white marginL-4>
-                13/03/2022
+                {news.update_at}
               </Text>
             </View>
             <View row>
-              <Icon name="calendar" color={Colors.white} size={16} />
+              <Icon name="user" color={Colors.white} size={16} />
               <Text small white marginL-4>
-                13/03/2022
+                {news.writer}
               </Text>
             </View>
           </View>
@@ -54,7 +79,7 @@ export function NewsDetailScreen({ navigation }: NewsStackScreenProps<"NewsDetai
               elevation={4}
               borderRadius={32}
               style={{
-                shadowColor: Colors.gray700,
+                shadowColor: Colors.textSecondary,
                 borderBottomRightRadius: 0,
                 borderBottomLeftRadius: 0,
                 backgroundColor: Colors.gray50,
@@ -62,51 +87,52 @@ export function NewsDetailScreen({ navigation }: NewsStackScreenProps<"NewsDetai
               }}
               paddingV-24
             >
-              <Card.Section
-                content={[
-                  {
-                    text: "Risus aliquam erat et sodales sit. Ut suspen disse curabitur porttitor ultrices amet. Lacus nibh posuere proin a.",
-                    gray700: true,
-                    strong: true,
-                  },
-                ]}
-                paddingH-24
-                marginB-16
-              />
-              <Card.Section
-                content={[
-                  {
-                    text: "Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae. Viverra dignissim sit aliquam dolor faucibus laoreet maecenas tortor a. Mattis cursus scelerisque nullam quis platea sed sed diam.",
-                    gray700: true,
-                    regular: true,
-                  },
-                ]}
-                paddingH-24
-                marginB-16
-              />
-              <Card.Section
-                content={[
-                  {
-                    text: "Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae.",
-                    gray700: true,
-                    regular: true,
-                  },
-                ]}
-                paddingH-24
-                marginB-16
-              />
+              {news.contents.map((content) => (
+                <View key={content.value || content.url} paddingH-24 marginB-16>
+                  {content.type == "text" && (
+                    <Card.Section
+                      content={[
+                        {
+                          text: content.value,
+                          textPrimary: true,
+                          strong: true,
+                        },
+                      ]}
+                    />
+                  )}
 
-              <Card.Section
-                content={[
-                  {
-                    text: "Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae. Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae. Viverra dignissim sit aliquam dolor faucibus laoreet maecenas tortor a. Mattis cursus scelerisque nullam quis platea sed sed diam. Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae. Viverra dignissim sit aliquam dolor faucibus laoreet maecenas tortor a. Mattis cursus scelerisque nullam quis platea sed sed diam. Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae. Viverra dignissim sit aliquam dolor faucibus laoreet maecenas tortor a. Mattis cursus scelerisque nullam quis platea sed sed diam. Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae. Viverra dignissim sit aliquam dolor faucibus laoreet maecenas tortor a. Mattis cursus scelerisque nullam quis platea sed sed diam. Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae. Viverra dignissim sit aliquam dolor faucibus laoreet maecenas tortor a. Mattis cursus scelerisque nullam quis platea sed sed diam. Odio placerat aenean rhoncus quisque ac nunc et dictum. Lorem egestas mauris metus, augue viverra ornare. A sit odio volutpat semper consequat enim iaculis eu. Lectus in facilisis blandit vitae. Viverra dignissim sit aliquam dolor faucibus laoreet maecenas tortor a. Mattis cursus scelerisque nullam quis platea sed sed diam.",
-                    gray700: true,
-                    regular: true,
-                  },
-                ]}
-                paddingH-24
-                marginB-16
-              />
+                  {content.type == "header" && (
+                    <Card.Section
+                      content={[
+                        {
+                          text: content.value,
+                          textSecondary: true,
+                          h2: true,
+                        },
+                      ]}
+                    />
+                  )}
+
+                  {content.type == "image" && (
+                    <Fragment>
+                      <Card.Section
+                        imageSource={{ uri: content.url }}
+                        imageStyle={{ width: "100%", minHeight: 200, resizeMode: "contain" }}
+                      />
+                      <Card.Section
+                        content={[
+                          {
+                            text: content.caption,
+                            textSecondary: true,
+                            small: true,
+                            center: true,
+                          },
+                        ]}
+                      />
+                    </Fragment>
+                  )}
+                </View>
+              ))}
             </Card>
           </View>
         </ScrollView>

@@ -5,33 +5,36 @@ import useRequest from "hooks/useRequest";
 import makeAvatarName from "utilities/makeAvatarName";
 import makeTextEllipsis from "utilities/makeTextEllipsis";
 import { useNavigate } from "react-router-dom";
+import { connectAppContext } from "contexts/appContext/appContext";
 
-const FeedbackTab = ({ isShown = true }) => {
+const FeedbackTab = ({ isShown = true, appContext }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
   const [currentId, setCurrentId] = useState(null);
 
   const request = useRequest();
 
-  const getAllFeedbacks = () => {
+  const getAllFeedbacks = async () => {
     setIsLoading(true);
-
     return request
       .get("feedback/read", {
         params: {
           offset: 0,
           limit: 1000,
+          department: "624518c4b6316a92e74b4015", // Need to fix API
           value: "",
         },
       })
       .then(({ data }) => {
-        setData(data.data);
-        setIsLoading(false);
+        setData(data.Message);
       });
   };
 
   useEffect(() => {
-    getAllFeedbacks();
+    setIsLoading(true);
+    getAllFeedbacks().then(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   const navigate = useNavigate();
@@ -111,4 +114,4 @@ const FeedbackTab = ({ isShown = true }) => {
   );
 };
 
-export default FeedbackTab;
+export default connectAppContext(FeedbackTab);

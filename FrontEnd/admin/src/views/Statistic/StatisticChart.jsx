@@ -103,6 +103,8 @@ function StatisticChart({ ...sx }) {
         },
       },
     });
+
+    chart.clear();
   }, []);
 
   return (

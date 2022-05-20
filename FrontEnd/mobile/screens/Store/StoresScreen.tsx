@@ -11,7 +11,7 @@ import { Certificate, Store } from "./types";
 const { window } = Layout;
 
 export default function StoresScreen({ navigation }: StoresStackScreenProps<"Stores">) {
-  const [groceries, setGroceries] = useState<Store[]>();
+  const [groceries, setGroceries] = useState<Store[]>([]);
   const request: AxiosInstance = useRequest();
 
   useEffect(() => {
@@ -30,37 +30,6 @@ export default function StoresScreen({ navigation }: StoresStackScreenProps<"Sto
       .catch((error) => {
         console.log(error);
       });
-
-    // setGroceries([
-    //   {
-    //     name: "Cửa hàng nông sản Hải Hà",
-    //     address: "402 Lê Đình Lý, Hải Châu, Đà Nẵng",
-    //     owner: "Nguyễn Lê Anh Minh",
-    //     phone_number: "0946672181",
-    //     certificate: [
-    //       {
-    //         name: "ATVS1",
-    //         date: new Date(),
-    //       },
-    //       {
-    //         name: "FTP1",
-    //         date: new Date(),
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     name: "Cửa hàng nông sản Han Soon Book",
-    //     address: "402 Lê Đình Lý, Hải Châu, Đà Nẵng",
-    //     owner: "Nguyễn Lê Anh Minh",
-    //     phone_number: "0946672181",
-    //     certificate: [
-    //       {
-    //         name: "ATVS1",
-    //         date: new Date(),
-    //       },
-    //     ],
-    //   },
-    // ]);
   }, []);
 
   return (

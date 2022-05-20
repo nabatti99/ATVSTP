@@ -1,7 +1,9 @@
 import { Box, IconButton, List, ListItem, ListItemButton, Skeleton, Stack, Typography } from "@mui/material";
+import ButtonIcon from "components/ButtonIcon";
 import AddSvg from "components/Icons/AddSvg";
 import useRequest from "hooks/useRequest";
 import { Fragment, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import makeAvatarName from "utilities/makeAvatarName";
 import makeTextEllipsis from "utilities/makeTextEllipsis";
@@ -29,50 +31,21 @@ const PrivateTab = ({ isShown = true }) => {
       });
   };
 
+  const { state } = useLocation();
   useEffect(() => {
-    setData([
-      {
-        _id: "ldd",
-        title: "Thông báo họp tuần 32",
-        receivers: ["Minh", "Thịnh", "Huyền"],
-        messages: [
-          {
-            from: "Lê Duy Dương",
-            message: `Chào cả nhóm, tuần này mình sẽ họp ban lectus faucibus bibendum eget eget non facilisi sed. Quisque
-            mauris cursus convallis ut consequat volutpat elit, enim. Egestas a bibendum condimentum ipsum sed
-            volutpat sollicitudin et nunc. Nam nisi gravida amet, dolor porttitor tellus, urna, massa. Nunc non
-            feugiat purus non lacus eget volutpat. Neque ac lacus sit volutpat praesent sit sagittis. Nam
-            bibendum vel sapien aenean imperdiet malesuada. Turpis pretium ante neque, tortor facilisis faucibus
-            magna. Purus cras tortor, lobortis imperdiet duis mi sagittis. Tincidunt mi, pulvinar diam in auctor
-            lacus, nascetur et. Amet, nunc, in mi quis vulputate eu volutpat ut quis. Sit tellus nisl euismod
-            arcu est amet. Et, amet, dictum arcu pellentesque nullam integer rutrum. Ac maecenas cras dui, turpis
-            nulla. Egestas id leo gravida massa facilisi dapibus.`,
-          },
-          {
-            from: "Minh",
-            message: `Tôi đã hiểu`,
-          },
-        ],
-      },
-      {
-        _id: "adsoch",
-        title: "Thông báo thanh tra",
-        receivers: ["Minh"],
-        messages: [
-          {
-            from: "Trương Công Nam",
-            message: `Gửi Minh, tuần này có kế hoạch thanh tra tại Ac maecenas cras dui, turpis
-            nulla. Egestas id leo gravida massa facilisi dapibus.`,
-          },
-          {
-            from: "Minh",
-            message: `Tôi đã hiểu`,
-          },
-        ],
-      },
-    ]);
-    setCurrentId("ldd");
+    getAllPrivateNotifications();
   }, []);
+
+  useEffect(() => {
+    if (state && state.isSubmitted) getAllPrivateNotifications();
+  }, [state]);
+
+  const navigate = useNavigate();
+
+  const handleClicked = (_id) => {
+    setCurrentId(_id);
+    navigate(`/NotificationsManagement/Private/${_id}`);
+  };
 
   const skeleton = (
     <ListItem disablePadding disableGutters divider>
@@ -117,7 +90,7 @@ const PrivateTab = ({ isShown = true }) => {
                     sx={{
                       backgroundColor: currentId == notification._id ? "white" : "transparent",
                     }}
-                    onClick={() => setCurrentId(notification._id)}
+                    onClick={() => handleClicked(notification._id)}
                   >
                     <Stack
                       key={notification._id}
@@ -160,12 +133,10 @@ const PrivateTab = ({ isShown = true }) => {
           )}
         </List>
 
-        <Stack alignItems="center" marginBottom={1}>
-          <Box>
-            <IconButton>
-              <AddSvg />
-            </IconButton>
-          </Box>
+        <Stack alignItems="stretch" marginBottom={1}>
+          <ButtonIcon variant="text" LeftIcon={AddSvg} color="blue" onClick={() => navigate("NewMessage")}>
+            Thêm mới
+          </ButtonIcon>
         </Stack>
       </Stack>
     </Box>

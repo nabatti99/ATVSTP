@@ -47,6 +47,7 @@ import FeedbackNotificationDetail from "views/NotificationManagement/FeedbackNot
 import ResetPasswordModal from "views/UserManagement/Modals/ResetPasswordModal";
 import { Fragment } from "react";
 import PostDetails from "views/PostManagement/PostDetails";
+import AddNewPrivateNotificationModal from "views/NotificationManagement/PrivateNotification/Modal/AddNewPrivateNotificationModal";
 
 function Navigator({ appContext }) {
   const { accessToken, type_manager } = appContext;
@@ -154,6 +155,7 @@ function Navigator({ appContext }) {
             <Route path="NotificationsManagement" element={<NotificationsManagement />}>
               <Route path="Private/:id" element={<PrivateNotificationDetail />} />
               <Route path="Feedback/:id" element={<FeedbackNotificationDetail />} />
+              <Route path="NewMessage" element={<AddNewPrivateNotificationModal />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

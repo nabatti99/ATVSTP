@@ -36,8 +36,6 @@ export function StoreDetailScreen({ route, navigation }: StoresStackScreenProps<
   useEffect(() => {
     setIsLoading(true);
     request.get<any, AxiosResponse<StoreRequest>>(`grocery/${name}`).then(({ data }) => {
-      console.log(data.Grocery);
-
       setGrocery(data.Grocery);
       setIsLoading(false);
     });
