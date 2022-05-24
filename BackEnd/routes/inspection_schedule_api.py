@@ -34,7 +34,8 @@ def create_an_inspection_schedule(current_manager=None):
             return response_status(status=fail_status, message=loggers), 401
         else:
             updated_by = f'{current_time()} by {current_manager["email"]}'
-            schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
+            # schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
+            schedule = datetime.fromisoformat(db['schedule'][:-1])
             new_inspection_schedule = InspectionSchedule(authority=db['authority'],
                                                          schedule=schedule,
                                                          groceries=db['groceries'],
@@ -101,8 +102,8 @@ def get_inspection_schedule_current_manager(current_manager=None):
         is_draft = bool(request.args['is_draft'])
         some_inspection_schedule = inspection_schedule.find({
             "schedule": {
-                "$gte": datetime.strptime(date_start, '%Y-%m-%d'),
-                "$lte": datetime.strptime(date_end, '%Y-%m-%d'),
+                "$gte": date_start,
+                "$lte": date_end,
             },
         })
 
@@ -137,7 +138,8 @@ def update_inspection_schedule(current_manager=None, _id: str = ''):
             return response_status(status=fail_status, message=loggers), 401
         else:
             updated_by = f'{current_time()} by {current_manager["email"]}'
-            schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
+            # schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
+            schedule = datetime.fromisoformat(db['schedule'][:-1])
             current_inspection_schedule = InspectionSchedule(authority=db['authority'],
                                                              schedule=schedule,
                                                              groceries=db['groceries'],

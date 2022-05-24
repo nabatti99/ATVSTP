@@ -62,9 +62,9 @@ success_status = 'Success'
 def feedback_read(current_manager = None):
     try:
         list_feedback_read = []
-        current_department = administration_collection.find_one({"name": current_manager['work_from']})
-        current_feedbacks_of_department = feedback_collection.find({'department': ObjectId(current_department['_id'])})
-
+        # current_department = administration_collection.find_one({"name": current_manager['work_from']})
+        # current_feedbacks_of_department = feedback_collection.find({'department': ObjectId(current_department['_id'])})
+        current_feedbacks_of_department = feedback_collection.find({})
         if current_feedbacks_of_department:
             for feedback in current_feedbacks_of_department:
                 list_feedback_read.append(feedback)
