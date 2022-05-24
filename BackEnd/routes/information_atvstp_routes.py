@@ -1,9 +1,7 @@
 from flask import request, jsonify
 from routes import app
 from bson.objectid import ObjectId
-import flask
-import time
-
+from datetime import datetime
 from models.information_atvstp import InformationATVSTP as infor
 
 information_collection = app.db.information_atvstp
@@ -75,13 +73,12 @@ def information_create():
         return response_status(fail_status, "Data error")
     if data['title'] == "" or data['contents'] == "":
         return response_status(fail_status, "Data error")
-    current_time = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+    current_time = datetime.utcnow()
     new_information = infor(title=data['title'],
                             contents=data['contents'],
                             writer=data['writer'],
-                            edit_by=None,
-                            delete_status=1,
                             create_at=current_time,
+                            edit_by=None,
                             update_at=None)
     try:
         information_collection.insert_one(new_information.to_dict())
@@ -101,12 +98,11 @@ def information_update():
     item_update = information_collection.find_one({"_id": ObjectId(data['_id'])})  # object will be updated
     if item_update is None:
         return response_status(fail_status, "Data not exist")
-    current_time = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+    current_time = datetime.utcnow()
     new_information = infor(title=data['title'],
                             contents=data['contents'],
                             writer=item_update['writer'],
                             edit_by=data['edit_by'],
-                            delete_status=item_update['delete_status'],
                             create_at=item_update['create_at'],
                             update_at=current_time)
     filter_update = {'_id': item_update['_id']}
@@ -128,7 +124,9 @@ def information_delete():
     if item_update is None:
         return response_status(fail_status, "Data not exist")
     try:
-        information_collection.delete_one({"_id": item_update['_id']})
+        # information_collection.delete_one({"_id": item_update['_id']})
+        information_collection.update_one({"_id": ObjectId(oid)},
+                                          {"$set": {'date_delete': datetime.utcnow()}})
         return response_status(success_status, "Delete successfully")
     except Exception as e:
         return {'Type Error': e}, 400
@@ -138,14 +136,10 @@ def information_delete():
 def information_disable():
     # xoa mem => thay doi delete status
     data = request.get_json()
-    current_time = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
-    item_update = information_collection.find_one({"_id": ObjectId(data['_id'])})  # object will be deleted
-    if item_update is None:
-        return response_status(fail_status, "Data not exist")
-    filter_update = {'_id': item_update['_id']}
-    new_value = {"$set": {"delete_status": 0, "update_at": current_time}}
+    filter_update = {'_id': ObjectId(data['_id'])}
+    new_value = {"$unset": {'date_delete': 1}}
     try:
-        information_collection.update_one(filter_update, new_value)
+        information_collection.find_one_and_update(filter_update, new_value)
         return response_status(success_status, "Disable successfully")
     except Exception as e:
         return {'Type Error': e}, 400

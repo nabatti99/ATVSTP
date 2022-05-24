@@ -20,7 +20,7 @@ def inspection_schedule_in_month(current_manager = None):
                                    message=count_inspection_schedule_in_month)
         else:
             return response_status(status=fail_status,
-                                   message= f'Do not find and inspection schedule in month {current_month}')
+                                   message=0)
     except Exception as e:
         return {'Type Error': e}, 400
 
@@ -40,7 +40,7 @@ def certificate_atvstp_in_month(current_manager = None):
                                    message=count_certificate_atvstp_in_month)
         else:
             return response_status(status=fail_status,
-                                   message=f'Do not find and certificate atvstp in month{current_month}')
+                                   message=0)
     except Exception as e:
         return {'Type Error': e}, 400
 
@@ -60,6 +60,6 @@ def feedback_of_people_in_month(current_manager = None):
                                    message=count_feedback_of_people_in_month)
         else:
             return response_status(status=fail_status,
-                                   message=f'Do not find and feedback of people in month {current_month}')
+                                   message=0)
     except Exception as e:
         return {'Type Error': e}, 400

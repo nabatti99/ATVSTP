@@ -58,7 +58,7 @@ success_status = 'Success'
 #     result = {"data": list_data, "records": total_row}
 #     return result
 @app.route('/feedback/read', methods=['GET'])
-@manager_required('level_one')
+# @manager_required('level_one')
 def feedback_read(current_manager = None):
     try:
         list_feedback_read = []
@@ -89,7 +89,7 @@ def feedback_read_by_id(oid):
 
 
 @app.route('/feedback/created_from_people', methods=['POST'])
-@manager_required('level_one')
+# @manager_required('level_one')
 def feedback_create_from_people(current_manager = None):
     data = request.get_json()
 
