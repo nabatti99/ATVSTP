@@ -34,7 +34,8 @@ def create_an_inspection_schedule(current_manager=None):
             return response_status(status=fail_status, message=loggers), 401
         else:
             updated_by = f'{current_time()} by {current_manager["email"]}'
-            schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
+            # schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
+            schedule = datetime.fromisoformat(db['schedule'][:-1])
             new_inspection_schedule = InspectionSchedule(authority=db['authority'],
                                                          schedule=schedule,
                                                          groceries=db['groceries'],
@@ -90,6 +91,43 @@ def get_inspection_schedule(current_manager=None):
         return {'Type Error': e}, 400
 
 
+@app.route('/inspection_schedule/current_manager', methods=['GET'])
+@manager_required('level_two')
+def get_inspection_schedule_current_manager(current_manager=None):
+    try:
+        date_start = request.args['date_start']
+        date_end = request.args['date_end']
+        offset = int(request.args['offset'])
+        limit = int(request.args['limit'])
+        is_draft = bool(request.args['is_draft'])
+        some_inspection_schedule = inspection_schedule.find({
+            "schedule": {
+                "$gte": date_start,
+                "$lte": date_end,
+            },
+        })
+
+        lst_inspection_schedule = []
+        if some_inspection_schedule:
+            for ins_schedule in some_inspection_schedule:
+                if current_manager['email'] == ins_schedule['email']:
+                    lst_inspection_schedule.append(ins_schedule)
+
+            return pagination_schedule(path_dir='inspection_schedule/search',
+                                       offset=offset,
+                                       limit=limit,
+                                       date_start=date_start,
+                                       date_end=date_end,
+                                       is_draft=is_draft,
+                                       list_database=lst_inspection_schedule)
+        else:
+            return response_status(status=fail_status,
+                                   message=f'Can not find inspection schedule of {current_manager["email"]} in database'), 401
+
+    except Exception as e:
+        return {'Type Error': e}, 400
+
+
 @app.route('/inspection_schedule/<string:_id>', methods=['PUT'])
 @manager_required('level_two')
 def update_inspection_schedule(current_manager=None, _id: str = ''):
@@ -100,7 +138,8 @@ def update_inspection_schedule(current_manager=None, _id: str = ''):
             return response_status(status=fail_status, message=loggers), 401
         else:
             updated_by = f'{current_time()} by {current_manager["email"]}'
-            schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
+            # schedule = datetime.strptime(db['schedule'], '%Y-%m-%d')
+            schedule = datetime.fromisoformat(db['schedule'][:-1])
             current_inspection_schedule = InspectionSchedule(authority=db['authority'],
                                                              schedule=schedule,
                                                              groceries=db['groceries'],

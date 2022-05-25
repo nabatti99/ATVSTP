@@ -4,7 +4,8 @@ from .pagination import pagination
 from models.certificate import Certificate
 from models.firebase import storage
 from datetime import datetime
-certificate_collection = app.db.certificate_atvstp;
+certificate_collection = app.db.certificate_atvstp
+grocery_collection = app.db.grocery
 
 
 @app.route('/certificate', methods=["GET"])
@@ -92,12 +93,27 @@ def update_certificate(current_manager=None, certificate_name=''):
 
 
 @app.route('/certificate/<string:certificate_name>', methods=["DELETE"])
-@manager_required("level_one")
+# @manager_required("level_one")
 def delete_certificate(current_manager=None, certificate_name=''):
     try:
         deleted_certificate = certificate_collection.find_one({'name': certificate_name})
         if deleted_certificate:
             delete_time = datetime.utcnow()
+            try:
+                list_groceries = deleted_certificate['list_groceries']
+                for grocery_object in list_groceries:
+                    grocery = grocery_collection.find_one({'name': grocery_object['name']})
+                    list_certificates = grocery['certificate']
+                    for certificate in list_certificates:
+                        if certificate['name'] == certificate_name:
+                            list_certificates.remove(certificate)
+                            break
+                    grocery_collection.find_one_and_update({'name': grocery_object['name']},
+                                                  {'$set': {
+                                                      'certificate': list_certificates
+                                                  }})
+            except:
+                print("This certificate does not have list groceries.")
             certificate_collection.find_one_and_update({'name': certificate_name},
                                                        {'$set':
                                                             {'date_delete': delete_time}})
@@ -107,14 +123,28 @@ def delete_certificate(current_manager=None, certificate_name=''):
         else:
             return {'Status': 'Fail',
                     'Message': 'Can not find this grocery in database'}, 401
-    except Exception:
-        return {'Status': 'Can not delete'}, 400
+    except Exception as e:
+        print (e)
+        return {'Type Error': f'{e}'}, 400
 
 
 @app.route('/certificate/restore/<string:certificate_name>', methods=['PUT'])
 @manager_required('level_one')
 def restore_certificate(current_manager=None, certificate_name: str = ''):
     try:
+        certificate = certificate_collection.find_one({'name': certificate_name})
+        try:
+            list_groceries = certificate['list_groceries']
+            for grocery_object in list_groceries:
+                certificate_object = {'name': certificate_name,
+                                      'date': grocery_object['date']}
+                grocery_collection.update_one({'name': grocery_object['name']},
+                                              {'$push': {
+                                                  'certificate': certificate_object
+                                              }})
+        except:
+            print("This certificate does not have list groceries.")
+
         restored_certificate = certificate_collection.update_one({'name': certificate_name},
                                                                  {"$unset": {'date_delete': 1}})
         if restored_certificate:

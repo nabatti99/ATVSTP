@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import functools
 from flask import request, make_response, render_template, jsonify
 from routes import app
@@ -53,7 +53,8 @@ def manager_required(access_level):
                 if current_manager['type_manager'] in type_access:
                     return func(current_manager, *args, **kwargs)
                 else:
-                    return {'Message': f"No permissions for {current_manager['type_manager']}"}
+                    return response_status(status=fail_status,
+                                           message=f"No permissions for {current_manager['type_manager']}")
             except jwt.ExpiredSignatureError as e:
                 return {'Message': "Expired token. Reauthentication required.",
                         'authenticated': False}, 401
@@ -80,7 +81,9 @@ def login():
     })
     if check_password_hash(current_manager['hash_password'], auth.password):
         token = gen_token(current_manager['_id'])
-        return {'token': token}
+        return {'token': token,
+                'type_manager': current_manager['type_manager'],
+                'email': current_manager['email']}
     else:
         return make_response('Could not sign in', 401, {'WWW-authenticate': 'Basic realm="Wrong credential!"'})
 
@@ -89,8 +92,8 @@ def login():
 def gen_token(_id):
     payload = {
         '_id': str(_id),
-        # 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=120),
-        # 'iat': datetime.datetime.utcnow()
+        'exp': datetime.utcnow() + timedelta(days=0, minutes=5),
+        'iat': datetime.utcnow()
     }
     token = jwt.encode(payload,
                        app.config['SECRET_KEY'],
@@ -207,6 +210,9 @@ def update_a_manager(current_manager=None, email: str = ''):
                                                                              'type_manager'],
                                                                          'role': updated_manager['role']
                                                                      }})
+
+
+
             elif current_manager['type_manager'] == 'inspector':
                 del_conf_mn = manager_collection.find_one_and_update({'email': email},
                                                                      {'$set': {
@@ -218,6 +224,8 @@ def update_a_manager(current_manager=None, email: str = ''):
                 return response_status(status=fail_status,
                                        message=f'You is a {current_manager["type_manager"]}, '
                                                f'can not update to {updated_manager["type_manager"]}'), 401
+
+
 
             if del_conf_mn:
                 return response_status(status=success_status,
@@ -294,7 +302,6 @@ def restore_a_manager(current_manager=None, email: str = ''):
 @manager_required('level_two')
 def delete_all_manager(current_manager=None):
     try:
-        # TODO delete all images firebase
         all_manager = manager_collection.delete_many({})
         if all_manager:
             return response_status(status=success_status,
@@ -384,6 +391,35 @@ def load_image_profile_manager(current_manager=None, email: str = ''):
 
         return response_status(status=success_status,
                                message={"image uploaded": storage.child(save_dir).get_url(None)})
+
+    except Exception as e:
+        return {'Type Error': e}, 400
+
+
+@app.route('/manager/reset_password/<string:email>', methods=['POST'])
+@manager_required('level_two')
+def reset_password(current_manager=None, email: str = ''):
+    try:
+        password_db = request.get_json()
+
+        if check_password_hash(current_manager['hash_password'], password_db['current_password']):
+            the_manager = manager_collection.update_one({"email": email},
+                                                        {'$set': {
+                                                            'hash_password': generate_password_hash(
+                                                                password_db['new_password'],
+                                                                method='sha256')
+                                                        }})
+
+            if the_manager:
+                return response_status(status=success_status,
+                                       message='Change email success!')
+
+            else:
+                return response_status(status=fail_status,
+                                       message=f'Do not have manager {email} in database'), 401
+        else:
+            return response_status(status=fail_status,
+                                   message=f'Your password is incorrect!'), 401
 
     except Exception as e:
         return {'Type Error': e}, 400
