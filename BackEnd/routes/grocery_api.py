@@ -6,13 +6,14 @@ from models.grocery import Grocery
 from models.firebase import storage
 import time
 from datetime import datetime
+import pytz
+import tzlocal
 
 grocery_collection = app.db.grocery
 certificate_collection = app.db.certificate_atvstp
 
 
 @app.route('/grocery', methods=['GET'])
-# @manager_required("level_one")
 def get_grocery(current_manager=None):
     offset = int(request.args['offset'])
     limit = int(request.args['limit'])
@@ -40,7 +41,6 @@ def get_grocery(current_manager=None):
 
 
 @app.route('/grocery/<string:grocery_name>', methods=['GET'])
-@manager_required("level_one")
 def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
     try:
         grocery = grocery_collection.find_one({'name': grocery_name})
@@ -59,7 +59,7 @@ def get_grocery_by_name(current_manager=None, grocery_name: str = ''):
 @manager_required("level_one")
 def add_grocery(current_manager=None):
     data = request.get_json()
-    created_time = time.strftime("%H:%M:%S %d-%m-%Y", time.localtime())
+    created_time = datetime.utcnow()
     logger = check_input(data)
     if not logger:
         new_grocery = Grocery(name=data['name'],
@@ -200,41 +200,57 @@ def load_image_grocery(current_manager=None, name: str = ''):
                 'Message': 'Can not restore'}, 400
 
 
-@app.route('/grocery/count/<string:condition>', methods=['GET'])
-@manager_required('level_one')
-def count_groceries(current_manager=None, condition=''):
-    try:
-        list_groceries = grocery_collection.find({})
-        dict_count_groceries = {}
-        for grocery in list_groceries:
-            list_certificates = grocery['certificate']
-            if condition == 'general' or (
-                    condition == 'have_cer' and len(list_certificates) > 0) or (
-                    condition == 'not_have_cer' and len(list_certificates) == 0):
-                try:
-                    created_time = datetime.strptime(grocery['created_time'], '%H:%M:%S %d-%m-%Y')
-                except:
-                    continue
-                year = created_time.year
-                month = created_time.month
-                value_in_year = dict_count_groceries.get(year, None)
+@app.route('/grocery/count', methods=['GET'])
+# @manager_required('level_one')
+def count_groceries(current_manager=None):
+    month_now = datetime.utcnow().month
+    year_now = datetime.utcnow().year
+    month_min = 1
+    if month_now < 12:
+        month_min = month_now + 1
 
-                if value_in_year is None:
-                    dict_in_year = {}
-                    dict_in_year[month] = 1
-                    dict_count_groceries[year] = dict_in_year
-                else:
-                    dict_in_year = value_in_year
-                    value_in_month = dict_in_year.get(month, None)
-                    if value_in_month is None:
-                        dict_count_groceries[year][month] = 1
+    list_date = []
+    list_number_of_groceries = []
+    list_number_of_groceries_have_cer = []
+    list_number_of_groceries_not_have_cer = []
+    for i in range(12):
+        list_number_of_groceries.append(0)
+        list_number_of_groceries_have_cer.append(0)
+        list_number_of_groceries_not_have_cer.append(0)
+    index = 0
+    try:
+        if month_min != 1:
+            for month in range(month_min, 13):
+                month_year = format_month(month) + '/' + str(year_now - 1)
+                list_date.append(month_year)
+                list_groceries = get_groceries_by_time(month, year_now - 1)
+                list_number_of_groceries[index] = len(list_groceries)
+                for grocery in list_groceries:
+                    if len(grocery['certificate']) > 0:
+                        list_number_of_groceries_have_cer[index] += 1
                     else:
-                        value = dict_count_groceries[year][month]
-                        value += 1
-                        dict_count_groceries[year][month] = value
+                        list_number_of_groceries_not_have_cer[index] += 1
+                index += 1
+        for month in range(1, month_now + 1):
+            month_year = format_month(month) + '/' + str(year_now)
+            list_date.append(month_year)
+            list_groceries = get_groceries_by_time(month, year_now)
+            list_number_of_groceries[index] = len(list_groceries)
+            for grocery in list_groceries:
+                if len(grocery['certificate']) > 0:
+                    list_number_of_groceries_have_cer[index] += 1
+                else:
+                    list_number_of_groceries_not_have_cer[index] += 1
+            index += 1
 
         return {'Status': 'Success',
-                'Result': dict_count_groceries}
+                'Result': {
+                    "Time": list_date,
+                    "General": list_number_of_groceries,
+                    "Have_cer": list_number_of_groceries_have_cer,
+                    "Not_have_cer": list_number_of_groceries_not_have_cer
+                }}
+
     except Exception as e:
         print(e)
         return {'Status': 'Fail',
@@ -272,3 +288,25 @@ def check_input(new_grocery):
     except:
         logger['certificate'] = 'No certificate'
     return logger
+
+
+def format_month(number):
+    if number < 10:
+        return '0' + str(number)
+    else:
+        return str(number)
+
+
+def get_groceries_by_time(month, year):
+    date_min = datetime(year, month, 1)
+    if month < 12:
+        date_max = datetime(year, month + 1, 1)
+    else:
+        date_max = datetime(year + 1, 1, 1)
+    print(date_min)
+    print(date_max)
+
+    list_groceries = list(grocery_collection.find({"created_time": {"$gte": date_min, "$lt": date_max}}))
+    print(list_groceries)
+    print()
+    return list_groceries
