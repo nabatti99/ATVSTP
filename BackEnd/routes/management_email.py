@@ -50,4 +50,27 @@ def gen_password():
     return ''.join(password)
 
 
+def send_email_for_schedule(new_schedule, current_manager):
+    subject = f'Tôi là {current_manager} đã lên lịch cho đơn vị {new_schedule["authority"]} thực hiện thanh tra'
 
+    msg = Message(subject, recipients=new_schedule["assigned_to"])
+    msg.body = new_schedule['content']
+    mail.send(msg)
+
+
+def send_email_feed_back(email_customer, name_customer, department, content, feedback):
+
+    subject = f'Phản hồi đến người dân {name_customer} từ {department}'
+
+    msg = Message(subject, recipients=[email_customer])
+    msg.body = f'''Sau khi nhận được phản hồi của ngừoi dân với nội dung như sau: \n
+                
+                {feedback} \n
+                
+                Chúng tôi xin phản hồi lại như sau: \n
+                
+                {content} \n
+                
+                Chúng tôi xin chân thành cảm ơn những ý kiến góp ý của bạn!!!!
+                '''
+    mail.send(msg)

@@ -1,7 +1,7 @@
 class FeedbackOfPeople:
-    def __init__(self, fullname, address, phone_number, department, content, create_at):
+    def __init__(self, fullname, email, phone_number, department, content, create_at):
         self.fullname = fullname
-        self.address = address
+        self.email = email
         self.phone_number = phone_number
         self.department = department
         self.content = content
@@ -10,7 +10,7 @@ class FeedbackOfPeople:
     def to_dict(self):
         return {
             'fullname': self.fullname,
-            'address': self.address,
+            'email': self.email,
             'phone_number': self.phone_number,
             'department': self.department,
             'content': self.content,
