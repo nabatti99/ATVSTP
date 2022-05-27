@@ -10,27 +10,30 @@ class Manager:
                  phone: str = '',
                  type_manager: str = 'admin',
                  work_from: str = '',
-                 image_url: str = ""):
+                 image_url: str = "",
+                 role: str = ''):
 
-        self.name = name
-        self.hash_password = hash_password
-        self.address = address
-        self.email = email
-        self.phone = phone
-        self.type_manager = type_manager
-        self.work_from = work_from
-        self.image_url = image_url
+        self.__name = name
+        self.__hash_password = hash_password
+        self.__address = address
+        self.__email = email
+        self.__phone = phone
+        self.__type_manager = type_manager
+        self.__work_from = work_from
+        self.__image_url = image_url
+        self.__role = role
 
     def to_dict(self):
         return {
-            'name': self.name,
-            'hash_password': self.hash_password,
-            'email': self.email,
-            'phone': self.phone,
-            'address': self.address,
-            'type_manager': self.type_manager,
-            'work_from': self.work_from,
-            'image_url': self.image_url
+            'name': self.__name,
+            'hash_password': self.__hash_password,
+            'email': self.__email,
+            'phone': self.__phone,
+            'address': self.__address,
+            'type_manager': self.__type_manager,
+            'work_from': self.__work_from,
+            'image_url': self.__image_url,
+            'role': self.__role
         }
 
     def db_to_dict(self, database):
@@ -42,5 +45,7 @@ class Manager:
             'address': database['address'],
             'type_manager': database['type_manager'],
             'work_from': database['work_from'],
-            'image_url': database['image_url']
+            'image_url': database['image_url'],
+            'role': database['role'],
+            'date_delete': database.get('date_delete', None)
         }
