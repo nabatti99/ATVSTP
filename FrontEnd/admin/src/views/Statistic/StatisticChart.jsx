@@ -1,27 +1,19 @@
-import { Box, MenuItem, Paper, Stack, TextField, Typography, useTheme } from "@mui/material";
+import { Box, Paper, useTheme } from "@mui/material";
 import Chart from "chart.js/auto";
 import { useEffect, useRef } from "react";
 import { makeDataset } from "utilities/chartHelper";
+import useRequest from "hooks/useRequest";
 
 function StatisticChart({ ...sx }) {
   const canvasRef = useRef();
 
   const theme = useTheme();
+  const request = useRequest();
 
   useEffect(() => {
-    const data = {
-      labels: [1, 2, 3, 4, 5],
-      datasets: [
-        makeDataset([0, 2, 3, 3, 4, 5], "Tổng số cửa hàng", theme.palette.blue[500]),
-        makeDataset([0, 1, 1, 2, 2, 5], "Cửa hàng đã được cấp giấy chứng nhận", theme.palette.green[500]),
-        makeDataset([0, 1, 2, 1, 2, 0], "Cửa hàng chưa được cấp giấy chứng nhận", theme.palette.red[500]),
-      ],
-    };
-
     const context = canvasRef.current.getContext("2d");
     const chart = new Chart(context, {
       type: "line",
-      data: data,
       options: {
         responsive: true,
         plugins: {
@@ -104,7 +96,18 @@ function StatisticChart({ ...sx }) {
       },
     });
 
-    chart.clear();
+    chart.render();
+
+    request.get("grocery/count").then(({ data }) => {
+      const { General, Have_cer, Not_have_cer, Time } = data.Result;
+      chart.data.labels = Time;
+      chart.data.datasets = [
+        makeDataset(General, "Tổng số cửa hàng", theme.palette.blue[500]),
+        makeDataset(Have_cer, "Cửa hàng đã được cấp giấy chứng nhận", theme.palette.green[500]),
+        makeDataset(Not_have_cer, "Cửa hàng chưa được cấp giấy chứng nhận", theme.palette.red[500]),
+      ];
+      chart.update();
+    });
   }, []);
 
   return (
