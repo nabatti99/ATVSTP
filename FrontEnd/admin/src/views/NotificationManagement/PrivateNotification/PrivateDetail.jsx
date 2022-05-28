@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Stack, Typography, Box, Paper, InputBase, IconButton, Skeleton } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { Stack, Typography, Box, Paper, InputBase, IconButton, Skeleton, debounce } from "@mui/material";
 import { useParams } from "react-router-dom";
 
 import ButtonIcon from "components/ButtonIcon";
@@ -8,8 +8,9 @@ import StarBorderSvg from "components/Icons/StarBorderSvg";
 import Notification from "components/Notification";
 import useRequest from "hooks/useRequest";
 import makeAvatarName from "utilities/makeAvatarName";
+import { connectAppContext } from "contexts/appContext/appContext";
 
-function PrivateNotificationDetail() {
+function PrivateNotificationDetail({ appContext }) {
   const request = useRequest();
   const { id } = useParams();
 
@@ -21,13 +22,35 @@ function PrivateNotificationDetail() {
     messages: [],
   });
 
-  useEffect(() => {
+  const loadData = () => {
     setIsLoading(true);
-    request.get(`notification/${id}`).then(({ data }) => {
-      setNotificationData(data);
-      setIsLoading(false);
+    request
+      .get(`notification/${id}`)
+      .then(({ data }) => setNotificationData(data))
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => loadData(), [id]);
+
+  const [responseData, setResponseData] = useState({
+    message: "",
+    from: appContext.userEmail,
+  });
+
+  const handleResponseMessageChanged = (message) => {
+    setResponseData({
+      ...responseData,
+      message,
     });
-  }, [id]);
+  };
+
+  const messageBoxRef = useRef();
+  const handleSubmitButtonClicked = () => {
+    request.put(`notification/${id}`, responseData).finally(() => {
+      loadData();
+      messageBoxRef.current.value = "";
+    });
+  };
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
   const iconSkeleton = <Skeleton variant="circular" animation="wave" width={16} height={16} />;
@@ -73,12 +96,12 @@ function PrivateNotificationDetail() {
             </Notification>
           ) : (
             messages.map(({ from, message, time }) => (
-              <Notification label={makeAvatarName(from)}>
+              <Notification key={message} label={makeAvatarName(from)} mb={2}>
                 <Stack>
                   <Typography variant="regular" color="gray.500" mb={1}>
                     {from}
                   </Typography>
-                  <Typography variant="strong" color="gray.900" mb={2}>
+                  <Typography variant="strong" color="gray.900" mb={1}>
                     {time}
                   </Typography>
                   <Typography variant="regular" color="gray.500">
@@ -97,10 +120,18 @@ function PrivateNotificationDetail() {
             </Typography>
 
             <Box px={3} py={2} flexGrow={1} position="relative">
-              <InputBase multiline placeholder="Nội dung" color="gray.700" fullWidth rows={5} />
+              <InputBase
+                ref={messageBoxRef}
+                multiline
+                placeholder="Nội dung"
+                color="gray.700"
+                fullWidth
+                rows={5}
+                onChange={debounce((event) => handleResponseMessageChanged(event.target.value), 1000)}
+              />
 
               <Box position="absolute" right={0} bottom={0} mb={2} mr={3}>
-                <ButtonIcon variant="contained" LeftIcon={SendSvg}>
+                <ButtonIcon variant="contained" LeftIcon={SendSvg} onClick={handleSubmitButtonClicked}>
                   GỬI
                 </ButtonIcon>
               </Box>
@@ -112,4 +143,4 @@ function PrivateNotificationDetail() {
   );
 }
 
-export default PrivateNotificationDetail;
+export default connectAppContext(PrivateNotificationDetail);

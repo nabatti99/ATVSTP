@@ -27,10 +27,10 @@ function FeedbackNotificationDetail() {
 
   const loadData = () => {
     setIsLoading(true);
-    request.get(`feedback/read/${id}`).then(({ data }) => {
-      setFeedbackData(data);
-      setIsLoading(false);
-    });
+    request
+      .get(`feedback/read/${id}`)
+      .then(({ data }) => setFeedbackData(data))
+      .finally(() => setIsLoading(false));
   };
   useEffect(() => loadData(), [id]);
 
@@ -40,7 +40,10 @@ function FeedbackNotificationDetail() {
       .post(`feedback/response_feedback_from_manager/${id}`, {
         message,
       })
-      .finally(() => loadData());
+      .finally(() => {
+        loadData();
+        setMessage("");
+      });
   };
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;

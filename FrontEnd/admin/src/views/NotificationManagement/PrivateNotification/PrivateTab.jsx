@@ -1,6 +1,7 @@
 import { Box, IconButton, List, ListItem, ListItemButton, Skeleton, Stack, Typography } from "@mui/material";
 import ButtonIcon from "components/ButtonIcon";
 import AddSvg from "components/Icons/AddSvg";
+import { connectAppContext } from "contexts/appContext/appContext";
 import useRequest from "hooks/useRequest";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -8,7 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import makeAvatarName from "utilities/makeAvatarName";
 import makeTextEllipsis from "utilities/makeTextEllipsis";
 
-const PrivateTab = ({ isShown = true }) => {
+const PrivateTab = ({ isShown = true, appContext }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [currentId, setCurrentId] = useState(null);
@@ -133,14 +134,16 @@ const PrivateTab = ({ isShown = true }) => {
           )}
         </List>
 
-        <Stack alignItems="stretch" marginBottom={1}>
-          <ButtonIcon variant="text" LeftIcon={AddSvg} color="blue" onClick={() => navigate("NewMessage")}>
-            Thêm mới
-          </ButtonIcon>
-        </Stack>
+        {appContext.type_manager == "admin" && (
+          <Stack alignItems="stretch" marginBottom={1}>
+            <ButtonIcon variant="text" LeftIcon={AddSvg} color="blue" onClick={() => navigate("NewMessage")}>
+              Thêm mới
+            </ButtonIcon>
+          </Stack>
+        )}
       </Stack>
     </Box>
   );
 };
 
-export default PrivateTab;
+export default connectAppContext(PrivateTab);
