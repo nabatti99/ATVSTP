@@ -101,7 +101,7 @@ const FeedbackTab = ({ isShown = true, appContext }) => {
                       {email}
                     </Typography>
                     <Typography variant="strong" color="gray.900" mb="2px">
-                      {makeTextEllipsis(content, 6)}
+                      {makeTextEllipsis(content[0].message, 6)}
                     </Typography>
                   </Stack>
                 </Stack>
