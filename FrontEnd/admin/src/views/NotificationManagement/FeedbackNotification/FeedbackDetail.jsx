@@ -1,4 +1,4 @@
-import { Stack, Typography, Box, Paper, InputBase, IconButton, Skeleton } from "@mui/material";
+import { Stack, Typography, Box, Paper, InputBase, IconButton, Skeleton, debounce } from "@mui/material";
 import ButtonIcon from "components/ButtonIcon";
 import MailSvg from "components/Icons/MailSvg";
 import PhoneSvg from "components/Icons/PhoneSvg";
@@ -24,18 +24,32 @@ function FeedbackNotificationDetail() {
     fullname: "",
     phone_number: "",
   });
-  useEffect(() => {
+
+  const loadData = () => {
     setIsLoading(true);
     request.get(`feedback/read/${id}`).then(({ data }) => {
       setFeedbackData(data);
       setIsLoading(false);
     });
-  }, [id]);
+  };
+  useEffect(() => loadData(), [id]);
+
+  const [message, setMessage] = useState("");
+  const handleSubmitButtonClicked = () => {
+    request
+      .post(`feedback/response_feedback_from_manager/${id}`, {
+        message,
+      })
+      .finally(() => loadData());
+  };
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
   const iconSkeleton = <Skeleton variant="circular" animation="wave" width={16} height={16} />;
 
-  const { content, create_at, department, email, fullname, phone_number } = feedbackData;
+  const { content, create_at, email, fullname, phone_number } = feedbackData;
+
+  const requestContent = content[0];
+  const responseContent = content[1];
 
   return (
     <Stack height="100%">
@@ -82,6 +96,22 @@ function FeedbackNotificationDetail() {
             )}
           </Typography>
         </Stack>
+
+        <Stack direction="row" mt={1}>
+          {isLoading ? iconSkeleton : <SendSvg size={16} />}
+          <Typography variant="strong" ml={1}>
+            {isLoading ? (
+              skeleton
+            ) : (
+              <Fragment>
+                Ngày gửi:&nbsp;
+                <Box component="span" color="blue.500">
+                  {isLoading ? skeleton : create_at}
+                </Box>
+              </Fragment>
+            )}
+          </Typography>
+        </Stack>
       </Box>
 
       <Stack py={3} px={4} flexGrow={1} justifyContent="space-between">
@@ -91,33 +121,56 @@ function FeedbackNotificationDetail() {
               <Typography variant="regular" color="gray.500" mb={1}>
                 {isLoading ? skeleton : fullname}
               </Typography>
-              <Typography variant="strong" color="gray.900" mb={2}>
-                {isLoading ? skeleton : create_at}
-              </Typography>
-              <Typography variant="regular" color="gray.500">
-                {isLoading ? skeleton : content}
+              <Typography variant="regular" color="gray.700">
+                {isLoading ? skeleton : requestContent.message}
               </Typography>
             </Stack>
           </Notification>
+
+          {responseContent && (
+            <Notification
+              label={makeAvatarName(isLoading ? "" : responseContent.sender)}
+              isLoading={isLoading}
+              mt={2}
+            >
+              <Stack>
+                <Typography variant="regular" color="gray.500" mb={1}>
+                  {isLoading ? skeleton : responseContent.sender}
+                </Typography>
+                <Typography variant="regular" color="gray.700">
+                  {isLoading ? skeleton : responseContent.message}
+                </Typography>
+              </Stack>
+            </Notification>
+          )}
         </Stack>
 
-        <Paper variant="outlined">
-          <Stack height="100%">
-            <Typography variant="strong" color="gray.500" borderBottom={1} borderColor="gray.300" px={3} py={2}>
-              Phản hồi
-            </Typography>
+        {!responseContent && (
+          <Paper variant="outlined">
+            <Stack height="100%">
+              <Typography variant="strong" color="gray.500" borderBottom={1} borderColor="gray.300" px={3} py={2}>
+                Phản hồi
+              </Typography>
 
-            <Box px={3} py={2} flexGrow={1} position="relative">
-              <InputBase multiline placeholder="Nội dung" color="gray.700" fullWidth rows={5} />
+              <Box px={3} py={2} flexGrow={1} position="relative">
+                <InputBase
+                  multiline
+                  placeholder="Nội dung"
+                  color="gray.700"
+                  fullWidth
+                  rows={5}
+                  onChange={debounce((event) => setMessage(event.target.value), 1000)}
+                />
 
-              <Box position="absolute" right={0} bottom={0} mb={2} mr={3}>
-                <ButtonIcon variant="contained" LeftIcon={SendSvg}>
-                  GỬI
-                </ButtonIcon>
+                <Box position="absolute" right={0} bottom={0} mb={2} mr={3}>
+                  <ButtonIcon variant="contained" LeftIcon={SendSvg} onClick={handleSubmitButtonClicked}>
+                    GỬI
+                  </ButtonIcon>
+                </Box>
               </Box>
-            </Box>
-          </Stack>
-        </Paper>
+            </Stack>
+          </Paper>
+        )}
       </Stack>
     </Stack>
   );
