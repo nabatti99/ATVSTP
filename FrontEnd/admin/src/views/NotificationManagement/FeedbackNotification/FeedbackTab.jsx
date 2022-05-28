@@ -74,7 +74,7 @@ const FeedbackTab = ({ isShown = true, appContext }) => {
       ) : (
         data.map(({ _id, content, create_at, department, email, fullname, phone_number }) => {
           return (
-            <ListItem disablePadding disableGutters divider>
+            <ListItem key={_id} disablePadding disableGutters divider>
               <ListItemButton
                 disableGutters
                 sx={{
