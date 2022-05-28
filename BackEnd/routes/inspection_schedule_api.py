@@ -45,9 +45,9 @@ def create_an_inspection_schedule(current_manager=None):
                                                          is_draft=db['is_draft'])
 
             inspection_schedule.insert_one(new_inspection_schedule.to_dict())
-            # if not db['is_draft']:
-            #     send_email_for_schedule(new_schedule=new_inspection_schedule.to_dict(),
-            #                             current_manager=current_manager['email'])
+            if not db['is_draft']:
+                send_email_for_schedule(new_schedule=new_inspection_schedule.to_dict(),
+                                        current_manager=current_manager['email'])
             return response_status(status=success_status,
                                    message=new_inspection_schedule.to_dict())
     except Exception as e:
@@ -62,13 +62,13 @@ def get_inspection_schedule(current_manager=None):
         date_end = request.args['date_end']
         offset = int(request.args['offset'])
         limit = int(request.args['limit'])
-        is_draft = bool(request.args['is_draft'])
+        is_draft = bool(int(request.args['is_draft']))
         some_inspection_schedule = inspection_schedule.find({
             "schedule": {
                 "$gte": datetime.strptime(date_start, '%Y-%m-%d'),
                 "$lte": datetime.strptime(date_end, '%Y-%m-%d'),
             },
-            # 'is_draft': is_draft
+            'is_draft': is_draft
         })
 
         lst_inspection_schedule = []
@@ -153,9 +153,9 @@ def update_inspection_schedule(current_manager=None, _id: str = ''):
                                                                   '$set': current_inspection_schedule.to_dict()
                                                               })
             if updated_ins_sche:
-                # if not db['is_draft']:
-                #     send_email_for_schedule(new_schedule=current_inspection_schedule.to_dict(),
-                #                             current_manager=current_manager['email'])
+                if not db['is_draft']:
+                    send_email_for_schedule(new_schedule=current_inspection_schedule.to_dict(),
+                                            current_manager=current_manager['email'])
                 return response_status(status=success_status,
                                        message=f'Updated inspection schedule {_id}')
             else:

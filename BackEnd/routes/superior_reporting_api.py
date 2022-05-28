@@ -32,14 +32,14 @@ def get_superior_reporting(current_manager=None):
         date_end = request.args['date_end']
         offset = int(request.args['offset'])
         limit = int(request.args['limit'])
-        is_draft = bool(request.args['is_draft'])
+        is_draft = bool(int(request.args['is_draft']))
 
         some_superior_reporting = superior_reporting.find({
             "updated_at": {
                 "$gte": datetime.strptime(date_start, '%Y-%m-%d'),
                 "$lte": datetime.strptime(date_end, '%Y-%m-%d'),
             },
-            # 'is_draft': is_draft,
+            'is_draft': is_draft,
         })
 
         lst_superior_reporting = []
@@ -118,9 +118,9 @@ def update_superior_reporting(current_manager=None, _id: str = ''):
                                                         '$set': current_report.to_dict()
                                                     })
             if updated:
-                # if not db['is_draft']:
-                #     send_email_for_schedule(new_schedule=current_report.to_dict(),
-                #                             current_manager=current_manager['email'])
+                if not db['is_draft']:
+                    send_email_for_schedule(new_schedule=current_report.to_dict(),
+                                            current_manager=current_manager['email'])
                 return response_status(status=success_status,
                                        message=f'Updated inspection schedule {_id}')
             else:
