@@ -4,7 +4,7 @@
  */
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { CompositeScreenProps, NavigatorScreenParams } from "@react-navigation/native";
+import { CompositeScreenProps, NavigationProp, NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 declare global {
@@ -76,6 +76,11 @@ export type PersonalStackParamList = {
 };
 
 export type PersonalStackScreenProps<Screen extends keyof PersonalStackParamList> = NativeStackScreenProps<
+  PersonalStackParamList,
+  Screen
+>;
+
+export type PersonalStackNavigationProp<Screen extends keyof PersonalStackParamList> = NavigationProp<
   PersonalStackParamList,
   Screen
 >;

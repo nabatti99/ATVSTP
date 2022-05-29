@@ -69,6 +69,7 @@ export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProp
               style={Typography.regular}
               floatingPlaceholderStyle={Typography.regular}
               validationMessageStyle={Typography.small}
+              enableErrors
             />
           </View>
           <Icon name="user" size={32} color={Colors.gray700} />
@@ -83,6 +84,7 @@ export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProp
               style={Typography.regular}
               floatingPlaceholderStyle={Typography.regular}
               validationMessageStyle={Typography.small}
+              enableErrors
             />
           </View>
           <Icon name="phone" size={32} color={Colors.gray700} />

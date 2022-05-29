@@ -5,6 +5,7 @@ import { View, Text, Colors, TouchableOpacity, Image, Fader } from "react-native
 import { Icon } from "../../components/Icon";
 import { PersonalStackScreenProps } from "../../navigation/types";
 import FeedbackField from "./components/FeedbackField";
+import { FeedbackList } from "./components/FeedbackList";
 import { personalContext } from "./context/PersonalContext";
 import { PersonalContextData } from "./type";
 
@@ -42,6 +43,8 @@ export default function PersonalScreen({ navigation, route }: PersonalStackScree
         </View>
 
         <FeedbackField />
+
+        <FeedbackList />
       </ScrollView>
 
       <Fader position={Fader.position.BOTTOM} visible tintColor={Colors.bgPrimary} />

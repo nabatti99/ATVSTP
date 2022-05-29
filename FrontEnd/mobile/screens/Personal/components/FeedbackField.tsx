@@ -1,21 +1,67 @@
 import { AxiosInstance } from "axios";
-import { Fragment, useContext } from "react";
-import { Button, Colors, Typography, View } from "react-native-ui-lib";
+import { Fragment, useContext, useState } from "react";
+import { Button, Colors, Typography, View, ToastPresets } from "react-native-ui-lib";
 import KeyboardTrackingView from "react-native-ui-lib/lib/components/Keyboard/KeyboardTracking/KeyboardTrackingView";
-import { TextField } from "react-native-ui-lib/src/incubator";
+import { TextField, Toast } from "react-native-ui-lib/src/incubator";
 import { Icon } from "../../../components/Icon";
 import useRequest from "../../../hooks/useRequest";
 import { personalContext } from "../context/PersonalContext";
 import { PersonalContextData } from "../type";
+
+type ToastConfigProps = {
+  visible: boolean;
+  message: string;
+  preset: ToastPresets;
+};
+
+const defaultToastConfig: ToastConfigProps = {
+  visible: false,
+  message: "",
+  preset: ToastPresets.GENERAL,
+};
 
 export default function FeedbackField({}) {
   const {
     contextData: { email, fullname, phone_number },
   }: PersonalContextData = useContext<PersonalContextData>(personalContext)!;
 
-  const request: AxiosInstance = useRequest();
+  const [content, setContent] = useState<string>("");
+  const [isContentValid, setIsContentValid] = useState<boolean>(false);
 
-  const handleFeedbackSubmitted = () => {};
+  const [toastConfig, setToastConfig] = useState<ToastConfigProps>(defaultToastConfig);
+  const handleToastDismissed = () => {
+    setToastConfig(defaultToastConfig);
+  };
+
+  const request: AxiosInstance = useRequest();
+  const handleFeedbackSubmitted = () => {
+    request
+      .post("feedback/created_from_people", {
+        fullname,
+        email,
+        phone_number,
+        content,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        setToastConfig({
+          visible: true,
+          message: "Gửi phản hồi thành công",
+          preset: ToastPresets.SUCCESS,
+        });
+      })
+      .catch(({ data }) => {
+        console.log(data);
+        setToastConfig({
+          visible: true,
+          message: "Gửi phản hồi thất bại",
+          preset: ToastPresets.FAILURE,
+        });
+      })
+      .finally(() => {
+        setContent("");
+      });
+  };
 
   return (
     <Fragment>
@@ -35,8 +81,7 @@ export default function FeedbackField({}) {
 
       <KeyboardTrackingView>
         <TextField
-          placeholder="123"
-          hint="Bạn có muốn chia sẻ thêm về trải nghiệm..."
+          placeholder="Hãy chia sẻ về trải nghiệm của bạn..."
           multiline
           numberOfLines={5}
           textPrimary
@@ -51,6 +96,10 @@ export default function FeedbackField({}) {
           style={Typography.regular}
           floatingPlaceholderStyle={Typography.regular}
           textAlignVertical="top"
+          onChangeText={setContent}
+          validate={["required"]}
+          validateOnChange
+          onChangeValidity={setIsContentValid}
         />
       </KeyboardTrackingView>
 
@@ -60,7 +109,18 @@ export default function FeedbackField({}) {
         labelStyle={Typography.regular}
         marginT-16
         backgroundColor={Colors.green500}
-        disabled={!email}
+        disabled={!email || !isContentValid}
+        onPress={handleFeedbackSubmitted}
+      />
+
+      <Toast
+        visible={toastConfig.visible}
+        position={"top"}
+        autoDismiss={5000}
+        onDismiss={handleToastDismissed}
+        preset={toastConfig.preset}
+        message={toastConfig.message}
+        messageStyle={Typography.regular}
       />
     </Fragment>
   );
