@@ -1,12 +1,13 @@
 import React, { createContext, useState, Context } from "react";
-import { PersonalContextData, PersonalData } from "../type";
+import { PersonalContextData, PersonalContext, PersonalData } from "../type";
 
-const initialContextData: PersonalData = {
+const initialContextData: PersonalContextData = {
   fullname: "Ẩn Danh",
   phone_number: "Không có",
+  lastUpdated: new Date(),
 };
 
-export const personalContext: Context<PersonalContextData> = createContext<PersonalContextData>({
+export const personalContext: Context<PersonalContext> = createContext<PersonalContext>({
   contextData: initialContextData,
 });
 
@@ -15,7 +16,7 @@ type PersonalContextProviderProps = {
 };
 
 export function PersonalContextProvider({ children }: PersonalContextProviderProps) {
-  const [contextData, setContextData] = useState<PersonalData>(initialContextData);
+  const [contextData, setContextData] = useState<PersonalContextData>(initialContextData);
 
   const ContextProvider = personalContext.Provider;
   return (

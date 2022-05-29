@@ -25,7 +25,7 @@ export default function FeedbackField({}) {
     contextData: { email, fullname, phone_number },
   }: PersonalContextData = useContext<PersonalContextData>(personalContext)!;
 
-  const [content, setContent] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const [isContentValid, setIsContentValid] = useState<boolean>(false);
 
   const [toastConfig, setToastConfig] = useState<ToastConfigProps>(defaultToastConfig);
@@ -40,7 +40,12 @@ export default function FeedbackField({}) {
         fullname,
         email,
         phone_number,
-        content,
+        content: [
+          {
+            type: "feedback",
+            message,
+          },
+        ],
       })
       .then(({ data }) => {
         console.log(data);
@@ -59,7 +64,7 @@ export default function FeedbackField({}) {
         });
       })
       .finally(() => {
-        setContent("");
+        setMessage("");
       });
   };
 
@@ -96,7 +101,7 @@ export default function FeedbackField({}) {
           style={Typography.regular}
           floatingPlaceholderStyle={Typography.regular}
           textAlignVertical="top"
-          onChangeText={setContent}
+          onChangeText={setMessage}
           validate={["required"]}
           validateOnChange
           onChangeValidity={setIsContentValid}
