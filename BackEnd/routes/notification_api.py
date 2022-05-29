@@ -4,6 +4,7 @@ from models.notification import Notification
 from bson import ObjectId
 from .pagination import pagination
 import time
+from datetime import datetime
 
 
 notification_collection = app.db.notification_for_inspector;
@@ -54,9 +55,7 @@ def create_an_notification(current_manager=None):
     data = request.get_json()
     logger = check_input(data)
 
-    second = time.time()
-    message_time = time.ctime(second)
-    # message_time = ''
+    message_time = datetime.utcnow()
     messages = []
     message = {
         'from': data['sender'],
@@ -87,8 +86,8 @@ def create_an_notification(current_manager=None):
 def update_messages(current_manager=None, id: str = ''):
     data = request.get_json()
     notification = notification_collection.find_one({'_id': ObjectId(id)})
-    seconds = time.time()
-    message_time = time.ctime(seconds)
+
+    message_time = datetime.utcnow()
     if notification:
         message = {
             'from': data['from'],
