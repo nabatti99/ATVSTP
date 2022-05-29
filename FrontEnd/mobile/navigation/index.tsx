@@ -12,7 +12,6 @@ import { ColorSchemeName } from "react-native";
 import useColorScheme from "../hooks/useColorScheme";
 import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
-import TabOneScreen from "../screens/TabOneScreen";
 import {
   NewsStackParamList,
   PersonalStackParamList,
@@ -22,13 +21,14 @@ import {
 } from "./types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Icon } from "../components/Icon";
-import { EmailModal } from "../screens/Personal/Options/EmailModal";
-import { Colors, Typography } from "react-native-ui-lib";
+import { PersonalInfoModal } from "../screens/Personal/Options/PersonalInfoModal";
+import { Colors, Typography, View } from "react-native-ui-lib";
 import StoresScreen from "../screens/Store/StoresScreen";
 import NewsScreen from "../screens/News/NewsScreen";
 import { NewsDetailScreen } from "../screens/News/NewsDetailScreen";
 import PersonalScreen from "../screens/Personal/PersonalScreen";
 import { StoreDetailScreen } from "../screens/Store/StoreDetailScreen";
+import { PersonalContextProvider } from "../screens/Personal/context/PersonalContext";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const navigationRef = useNavigationContainerRef();
@@ -162,17 +162,19 @@ const PersonalStack = createNativeStackNavigator<PersonalStackParamList>();
 
 function PersonalStackNavigator() {
   return (
-    <PersonalStack.Navigator screenOptions={stackNavigationOptions}>
-      <PersonalStack.Screen name="Personal" component={PersonalScreen} />
-      <PersonalStack.Group
-        screenOptions={{
-          presentation: "transparentModal",
-          contentStyle: { backgroundColor: Colors.gray500 + "A0" },
-          animation: "fade",
-        }}
-      >
-        <PersonalStack.Screen name="EmailModal" component={EmailModal} />
-      </PersonalStack.Group>
-    </PersonalStack.Navigator>
+    <PersonalContextProvider>
+      <PersonalStack.Navigator screenOptions={stackNavigationOptions}>
+        <PersonalStack.Screen name="Personal" component={PersonalScreen} />
+        <PersonalStack.Group
+          screenOptions={{
+            presentation: "transparentModal",
+            contentStyle: { backgroundColor: Colors.gray500 + "A0" },
+            animation: "fade",
+          }}
+        >
+          <PersonalStack.Screen name="EmailModal" component={PersonalInfoModal} />
+        </PersonalStack.Group>
+      </PersonalStack.Navigator>
+    </PersonalContextProvider>
   );
 }

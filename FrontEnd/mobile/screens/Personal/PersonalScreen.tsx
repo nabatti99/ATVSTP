@@ -1,23 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ScrollView } from "react-native";
-import {
-  View,
-  Text,
-  Colors,
-  TouchableOpacity,
-  Image,
-  Typography,
-  Assets,
-  Button,
-  Fader,
-} from "react-native-ui-lib";
-import KeyboardTrackingView from "react-native-ui-lib/lib/components/Keyboard/KeyboardTracking/KeyboardTrackingView";
-import { TextField } from "react-native-ui-lib/src/incubator";
+import { View, Text, Colors, TouchableOpacity, Image, Fader } from "react-native-ui-lib";
 
 import { Icon } from "../../components/Icon";
 import { PersonalStackScreenProps } from "../../navigation/types";
+import FeedbackField from "./components/FeedbackField";
+import { FeedbackList } from "./components/FeedbackList";
+import { personalContext } from "./context/PersonalContext";
+import { PersonalContext } from "./type";
 
-export default function PersonalScreen({ navigation }: PersonalStackScreenProps<"Personal">) {
+export default function PersonalScreen({ navigation, route }: PersonalStackScreenProps<"Personal">) {
+  const {
+    contextData: { email },
+  }: PersonalContext = useContext<PersonalContext>(personalContext)!;
+
   return (
     <View flex bg-bgPrimary>
       <ScrollView keyboardDismissMode="interactive" showsVerticalScrollIndicator={false}>
@@ -38,7 +34,7 @@ export default function PersonalScreen({ navigation }: PersonalStackScreenProps<
         >
           <Icon name="mail" size={32} color={Colors.textPrimary} />
           <Text h2 textPrimary marginL-16>
-            Chưa thiết lập
+            {email || "Chưa thiết lập"}
           </Text>
         </TouchableOpacity>
 
@@ -46,49 +42,9 @@ export default function PersonalScreen({ navigation }: PersonalStackScreenProps<
           <Image assetGroup="demo" assetName="feedback" aspectRatio={1.54} style={{ width: "80%" }} />
         </View>
 
-        <View row centerH marginT-24>
-          {Array.from(new Array(5)).map((_, index) => (
-            <Icon
-              key={index}
-              name="staro"
-              color={Colors.textPrimary}
-              size={32}
-              viewProps={{ "marginH-8": true }}
-              isButton
-              onPress={() => {}}
-            />
-          ))}
-        </View>
+        <FeedbackField />
 
-        <KeyboardTrackingView>
-          <TextField
-            placeholder="123"
-            hint="Bạn có muốn chia sẻ thêm về trải nghiệm..."
-            multiline
-            numberOfLines={5}
-            textPrimary
-            marginH-24
-            marginT-16
-            padding-16
-            containerStyle={{
-              borderColor: Colors.textPrimary,
-              borderWidth: 1,
-              borderRadius: 16,
-            }}
-            style={Typography.regular}
-            floatingPlaceholderStyle={Typography.regular}
-            textAlignVertical="top"
-          />
-        </KeyboardTrackingView>
-
-        <Button
-          label="Hãy thiết lập email trước"
-          marginH-24
-          labelStyle={Typography.regular}
-          marginT-16
-          backgroundColor={Colors.green500}
-          disabled
-        />
+        <FeedbackList />
       </ScrollView>
 
       <Fader position={Fader.position.BOTTOM} visible tintColor={Colors.bgPrimary} />
