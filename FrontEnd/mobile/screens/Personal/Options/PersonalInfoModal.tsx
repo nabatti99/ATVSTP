@@ -8,12 +8,10 @@ import { personalContext } from "../context/PersonalContext";
 import { PersonalContextData } from "../type";
 
 export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProps<"EmailModal">) {
-  const [fullname, setFullname] = useState<string | undefined>();
-  const [isFullnameValid, setIsFullnameValid] = useState<boolean>(false);
   const [email, setEmail] = useState<string | undefined>();
   const [isEmailValid, setIsEmailValid] = useState<boolean>(false);
+  const [fullname, setFullname] = useState<string | undefined>();
   const [phone_number, setPhone_number] = useState<string | undefined>();
-  const [isPhone_numberValid, setIsPhone_numberValid] = useState<boolean>(false);
 
   const handleModalClosed = () => {
     navigation.goBack();
@@ -42,24 +40,6 @@ export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProp
         }}
       >
         <Modal.TopBar title="Thông tin cá nhân" onCancel={handleModalClosed} titleStyle={Typography.h2} />
-        <View row centerV>
-          <View flex>
-            <TextField
-              placeholder="Họ và tên"
-              floatingPlaceholder
-              enableErrors
-              validateOnChange
-              validate={["required"]}
-              validationMessage={["Chưa có thông tin"]}
-              onChangeValidity={setIsFullnameValid}
-              onChangeText={setFullname}
-              style={Typography.regular}
-              floatingPlaceholderStyle={Typography.regular}
-              validationMessageStyle={Typography.small}
-            />
-          </View>
-          <Icon name="user" size={32} color={Colors.gray700} />
-        </View>
 
         <View row centerV>
           <View flex>
@@ -83,13 +63,22 @@ export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProp
         <View row centerV>
           <View flex>
             <TextField
+              placeholder="Họ và tên"
+              floatingPlaceholder
+              onChangeText={setFullname}
+              style={Typography.regular}
+              floatingPlaceholderStyle={Typography.regular}
+              validationMessageStyle={Typography.small}
+            />
+          </View>
+          <Icon name="user" size={32} color={Colors.gray700} />
+        </View>
+
+        <View row centerV>
+          <View flex>
+            <TextField
               placeholder="Số điện thoại"
               floatingPlaceholder
-              enableErrors
-              validateOnChange
-              validate={["required"]}
-              validationMessage={["Chưa có thông tin"]}
-              onChangeValidity={setIsPhone_numberValid}
               onChangeText={setPhone_number}
               style={Typography.regular}
               floatingPlaceholderStyle={Typography.regular}
@@ -105,7 +94,7 @@ export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProp
           backgroundColor={Colors.green500}
           labelStyle={Typography.regular}
           marginT-8
-          disabled={!isEmailValid || !isFullnameValid || !isPhone_numberValid}
+          disabled={!isEmailValid}
           onPress={handleModalSubmitted}
         />
       </Card>
