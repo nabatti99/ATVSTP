@@ -7,12 +7,12 @@ import { PersonalStackScreenProps } from "../../navigation/types";
 import FeedbackField from "./components/FeedbackField";
 import { FeedbackList } from "./components/FeedbackList";
 import { personalContext } from "./context/PersonalContext";
-import { PersonalContextData } from "./type";
+import { PersonalContext } from "./type";
 
 export default function PersonalScreen({ navigation, route }: PersonalStackScreenProps<"Personal">) {
   const {
     contextData: { email },
-  }: PersonalContextData = useContext<PersonalContextData>(personalContext)!;
+  }: PersonalContext = useContext<PersonalContext>(personalContext)!;
 
   return (
     <View flex bg-bgPrimary>

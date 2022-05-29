@@ -6,7 +6,7 @@ import { TextField, Toast } from "react-native-ui-lib/src/incubator";
 import { Icon } from "../../../components/Icon";
 import useRequest from "../../../hooks/useRequest";
 import { personalContext } from "../context/PersonalContext";
-import { PersonalContextData } from "../type";
+import { PersonalContext, PersonalContextData } from "../type";
 
 type ToastConfigProps = {
   visible: boolean;
@@ -21,12 +21,11 @@ const defaultToastConfig: ToastConfigProps = {
 };
 
 export default function FeedbackField({}) {
-  const {
-    contextData: { email, fullname, phone_number },
-  }: PersonalContextData = useContext<PersonalContextData>(personalContext)!;
+  const { contextData, setContextData }: PersonalContext = useContext<PersonalContext>(personalContext)!;
+  const { email, fullname, phone_number } = contextData;
 
   const [message, setMessage] = useState<string>("");
-  const [isContentValid, setIsContentValid] = useState<boolean>(false);
+  const [isMessageValid, setIsMessageValid] = useState<boolean>(false);
 
   const [toastConfig, setToastConfig] = useState<ToastConfigProps>(defaultToastConfig);
   const handleToastDismissed = () => {
@@ -65,6 +64,10 @@ export default function FeedbackField({}) {
       })
       .finally(() => {
         setMessage("");
+        setContextData!({
+          ...contextData,
+          lastUpdated: new Date(),
+        });
       });
   };
 
@@ -87,6 +90,7 @@ export default function FeedbackField({}) {
       <KeyboardTrackingView>
         <TextField
           placeholder="Hãy chia sẻ về trải nghiệm của bạn..."
+          value={message}
           multiline
           numberOfLines={5}
           textPrimary
@@ -104,7 +108,7 @@ export default function FeedbackField({}) {
           onChangeText={setMessage}
           validate={["required"]}
           validateOnChange
-          onChangeValidity={setIsContentValid}
+          onChangeValidity={setIsMessageValid}
         />
       </KeyboardTrackingView>
 
@@ -114,7 +118,7 @@ export default function FeedbackField({}) {
         labelStyle={Typography.regular}
         marginT-16
         backgroundColor={Colors.green500}
-        disabled={!email || !isContentValid}
+        disabled={!email || !isMessageValid}
         onPress={handleFeedbackSubmitted}
       />
 

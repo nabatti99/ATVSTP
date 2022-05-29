@@ -5,24 +5,26 @@ import { TextField } from "react-native-ui-lib/src/incubator";
 import { Icon } from "../../../components/Icon";
 import { PersonalStackScreenProps } from "../../../navigation/types";
 import { personalContext } from "../context/PersonalContext";
-import { PersonalContextData } from "../type";
+import { PersonalContext, PersonalContextData } from "../type";
 
 export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProps<"EmailModal">) {
-  const [email, setEmail] = useState<string | undefined>();
+  const { contextData, setContextData }: PersonalContext = useContext<PersonalContext>(personalContext);
+
+  const [email, setEmail] = useState<string | undefined>(contextData.email);
   const [isEmailValid, setIsEmailValid] = useState<boolean>(false);
-  const [fullname, setFullname] = useState<string | undefined>();
-  const [phone_number, setPhone_number] = useState<string | undefined>();
+  const [fullname, setFullname] = useState<string>(contextData.fullname);
+  const [phone_number, setPhone_number] = useState<string>(contextData.phone_number);
 
   const handleModalClosed = () => {
     navigation.goBack();
   };
 
-  const { contextData, setContextData }: PersonalContextData = useContext<PersonalContextData>(personalContext)!;
   const handleModalSubmitted = () => {
     setContextData?.({
+      ...contextData,
       email,
-      fullname: fullname || contextData.fullname,
-      phone_number: phone_number || contextData.phone_number,
+      fullname,
+      phone_number,
     });
     handleModalClosed();
   };
@@ -45,6 +47,7 @@ export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProp
           <View flex>
             <TextField
               placeholder="Email của bạn"
+              value={email}
               floatingPlaceholder
               enableErrors
               validateOnChange
@@ -64,6 +67,7 @@ export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProp
           <View flex>
             <TextField
               placeholder="Họ và tên"
+              value={fullname}
               floatingPlaceholder
               onChangeText={setFullname}
               style={Typography.regular}
@@ -79,6 +83,7 @@ export function PersonalInfoModal({ navigation, route }: PersonalStackScreenProp
           <View flex>
             <TextField
               placeholder="Số điện thoại"
+              value={phone_number}
               floatingPlaceholder
               onChangeText={setPhone_number}
               style={Typography.regular}
