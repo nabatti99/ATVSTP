@@ -118,9 +118,9 @@ def update_superior_reporting(current_manager=None, _id: str = ''):
                                                         '$set': current_report.to_dict()
                                                     })
             if updated:
-                if not db['is_draft']:
-                    send_email_for_schedule(new_schedule=current_report.to_dict(),
-                                            current_manager=current_manager['email'])
+                # if not db['is_draft']:
+                    # send_email_for_schedule(new_schedule=current_report.to_dict(),
+                    #                         current_manager=current_manager['email'])
                 return response_status(status=success_status,
                                        message=f'Updated inspection schedule {_id}')
             else:
