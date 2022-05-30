@@ -16,47 +16,6 @@ fail_status = 'Fail'
 success_status = 'Success'
 
 
-# @app.route('/feedback/read', methods=['GET'])
-# @manager_required('level_one')
-# def feedback_read(current_manager = None):
-#     # get data using pagination
-#     data_from_client = request.args
-#     current_page = data_from_client.get('offset')
-#     if current_page is None:
-#         current_page = 0  # default page
-#     row_limit = data_from_client.get('limit')  # so du lieu trong 1 trang: lay tu client
-#     if row_limit is None:
-#         row_limit = total_row_per_page
-#     # check format error
-#     try:
-#         int(current_page)
-#         int(row_limit)
-#     except Exception as e:
-#         return response_status(fail_status, "Format error from URL")
-#     total_row = feedback_collection.count_documents({})
-#     offset = getOffset(int(current_page), int(row_limit))
-#     data = feedback_collection.find().skip(offset).limit(int(row_limit))
-#     # check xem co tim kiem khong
-#     search_value = data_from_client.get('value')
-#     if search_value is not None:
-#         total_row = feedback_collection.count_documents({
-#             "$or": [
-#                 {"fullname": {'$regex': search_value, '$options': 'i'}},
-#                 {"email": {'$in': [search_value]}},
-#             ]
-#         })
-#         offset = getOffset(int(current_page), int(row_limit))
-#         data = feedback_collection.find({
-#             "$or": [
-#                 {"fullname": {'$regex': search_value, '$options': 'i'}},
-#                 {"email": {'$in': [search_value]}},
-#             ]
-#         }).skip(offset).limit(int(row_limit))
-#     list_data = list(data)
-#     if len(list_data) == 0:
-#         return {'result': 'no data'}
-#     result = {"data": list_data, "records": total_row}
-#     return result
 @app.route('/feedback/read', methods=['GET'])
 # @manager_required('level_one')
 def feedback_read(current_manager = None):
@@ -75,6 +34,7 @@ def feedback_read(current_manager = None):
                                    message=f'Can not find any feedback for {current_manager["work_from"]} in database')
     except Exception as e:
         return {'Type Error': e}, 400
+
 
 @app.route('/feedback/read/<oid>', methods=['GET'])
 def feedback_read_by_id(oid):
@@ -102,7 +62,6 @@ def feedback_create_from_people(current_manager = None):
     new_feedback = fop(fullname=data['fullname'],
                        email=data['email'],
                        phone_number=data['phone_number'],
-                       department=ObjectId(data['department']),
                        content=data['content'],
                        create_at=current_time)
     try:
@@ -186,9 +145,6 @@ def response_feedback_from_people(current_manager = None, _id: str = ''):
 def feedback_update(current_manager = None, _id: str = ''):
     data = request.get_json()
     # validate data
-    administration = administration_collection.find_one({"_id": ObjectId(data['department'])})
-    if administration is None:
-        return response_status(fail_status, "Data error")
     if data['fullname'] == '' or data['email'] == '' or data['phone_number'] == '' or data['content'] == '':
         return response_status(fail_status, "Data error")
     item_update = feedback_collection.find_one({"_id": ObjectId(_id)})  # object will be updated
@@ -198,7 +154,6 @@ def feedback_update(current_manager = None, _id: str = ''):
     new_feedback = fop(fullname=data['fullname'],
                        email=data['email'],
                        phone_number=data['phone_number'],
-                       department=ObjectId(data['department']),
                        content=data['content'],
                        create_at=item_update['create_at'])
     filter_update = {'_id': item_update['_id']}
