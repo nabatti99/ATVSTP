@@ -27,7 +27,7 @@ function SuperiorReportsManagement() {
   const [query, setQuery] = useState({
     dateStart: exportDate(defaultStartDate).slice(0, 10),
     dateEnd: exportDate(defaultEndDate).slice(0, 10),
-    isDraft: true,
+    isDraft: false,
   });
   const handleChanged = (newQuery) => {
     setQuery(newQuery);
