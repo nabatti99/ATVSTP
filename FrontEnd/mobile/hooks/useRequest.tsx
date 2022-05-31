@@ -1,7 +1,8 @@
+import * as Updates from "expo-updates";
 import axios, { AxiosInstance } from "axios";
 
 const instance: AxiosInstance = axios.create({
-  baseURL: "http://127.0.0.1:5000/",
+  baseURL: Updates.releaseChannel ? "https://atvstp-api.herokuapp.com" : "http://127.0.0.1:5000/",
   timeout: 10000,
   headers: {
     "access-token":
@@ -11,7 +12,7 @@ const instance: AxiosInstance = axios.create({
 
 instance.interceptors.request.use(
   function (config) {
-    console.log(`URL: ${config.url} (${config.method})`);
+    console.log(`URL: ${config.baseURL}/${config.url} (${config.method})`);
     console.log(`Params: ${JSON.stringify(config.params)}`);
     return config;
   },
