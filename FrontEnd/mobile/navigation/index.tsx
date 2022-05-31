@@ -28,7 +28,7 @@ import NewsScreen from "../screens/News/NewsScreen";
 import { NewsDetailScreen } from "../screens/News/NewsDetailScreen";
 import PersonalScreen from "../screens/Personal/PersonalScreen";
 import { StoreDetailScreen } from "../screens/Store/StoreDetailScreen";
-import { PersonalContextProvider } from "../screens/Personal/context/PersonalContext";
+import { PersonalContext } from "../screens/Personal/context/PersonalContext";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const navigationRef = useNavigationContainerRef();
