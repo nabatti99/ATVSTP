@@ -1,4 +1,14 @@
-import { Drawer, Link, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
+import {
+  Drawer,
+  Link,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useLocation, useNavigate } from "react-router";
 
 import { connectAppContext } from "../contexts/appContext/appContext";
@@ -10,6 +20,9 @@ import EventNoteSvg from "components/Icons/EventNoteSvg";
 import ApartmentSvg from "components/Icons/ApartmentSvg";
 import MarkChatUnreadSvg from "components/Icons/MarkChatUnreadSvg";
 import AssignmentSvg from "components/Icons/AssignmentSvg";
+
+import Logo from "components/../logo.png";
+import Image from "components/Image";
 
 function LeftDrawer({ appContext }) {
   const navigate = useNavigate();
@@ -75,6 +88,8 @@ function LeftDrawer({ appContext }) {
     },
   ].filter((item) => item); // Remove undefined items
 
+  const theme = useTheme();
+
   return (
     <Drawer
       variant="permanent"
@@ -91,7 +106,7 @@ function LeftDrawer({ appContext }) {
       <Stack minHeight={62} justifyContent="center" pl={2}>
         <Link href="/" underline="none">
           <Stack direction="row" alignItems="center">
-            <LeaderBoardSvg mr={1} size={32} color="gray.900" />
+            <Image src={Logo} borderColor={theme.palette.white} width={32} height={32} mr={1} />
             <Typography variant="h5" sx={{ fontWeight: 900 }} color="gray.900">
               ATVSTP - Admin
             </Typography>
