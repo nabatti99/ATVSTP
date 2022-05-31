@@ -51,7 +51,7 @@ def gen_password():
 
 
 def send_email_for_schedule(new_schedule, current_manager):
-    subject = f'Tôi là {current_manager} đã lên lịch cho đơn vị {new_schedule["authority"]} thực hiện thanh tra'
+    subject = f'Tôi là {current_manager} đã lên lịch cho đơn vị {new_schedule["regulator_agency"]} thực hiện thanh tra'
 
     msg = Message(subject, recipients=new_schedule["assigned_to"])
     msg.body = new_schedule['content']
