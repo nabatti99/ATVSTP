@@ -27,7 +27,7 @@ const PrivateTab = ({ isShown = true, appContext }) => {
         },
       })
       .then(({ data }) => {
-        setData(data.result);
+        setData(data.result.reverse());
         setIsLoading(false);
       });
   };
@@ -102,17 +102,19 @@ const PrivateTab = ({ isShown = true, appContext }) => {
                       px={2}
                       py={2}
                     >
-                      <Stack
-                        width={52}
-                        height={52}
-                        justifyContent="center"
-                        alignItems="center"
-                        bgcolor="blue.500"
-                        borderRadius="50%"
-                      >
-                        <Typography variant="regular" fontSize="1.5rem" color="white">
-                          {makeAvatarName(rootMessage.from)}
-                        </Typography>
+                      <Stack direction="row">
+                        <Stack
+                          width={52}
+                          height={52}
+                          justifyContent="center"
+                          alignItems="center"
+                          bgcolor="blue.500"
+                          borderRadius="50%"
+                        >
+                          <Typography variant="regular" fontSize="1.5rem" color="white">
+                            {makeAvatarName(rootMessage.from)}
+                          </Typography>
+                        </Stack>
                       </Stack>
 
                       <Stack>

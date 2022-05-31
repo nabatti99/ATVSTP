@@ -26,7 +26,16 @@ function NotificationsManagement() {
 
       <Paper elevation={2} sx={{ borderRadius: 4 }}>
         <Grid container>
-          <Grid item xs={3} bgcolor="blue.50" borderRight={1} borderColor="gray.300" height="80vh">
+          <Grid
+            item
+            xs={3}
+            bgcolor="blue.50"
+            borderRight={1}
+            borderColor="gray.300"
+            height="80vh"
+            overflow="auto"
+            className="scrollbar"
+          >
             <Stack height="100%">
               <Tabs
                 variant="fullWidth"

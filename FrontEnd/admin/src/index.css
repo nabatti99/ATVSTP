@@ -3,3 +3,24 @@
 body {
   margin: 0;
 }
+
+/* Scroll Style */
+body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #F7FAFC;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #3182CE;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background-color: #F7FAFC;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #3182CE;
+}
