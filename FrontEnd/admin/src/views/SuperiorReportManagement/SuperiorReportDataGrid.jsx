@@ -99,7 +99,7 @@ function SuperiorReportDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
           limit: rowsPerPage,
           date_start: query.dateStart,
           date_end: query.dateEnd,
-          is_draft: query.isDraft,
+          is_draft: query.isDraft ? 1 : 0,
         },
       })
       .then((res) => {

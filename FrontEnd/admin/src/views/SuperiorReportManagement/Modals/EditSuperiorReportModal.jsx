@@ -61,6 +61,7 @@ function EditSuperiorReportModal() {
   };
 
   const handleIsDraftChanged = (is_draft) => {
+    console.log(is_draft);
     dispatch({
       type: IS_DRAFT_CHANGE,
       is_draft,
@@ -106,6 +107,7 @@ function EditSuperiorReportModal() {
       onInspectedGroceriesChange={handleInspectedGroceriesChanged}
       onRegularAgencyChange={handleRegulatorAgencyChanged}
       onReportingAreaChange={handleReportingAreaChanged}
+      onIsDraftChange={handleIsDraftChanged}
     />
   );
 }

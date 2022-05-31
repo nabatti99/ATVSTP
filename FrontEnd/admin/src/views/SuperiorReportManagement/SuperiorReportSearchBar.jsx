@@ -1,4 +1,4 @@
-import { Paper, Stack, TextField, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, Paper, Stack, TextField, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -30,6 +30,15 @@ function SuperiorReportSearchBar({ query = {}, onChange = () => {} }) {
             }}
             value={new Date(query.dateEnd)}
             renderInput={(params) => <TextField sx={{ marginRight: 2 }} {...params} />}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={query.isDraft}
+                onChange={(event) => onChange({ ...query, isDraft: event.target.checked })}
+              />
+            }
+            label="Bản Nháp"
           />
         </Stack>
       </LocalizationProvider>

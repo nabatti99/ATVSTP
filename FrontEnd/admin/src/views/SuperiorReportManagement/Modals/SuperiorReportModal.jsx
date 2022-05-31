@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   debounce,
   FormControlLabel,
   IconButton,
@@ -33,6 +34,7 @@ function SuperiorReportModal({
   onInspectedGroceriesChange = () => {},
   onContentChange = () => {},
   onRegularAgencyChange = () => {},
+  onIsDraftChange = () => {},
   onOkButtonClick = () => {},
 }) {
   const request = useRequest();
@@ -188,8 +190,14 @@ function SuperiorReportModal({
         </TextField>
 
         <FormControlLabel
-          control={<Switch defaultChecked value={is_draft} />}
-          label={is_draft ? "Chỉ tạo bản nháp" : "Gửi ngay sau khi hoàn thành"}
+          control={
+            <Checkbox
+              defaultChecked
+              checked={is_draft}
+              onChange={(event) => onIsDraftChange(event.target.checked)}
+            />
+          }
+          label="Chỉ tạo bản nháp"
         />
       </Stack>
 

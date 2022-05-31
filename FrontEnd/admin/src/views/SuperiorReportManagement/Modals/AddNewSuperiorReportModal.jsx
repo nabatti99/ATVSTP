@@ -115,6 +115,7 @@ function AddNewSuperiorReportModal({ appContext }) {
       onInspectedGroceriesChange={handleInspectedGroceriesChanged}
       onRegularAgencyChange={handleRegulatorAgencyChanged}
       onReportingAreaChange={handleReportingAreaChanged}
+      onIsDraftChange={handleIsDraftChanged}
     />
   );
 }

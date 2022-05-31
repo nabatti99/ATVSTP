@@ -132,31 +132,33 @@ function SuperiorReportDetails() {
             )}
           </Stack>
 
-          <Stack>
-            <ButtonIcon
-              variant="contained"
-              LeftIcon={ModeSvg}
-              onClick={() => {
-                navigate("Edit", {
-                  state: superiorReport,
-                });
-              }}
-              sx={{ marginBottom: 2 }}
-            >
-              Chỉnh sửa
-            </ButtonIcon>
-            <ButtonIcon
-              variant="contained"
-              color="red"
-              LeftIcon={DeleteSvg}
-              onClick={() => {
-                navigate("Delete", {
-                  state: superiorReport,
-                });
-              }}
-            >
-              Xoá
-            </ButtonIcon>
+          <Stack direction="row">
+            <Stack width={132}>
+              <ButtonIcon
+                variant="contained"
+                LeftIcon={ModeSvg}
+                onClick={() => {
+                  navigate("Edit", {
+                    state: superiorReport,
+                  });
+                }}
+                sx={{ marginBottom: 2 }}
+              >
+                Chỉnh sửa
+              </ButtonIcon>
+              <ButtonIcon
+                variant="contained"
+                color="red"
+                LeftIcon={DeleteSvg}
+                onClick={() => {
+                  navigate("Delete", {
+                    state: superiorReport,
+                  });
+                }}
+              >
+                Xoá
+              </ButtonIcon>
+            </Stack>
           </Stack>
         </Stack>
       </Paper>
