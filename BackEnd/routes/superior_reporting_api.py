@@ -7,6 +7,7 @@ from routes.pagination import pagination_schedule
 from routes.management_email import send_email_for_schedule
 
 superior_reporting = app.db.superior_reporting
+administration_collection = app.db.administration_atvstp
 
 
 @app.route('/superior_reporting/<string:_id>', methods=['GET'])
@@ -83,9 +84,30 @@ def create_superior_reporting(current_manager=None):
                                            is_draft=db['is_draft'])
 
             superior_reporting.insert_one(new_report.to_dict())
-            # if not db['is_draft']:
-            #     send_email_for_schedule(new_schedule=new_report.to_dict(),
-            #                             current_manager=current_manager['email'])
+
+            # get list email from administration atvstp
+            assigned_to = []
+            assigned_to_pipeline = [
+                {
+                    '$match': {
+                        'name': db['regulator_agency']
+                    }
+                },
+                {
+                    '$project': {
+                        '_id': 0,
+                        'responsible': 1
+                    }
+                }
+            ]
+
+            for dict_responsibility in administration_collection.aggregate(assigned_to_pipeline):
+                assigned_to += sum(list(dict_responsibility['responsible'].values()), [])
+
+            if not db['is_draft']:
+                send_email_for_schedule(new_schedule=new_report.to_dict(),
+                                        current_manager=current_manager['email'],
+                                        assigned_to=assigned_to)
 
             return response_status(status=success_status,
                                    message=new_report.to_dict())
@@ -118,9 +140,30 @@ def update_superior_reporting(current_manager=None, _id: str = ''):
                                                         '$set': current_report.to_dict()
                                                     })
             if updated:
-                # if not db['is_draft']:
-                    # send_email_for_schedule(new_schedule=current_report.to_dict(),
-                    #                         current_manager=current_manager['email'])
+                # get list email from administration atvstp
+                assigned_to = []
+                assigned_to_pipeline = [
+                    {
+                        '$match': {
+                            'name': db['regulator_agency']
+                        }
+                    },
+                    {
+                        '$project': {
+                            '_id': 0,
+                            'responsible': 1
+                        }
+                    }
+                ]
+
+                for dict_responsibility in administration_collection.aggregate(assigned_to_pipeline):
+                    assigned_to += sum(list(dict_responsibility['responsible'].values()), [])
+
+                if not db['is_draft']:
+                    send_email_for_schedule(new_schedule=current_report.to_dict(),
+                                            current_manager=current_manager['email'],
+                                            assigned_to=assigned_to)
+
                 return response_status(status=success_status,
                                        message=f'Updated inspection schedule {_id}')
             else:

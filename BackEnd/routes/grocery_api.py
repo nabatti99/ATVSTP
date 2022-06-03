@@ -6,8 +6,6 @@ from models.grocery import Grocery
 from models.firebase import storage
 import time
 from datetime import datetime
-import pytz
-import tzlocal
 
 grocery_collection = app.db.grocery
 certificate_collection = app.db.certificate_atvstp
