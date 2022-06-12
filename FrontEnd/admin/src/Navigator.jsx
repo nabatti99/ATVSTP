@@ -48,6 +48,7 @@ import ResetPasswordModal from "views/UserManagement/Modals/ResetPasswordModal";
 import { Fragment } from "react";
 import PostDetails from "views/PostManagement/PostDetails";
 import AddNewPrivateNotificationModal from "views/NotificationManagement/PrivateNotification/Modal/AddNewPrivateNotificationModal";
+import ChangePasswordModal from "views/UserManagement/Modals/ChangePasswordModal";
 
 function Navigator({ appContext }) {
   const { accessToken, type_manager } = appContext;
@@ -73,12 +74,14 @@ function Navigator({ appContext }) {
                   <Route path="Edit" element={<EditProfileModal />} />
                   <Route path="Delete" element={<DeleteProfileModal />} />
                   <Route path="ResetPassword" element={<ResetPasswordModal />} />
+                  <Route path="ChangePassword" element={<ChangePasswordModal />} />
                 </Route>
               </Fragment>
             ) : (
               <Route path="UserDetail/:email" element={<UserDetails />}>
                 <Route path="Edit" element={<EditProfileModal />} />
                 <Route path="ResetPassword" element={<ResetPasswordModal />} />
+                <Route path="ChangePassword" element={<ChangePasswordModal />} />
               </Route>
             )}
 

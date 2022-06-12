@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import React, { useEffect, useState } from "react";
+import { RefreshControl } from "react-native";
 import { View, Text, Image, GridList, TouchableOpacity, Fader, Colors } from "react-native-ui-lib";
 
 import { Icon } from "../../components/Icon";
@@ -11,10 +12,12 @@ import { Certificate, Store } from "./types";
 const { window } = Layout;
 
 export default function StoresScreen({ navigation }: StoresStackScreenProps<"Stores">) {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [groceries, setGroceries] = useState<Store[]>([]);
   const request: AxiosInstance = useRequest();
 
-  useEffect(() => {
+  const getStores = () => {
+    setIsLoading(true);
     request
       .get(`grocery`, {
         params: {
@@ -29,8 +32,11 @@ export default function StoresScreen({ navigation }: StoresStackScreenProps<"Sto
       })
       .catch((error) => {
         console.log(error);
-      });
-  }, []);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => getStores(), []);
 
   return (
     <View flex bg-bgPrimary paddingT-16>
@@ -48,16 +54,11 @@ export default function StoresScreen({ navigation }: StoresStackScreenProps<"Sto
         containerWidth={window.width - 24 * 2}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={getStores} />}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.push("StoreDetail", { name: item.name })}
-            activeOpacity={0.6}
-          >
+          <TouchableOpacity onPress={() => navigation.push("StoreDetail", { name: item.name })} activeOpacity={0.6}>
             <View>
-              <Image
-                source={{ uri: item.image_url }}
-                style={{ width: "100%", height: 258, borderRadius: 16, marginRight: 12 }}
-              />
+              <Image source={{ uri: item.image_url }} style={{ width: "100%", height: 258, borderRadius: 16, marginRight: 12 }} />
 
               <Text h1 textSecondary>
                 {item.name}
@@ -81,14 +82,7 @@ export default function StoresScreen({ navigation }: StoresStackScreenProps<"Sto
                 <Icon name="checksquareo" size={14} />
                 <View row marginL-4>
                   {item.certificate.map((certificate: Certificate) => (
-                    <View
-                      key={certificate.name}
-                      paddingH-8
-                      paddingV-2
-                      bg-green100
-                      style={{ borderRadius: 100 }}
-                      marginR-4
-                    >
+                    <View key={certificate.name} paddingH-8 paddingV-2 bg-green100 style={{ borderRadius: 100 }} marginR-4>
                       <Text small green500>
                         {certificate.name}
                       </Text>

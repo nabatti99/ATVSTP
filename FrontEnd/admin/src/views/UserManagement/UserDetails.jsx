@@ -61,7 +61,9 @@ function UserDetails({ appContext }) {
 
   const { name, phone, address, type_manager, image_url, work_from, date_delete } = profile;
 
-  const isAdmin = appContext.type_manager == "admin" || appContext.userEmail == email;
+  const isAdmin = appContext.type_manager == "admin";
+  const isOwnAccount = appContext.userEmail == email;
+
   let buttonELements = isAdmin && (
     <Stack>
       <ButtonIcon
@@ -102,23 +104,53 @@ function UserDetails({ appContext }) {
           Khôi phục
         </ButtonIcon>
       ) : (
-        appContext.type_manager == "admin" && (
-          <ButtonIcon
-            variant="contained"
-            color="red"
-            LeftIcon={DeleteSvg}
-            onClick={() => {
-              navigate("Delete", {
-                state: profile,
-              });
-            }}
-          >
-            Xoá
-          </ButtonIcon>
-        )
+        <ButtonIcon
+          variant="contained"
+          color="red"
+          LeftIcon={DeleteSvg}
+          onClick={() => {
+            navigate("Delete", {
+              state: profile,
+            });
+          }}
+        >
+          Xoá
+        </ButtonIcon>
       )}
     </Stack>
   );
+
+  if (isOwnAccount) {
+    buttonELements = (
+      <Stack>
+        <ButtonIcon
+          variant="outlined"
+          color="blue"
+          LeftIcon={KeySvg}
+          onClick={() => {
+            navigate("ChangePassword", {
+              state: profile,
+            });
+          }}
+          sx={{ marginBottom: 2 }}
+        >
+          Đặt lại mật khẩu
+        </ButtonIcon>
+        <ButtonIcon
+          variant="contained"
+          LeftIcon={ModeSvg}
+          onClick={() => {
+            navigate("Edit", {
+              state: profile,
+            });
+          }}
+          sx={{ marginBottom: 2 }}
+        >
+          Chỉnh sửa
+        </ButtonIcon>
+      </Stack>
+    );
+  }
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 

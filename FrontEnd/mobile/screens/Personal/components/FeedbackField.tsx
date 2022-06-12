@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { Fragment, useContext, useState } from "react";
-import { Button, Colors, Typography, View, ToastPresets } from "react-native-ui-lib";
+import { Button, Colors, View, ToastPresets, Text, Typography } from "react-native-ui-lib";
 import KeyboardTrackingView from "react-native-ui-lib/lib/components/Keyboard/KeyboardTracking/KeyboardTrackingView";
 import { TextField, Toast } from "react-native-ui-lib/src/incubator";
 import { Icon } from "../../../components/Icon";
@@ -74,17 +74,11 @@ export default function FeedbackField({}) {
   return (
     <Fragment>
       <View row centerH marginT-24>
-        {Array.from(new Array(5)).map((_, index) => (
-          <Icon
-            key={index}
-            name="staro"
-            color={Colors.textPrimary}
-            size={32}
-            viewProps={{ "marginH-8": true }}
-            isButton
-            onPress={() => {}}
-          />
-        ))}
+        <Icon name="staro" color={Colors.textPrimary} size={32} viewProps={{ "marginH-12": true }} />
+        <Text h2 textPrimary>
+          Đánh giá
+        </Text>
+        <Icon name="staro" color={Colors.textPrimary} size={32} viewProps={{ "marginH-12": true }} />
       </View>
 
       <KeyboardTrackingView>

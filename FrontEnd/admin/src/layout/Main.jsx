@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useRequest from "hooks/useRequest";
-import BedTimeSvg from "../components/Icons/BedTimeSvg";
 import NotificationsSvg from "../components/Icons/NotificationsSvg";
 
 import { connectAppContext } from "../contexts/appContext/appContext";
 import { deleteAccessToken } from "../contexts/appContext/appActions";
+import ReplaySvg from "components/Icons/ReplaySvg";
 
 function Main({ appContext, dispatch, children }) {
   const { drawerWidth } = appContext;
@@ -50,7 +50,7 @@ function Main({ appContext, dispatch, children }) {
           <Stack direction="row" justifyContent="flex-end" alignItems="center" flexGrow={1}>
             <Box mr={4}>
               <IconButton onClick={handleLogout}>
-                <BedTimeSvg />
+                <ReplaySvg />
               </IconButton>
               <IconButton>
                 <NotificationsSvg />
@@ -59,15 +59,7 @@ function Main({ appContext, dispatch, children }) {
             <Typography variant="strong" mr={2}>
               Xin chào,&nbsp;{name}
             </Typography>
-            {image_url && (
-              <Avatar
-                src={image_url}
-                sx={{ width: 40, height: 40, cursor: "pointer" }}
-                border={2}
-                borderColor="blue.500"
-                onClick={handleAvatarClicked}
-              />
-            )}
+            {image_url && <Avatar src={image_url} sx={{ width: 40, height: 40, cursor: "pointer" }} border={2} borderColor="blue.500" onClick={handleAvatarClicked} />}
           </Stack>
         </Stack>
       </AppBar>

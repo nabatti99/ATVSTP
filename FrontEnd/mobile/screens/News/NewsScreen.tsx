@@ -7,6 +7,7 @@ import { Icon } from "../../components/Icon";
 import { NewsStackScreenProps } from "../../navigation/types";
 import useRequest from "../../hooks/useRequest";
 import { AxiosInstance } from "axios";
+import { RefreshControl } from "react-native";
 
 const { window } = Layout;
 
@@ -15,7 +16,7 @@ export default function NewsScreen({ navigation }: NewsStackScreenProps<"News">)
   const [news, setNews] = useState<News[]>([]);
   const request: AxiosInstance = useRequest();
 
-  useEffect(() => {
+  const getNews = () => {
     setIsLoading(true);
     request
       .get(`information/read`, {
@@ -26,14 +27,15 @@ export default function NewsScreen({ navigation }: NewsStackScreenProps<"News">)
         },
       })
       .then(({ data }) => {
-        // console.log(data);
         setNews(data.data);
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => setIsLoading(false));
-  }, []);
+  };
+
+  useEffect(() => getNews(), []);
 
   const firstNews: News = news[0];
   const oldNewsPreview = news.slice(1);
@@ -50,21 +52,9 @@ export default function NewsScreen({ navigation }: NewsStackScreenProps<"News">)
 
       {!isLoading && (
         <Fragment>
-          <TouchableOpacity
-            activeOpacity={0.65}
-            onPress={() => navigation.navigate("NewsDetail", { _id: firstNews._id })}
-          >
-            <Card
-              enableShadow
-              elevation={8}
-              style={{ shadowColor: Colors.bgSecondary }}
-              marginT-16
-              backgroundColor={Colors.bgSecondary}
-            >
-              <Card.Section
-                imageSource={{ uri: firstNews.contents.find((content) => content.url)?.url }}
-                imageStyle={{ width: "100%", height: 200 }}
-              />
+          <TouchableOpacity activeOpacity={0.65} onPress={() => navigation.navigate("NewsDetail", { _id: firstNews._id })}>
+            <Card enableShadow elevation={8} style={{ shadowColor: Colors.bgSecondary }} marginT-16 backgroundColor={Colors.bgSecondary}>
+              <Card.Section imageSource={{ uri: firstNews.contents.find((content) => content.url)?.url }} imageStyle={{ width: "100%", height: 200 }} />
               <View margin-12>
                 <Text strong textSecondary>
                   {firstNews.title}
@@ -97,16 +87,11 @@ export default function NewsScreen({ navigation }: NewsStackScreenProps<"News">)
             containerWidth={window.width - 24 * 2}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={isLoading} onRefresh={getNews} />}
             renderItem={({ item, index }) => (
-              <ListItem
-                onPress={() => navigation.navigate("NewsDetail", { _id: item._id })}
-                style={{ height: 108 }}
-              >
+              <ListItem onPress={() => navigation.navigate("NewsDetail", { _id: item._id })} style={{ height: 108 }}>
                 <ListItem.Part left>
-                  <Image
-                    source={{ uri: item.contents.find((content) => content.url)?.url }}
-                    style={{ width: 120, height: 108, borderRadius: 16, marginRight: 12 }}
-                  />
+                  <Image source={{ uri: item.contents.find((content) => content.url)?.url }} style={{ width: 120, height: 108, borderRadius: 16, marginRight: 12 }} />
                 </ListItem.Part>
                 <ListItem.Part middle column>
                   <Text strong textSecondary>

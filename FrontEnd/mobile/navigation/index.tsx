@@ -12,13 +12,7 @@ import { ColorSchemeName } from "react-native";
 import useColorScheme from "../hooks/useColorScheme";
 import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
-import {
-  NewsStackParamList,
-  PersonalStackParamList,
-  RootStackParamList,
-  RootTabParamList,
-  StoresStackParamList,
-} from "./types";
+import { NewsStackParamList, PersonalStackParamList, RootStackParamList, RootTabParamList, StoresStackParamList } from "./types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Icon } from "../components/Icon";
 import { PersonalInfoModal } from "../screens/Personal/Options/PersonalInfoModal";
@@ -28,17 +22,13 @@ import NewsScreen from "../screens/News/NewsScreen";
 import { NewsDetailScreen } from "../screens/News/NewsDetailScreen";
 import PersonalScreen from "../screens/Personal/PersonalScreen";
 import { StoreDetailScreen } from "../screens/Store/StoreDetailScreen";
-import { PersonalContext } from "../screens/Personal/context/PersonalContext";
+import { PersonalContextProvider } from "../screens/Personal/context/PersonalContext";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   const navigationRef = useNavigationContainerRef();
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      linking={LinkingConfiguration}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-    >
+    <NavigationContainer ref={navigationRef} linking={LinkingConfiguration} theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <RootNavigator />
     </NavigationContainer>
   );
@@ -91,9 +81,7 @@ function BottomTabNavigator() {
         component={StoresStackNavigator}
         options={{
           title: "Cửa Hàng",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Icon name={focused ? "appstore1" : "appstore-o"} color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, focused, size }) => <Icon name={focused ? "appstore1" : "appstore-o"} color={color} size={size} />,
         }}
       />
       <BottomTab.Screen
@@ -101,9 +89,7 @@ function BottomTabNavigator() {
         component={NewsStackNavigator}
         options={{
           title: "Tin Tức",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Icon name={focused ? "checkcircle" : "checkcircleo"} color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, focused, size }) => <Icon name={focused ? "checkcircle" : "checkcircleo"} color={color} size={size} />,
         }}
       />
       <BottomTab.Screen
@@ -111,9 +97,7 @@ function BottomTabNavigator() {
         component={PersonalStackNavigator}
         options={{
           title: "Cá Nhân",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Icon name={focused ? "smile-circle" : "smileo"} color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, focused, size }) => <Icon name={focused ? "smile-circle" : "smileo"} color={color} size={size} />,
         }}
       />
     </BottomTab.Navigator>

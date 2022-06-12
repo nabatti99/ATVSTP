@@ -13,11 +13,22 @@
       }
     },
     "preview": {
+      "distribution": "internal"
+    },
+    "preview-ios": {
+      "distribution": "internal",
+      "ios": {
+        "enterpriseProvisioning": "universal"
+      }
+    },
+    "preview-android": {
+      "distribution": "internal",
       "android": {
         "buildType": "apk"
       }
     },
-    "preview2": {
+    "preview-android2": {
+      "distribution": "internal",
       "android": {
         "gradleCommand": ":app:assembleRelease"
       }

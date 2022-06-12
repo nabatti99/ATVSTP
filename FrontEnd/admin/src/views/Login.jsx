@@ -39,7 +39,7 @@ function Login({ dispatch }) {
       .catch((error) => {
         console.error(error);
         dispatch(deleteAccessToken(null));
-        alert(error);
+        alert(error.response.data);
       })
       .finally(() => setIsLoading(false));
   };
@@ -63,23 +63,9 @@ function Login({ dispatch }) {
 
             <form onSubmit={handleSubmit}>
               <Stack>
-                <TextField
-                  label="EMAIL"
-                  type="email"
-                  name="email"
-                  variant="standard"
-                  sx={{ marginBottom: 2 }}
-                  placeholder="email@gmail.com"
-                />
+                <TextField label="EMAIL" type="email" name="email" variant="standard" sx={{ marginBottom: 2 }} placeholder="email@gmail.com" />
 
-                <TextField
-                  label="MẬT KHẨU"
-                  name="password"
-                  variant="standard"
-                  type="password"
-                  sx={{ marginBottom: 4 }}
-                  placeholder="Mật khẩu của bạn"
-                />
+                <TextField label="MẬT KHẨU" name="password" variant="standard" type="password" sx={{ marginBottom: 4 }} placeholder="Mật khẩu của bạn" />
 
                 <Button disabled={isLoading} type="submit" variant="contained">
                   {isLoading ? "Đang xử lý" : "Đăng nhập"}

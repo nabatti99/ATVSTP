@@ -3,10 +3,10 @@ import axios, { AxiosInstance } from "axios";
 
 const instance: AxiosInstance = axios.create({
   baseURL: Updates.releaseChannel ? "https://atvstp-api.herokuapp.com" : "http://127.0.0.1:5000/",
+  // baseURL: "http://127.0.0.1:5000/",
   timeout: 10000,
   headers: {
-    "access-token":
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI2MjNmMWRmYTQ3N2VkZTk3MzE2ODhhYWIifQ.W2RgM_IdqbtIij-LK1BfZMZ56vyBIeJkSgfnfvv2eNw",
+    "access-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI2MjNmMWRmYTQ3N2VkZTk3MzE2ODhhYWIifQ.W2RgM_IdqbtIij-LK1BfZMZ56vyBIeJkSgfnfvv2eNw",
   },
 });
 

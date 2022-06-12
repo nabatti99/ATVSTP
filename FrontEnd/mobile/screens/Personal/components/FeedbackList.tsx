@@ -1,37 +1,17 @@
-import { AxiosInstance, AxiosResponse } from "axios";
-import { Fragment, useContext, useEffect, useState } from "react";
-import { GridList, GridView, ListItem, SkeletonView, Text, View } from "react-native-ui-lib";
-import { Icon } from "../../../components/Icon";
+import { Fragment } from "react";
+import { SkeletonView, Text, View } from "react-native-ui-lib";
 import { ListView } from "../../../components/ListView";
 import Layout from "../../../constants/Layout";
-import useRequest from "../../../hooks/useRequest";
-import { personalContext } from "../context/PersonalContext";
-import { FeedbackData, PersonalContext } from "../type";
+import { FeedbackData } from "../type";
 
 const { window } = Layout;
 
-type FeedbackResponse = {
-  Message: FeedbackData[];
-  Status: "Success" | "Fail";
+type FeedbackListProps = {
+  data: FeedbackData[] | undefined;
+  isLoading: boolean;
 };
 
-export function FeedbackList() {
-  const { contextData }: PersonalContext = useContext<PersonalContext>(personalContext)!;
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [data, setData] = useState<FeedbackData[]>([]);
-
-  const request: AxiosInstance = useRequest();
-  const getFeedbacks = () => {
-    setIsLoading(true);
-    request
-      .get("feedback/read")
-      .then(({ data: { Message } }: AxiosResponse<FeedbackResponse>) => setData(Message))
-      .finally(() => setIsLoading(false));
-  };
-
-  useEffect(() => getFeedbacks(), [contextData.lastUpdated]);
-
+export function FeedbackList({ data, isLoading = true }: FeedbackListProps) {
   return isLoading ? (
     <ListView
       data={[{ key: 1 }, { key: 2 }, { key: 3 }, { key: 4 }]}
