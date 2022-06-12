@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;900&display=swap");
+
+body {
+  margin: 0;
+}
+
+/* Scroll Style */
+body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #F7FAFC;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #3182CE;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background-color: #F7FAFC;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #3182CE;
+}
