@@ -397,7 +397,7 @@ def load_image_profile_manager(current_manager=None, email: str = ''):
 
 
 @app.route('/manager/reset_password/<string:email>', methods=['POST'])
-@manager_required('level_two')
+@manager_required('level_one')
 def reset_password(current_manager=None, email: str = ''):
     try:
         password_db = request.get_json()
