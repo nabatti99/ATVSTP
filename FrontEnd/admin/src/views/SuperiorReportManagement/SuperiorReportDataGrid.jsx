@@ -134,6 +134,10 @@ function SuperiorReportDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
     },
   ];
 
+  const handleRestore = (row) => {
+    return request.put(`superior_reporting/restore_report/${row._id}`);
+  };
+
   // Render
   const FooterComponent = (
     <ButtonIcon variant="outlined" onClick={() => navigate("Add")} LeftIcon={AddSvg}>
@@ -153,6 +157,7 @@ function SuperiorReportDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
         onUpdateTable={handleUpdateTable}
         actionButtons={actionButtons}
         FooterComponent={FooterComponent}
+        onRestore={handleRestore}
       />
     </Paper>
   );

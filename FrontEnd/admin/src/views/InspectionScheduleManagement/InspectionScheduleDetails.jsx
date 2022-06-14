@@ -12,6 +12,8 @@ import DeleteSvg from "components/Icons/DeleteSvg";
 import { DELETE_SCHEDULE } from "./Modals/inspectionScheduleActionTypes";
 import LocalMallSvg from "components/Icons/LocalMallSvg";
 import GroupSvg from "components/Icons/GroupSvg";
+import ReplaySvg from "components/Icons/ReplaySvg";
+import { getDateDelete } from "utilities/formatDate";
 
 function InspectionScheduleDetails() {
   const request = useRequest();
@@ -29,6 +31,7 @@ function InspectionScheduleDetails() {
     schedule: "",
     updated_by: "",
     is_draft: true,
+    date_delete: null,
   });
 
   const getInspectionSchedule = async () => {
@@ -43,26 +46,53 @@ function InspectionScheduleDetails() {
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      if (state.action == DELETE_SCHEDULE) {
-        navigate("/InspectionSchedulesManagement/", {
-          replace: true,
-        });
-        return;
-      }
-
       getInspectionSchedule();
     }
   }, [state]);
 
-  const {
-    authority = "",
-    groceries = [],
-    content = "",
-    assigned_to = [],
-    schedule = "",
-    updated_by = "",
-    is_draft = true,
-  } = inspectionSchedule;
+  const { authority = "", groceries = [], content = "", assigned_to = [], schedule = "", updated_by = "", is_draft = true, date_delete = null } = inspectionSchedule;
+
+  const buttonELements = (
+    <Stack>
+      <ButtonIcon
+        variant="contained"
+        LeftIcon={ModeSvg}
+        onClick={() => {
+          navigate("Edit", {
+            state: inspectionSchedule,
+          });
+        }}
+        sx={{ marginBottom: 2 }}
+      >
+        Chỉnh sửa
+      </ButtonIcon>
+      {date_delete ? (
+        <ButtonIcon
+          variant="contained"
+          color="green"
+          LeftIcon={ReplaySvg}
+          onClick={() => {
+            request.put(`inspection_schedule/restore_schedule/${_id}`).then(() => getInspectionSchedule());
+          }}
+        >
+          Phục hồi
+        </ButtonIcon>
+      ) : (
+        <ButtonIcon
+          variant="contained"
+          color="red"
+          LeftIcon={DeleteSvg}
+          onClick={() => {
+            navigate("Delete", {
+              state: inspectionSchedule,
+            });
+          }}
+        >
+          Xoá
+        </ButtonIcon>
+      )}
+    </Stack>
+  );
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
@@ -120,34 +150,15 @@ function InspectionScheduleDetails() {
             <Typography color="gray.500" mt={2}>
               {isLoading ? skeleton : content}
             </Typography>
+
+            {date_delete && (
+              <Typography variant="strong" color="red.500" mt={4}>
+                Lịch thanh tra này sẽ bị xoá vĩnh viễn sau: {getDateDelete(date_delete)}
+              </Typography>
+            )}
           </Stack>
 
-          <Stack>
-            <ButtonIcon
-              variant="contained"
-              LeftIcon={ModeSvg}
-              onClick={() => {
-                navigate("Edit", {
-                  state: inspectionSchedule,
-                });
-              }}
-              sx={{ marginBottom: 2 }}
-            >
-              Chỉnh sửa
-            </ButtonIcon>
-            <ButtonIcon
-              variant="contained"
-              color="red"
-              LeftIcon={DeleteSvg}
-              onClick={() => {
-                navigate("Delete", {
-                  state: inspectionSchedule,
-                });
-              }}
-            >
-              Xoá
-            </ButtonIcon>
-          </Stack>
+          {buttonELements}
         </Stack>
       </Paper>
 

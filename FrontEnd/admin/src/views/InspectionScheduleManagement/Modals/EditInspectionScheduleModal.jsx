@@ -4,13 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useRequest from "hooks/useRequest";
 import { EDIT_SCHEDULE } from "./inspectionScheduleActionTypes";
 import InspectionScheduleModal from "./InspectionScheduleModal";
-import {
-  ASSIGNED_TO_CHANGE,
-  AUTHORITY_CHANGE,
-  GROCERIES_CHANGE,
-  inspectionScheduleReducer,
-  SCHEDULE_CHANGE,
-} from "./inspectionScheduleReducer";
+import { ASSIGNED_TO_CHANGE, AUTHORITY_CHANGE, GROCERIES_CHANGE, inspectionScheduleReducer, SCHEDULE_CHANGE } from "./inspectionScheduleReducer";
 import { exportDate, getOnlyDate } from "utilities/formatDate";
 
 function EditInspectionScheduleModal() {
@@ -67,7 +61,7 @@ function EditInspectionScheduleModal() {
       request
         .put(`inspection_schedule/${state._id}`, {
           ...inspectionScheduleData,
-          schedule: getOnlyDate(inspectionScheduleData.schedule),
+          schedule: inspectionScheduleData.schedule,
         })
         .then(() =>
           navigate("../", {

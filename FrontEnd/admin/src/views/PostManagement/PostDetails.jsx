@@ -11,6 +11,8 @@ import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
 import EventNoteSvg from "components/Icons/EventNoteSvg";
 import AccountCircleSvg from "components/Icons/AccountCircleSvg";
+import ReplaySvg from "components/Icons/ReplaySvg";
+import { getDateDelete } from "utilities/formatDate";
 
 function PostDetails() {
   const request = useRequest();
@@ -27,6 +29,7 @@ function PostDetails() {
     create_at: "",
     update_at: "",
     contents: [],
+    date_delete: null,
   });
 
   const getPost = async () => {
@@ -53,7 +56,56 @@ function PostDetails() {
     }
   }, [state]);
 
-  const { title = "", writer = "", edit_by = "", create_at = "", update_at = "", contents = [] } = post;
+  const { title = "", writer = "", edit_by = "", create_at = "", update_at = "", contents = [], date_delete = null } = post;
+
+  const buttonELements = (
+    <Stack direction="row">
+      <Stack width={132}>
+        <ButtonIcon
+          variant="contained"
+          LeftIcon={ModeSvg}
+          onClick={() => {
+            navigate("Edit", {
+              state: post,
+            });
+          }}
+          sx={{ marginBottom: 2 }}
+        >
+          Chỉnh sửa
+        </ButtonIcon>
+
+        {date_delete ? (
+          <ButtonIcon
+            variant="contained"
+            color="green"
+            LeftIcon={ReplaySvg}
+            onClick={() => {
+              request
+                .put(`information/disable`, {
+                  _id,
+                })
+                .then(() => getPost());
+            }}
+          >
+            Phục hồi
+          </ButtonIcon>
+        ) : (
+          <ButtonIcon
+            variant="contained"
+            color="red"
+            LeftIcon={DeleteSvg}
+            onClick={() => {
+              navigate("Delete", {
+                state: post,
+              });
+            }}
+          >
+            Xoá
+          </ButtonIcon>
+        )}
+      </Stack>
+    </Stack>
+  );
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
@@ -85,9 +137,7 @@ function PostDetails() {
               {edit_by && (
                 <Stack direction="row" color="gray.500" alignItems="center" mt={1}>
                   <AlarmOnSvg size={16} mr={1} />
-                  <Typography variant="strong">
-                    {isLoading ? skeleton : `Cập nhật lần cuối bởi: ${edit_by} vào lúc ${update_at}`}
-                  </Typography>
+                  <Typography variant="strong">{isLoading ? skeleton : `Cập nhật lần cuối bởi: ${edit_by} vào lúc ${update_at}`}</Typography>
                 </Stack>
               )}
             </Stack>
@@ -124,36 +174,15 @@ function PostDetails() {
                   </Stack>
                 );
             })}
+
+            {date_delete && (
+              <Typography variant="strong" color="red.500" mt={4}>
+                Bài viết này sẽ bị xoá vĩnh viễn sau: {getDateDelete(date_delete)}
+              </Typography>
+            )}
           </Stack>
 
-          <Stack direction="row">
-            <Stack width={132}>
-              <ButtonIcon
-                variant="contained"
-                LeftIcon={ModeSvg}
-                onClick={() => {
-                  navigate("Edit", {
-                    state: post,
-                  });
-                }}
-                sx={{ marginBottom: 2 }}
-              >
-                Chỉnh sửa
-              </ButtonIcon>
-              <ButtonIcon
-                variant="contained"
-                color="red"
-                LeftIcon={DeleteSvg}
-                onClick={() => {
-                  navigate("Delete", {
-                    state: post,
-                  });
-                }}
-              >
-                Xoá
-              </ButtonIcon>
-            </Stack>
-          </Stack>
+          {buttonELements}
         </Stack>
       </Paper>
 

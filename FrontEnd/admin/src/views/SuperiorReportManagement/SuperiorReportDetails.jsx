@@ -11,8 +11,9 @@ import ModeSvg from "components/Icons/ModeSvg";
 import DeleteSvg from "components/Icons/DeleteSvg";
 import { DELETE_REPORT } from "./Modals/superiorReportActionTypes";
 import LocalMallSvg from "components/Icons/LocalMallSvg";
-import { exportDate, importDate } from "utilities/formatDate";
+import { exportDate, getDateDelete, importDate } from "utilities/formatDate";
 import FlagSvg from "components/Icons/FlagSvg";
+import ReplaySvg from "components/Icons/ReplaySvg";
 
 function SuperiorReportDetails() {
   const request = useRequest();
@@ -31,6 +32,7 @@ function SuperiorReportDetails() {
     regulator_agency: "",
     updated_at: new Date(),
     is_draft: true,
+    date_delete: null,
   });
 
   const getSuperiorReport = async () => {
@@ -45,13 +47,6 @@ function SuperiorReportDetails() {
   useEffect(() => {
     console.log(state);
     if (state && state.isSubmitted) {
-      if (state.action == DELETE_REPORT) {
-        navigate("/SuperiorReportsManagement/", {
-          replace: true,
-        });
-        return;
-      }
-
       getSuperiorReport();
     }
   }, [state]);
@@ -65,7 +60,53 @@ function SuperiorReportDetails() {
     regulator_agency = "",
     updated_at = "",
     is_draft = true,
+    date_delete = null,
   } = superiorReport;
+
+  const buttonELements = (
+    <Stack direction="row">
+      <Stack width={132}>
+        <ButtonIcon
+          variant="contained"
+          LeftIcon={ModeSvg}
+          onClick={() => {
+            navigate("Edit", {
+              state: superiorReport,
+            });
+          }}
+          sx={{ marginBottom: 2 }}
+        >
+          Chỉnh sửa
+        </ButtonIcon>
+
+        {date_delete ? (
+          <ButtonIcon
+            variant="contained"
+            color="green"
+            LeftIcon={ReplaySvg}
+            onClick={() => {
+              request.put(`superior_reporting/restore_report/${_id}`).then(() => getSuperiorReport());
+            }}
+          >
+            Phục hồi
+          </ButtonIcon>
+        ) : (
+          <ButtonIcon
+            variant="contained"
+            color="red"
+            LeftIcon={DeleteSvg}
+            onClick={() => {
+              navigate("Delete", {
+                state: superiorReport,
+              });
+            }}
+          >
+            Xoá
+          </ButtonIcon>
+        )}
+      </Stack>
+    </Stack>
+  );
 
   const skeleton = <Skeleton animation="wave" sx={{ minWidth: "200px" }} />;
 
@@ -83,9 +124,7 @@ function SuperiorReportDetails() {
 
             <Stack direction="row" color="gray.500" alignItems="center" mt={1}>
               <ApartmentSvg size={16} mr={1} />
-              <Typography variant="strong">
-                {isLoading ? skeleton : `Nơi nhận báo cáo: ${regulator_agency}`}
-              </Typography>
+              <Typography variant="strong">{isLoading ? skeleton : `Nơi nhận báo cáo: ${regulator_agency}`}</Typography>
             </Stack>
 
             <Stack direction="row" color="gray.500" mt={1}>
@@ -130,36 +169,14 @@ function SuperiorReportDetails() {
                 {isLoading ? skeleton : "Đã gửi"}
               </Typography>
             )}
+            {date_delete && (
+              <Typography variant="strong" color="red.500" mt={4}>
+                Báo cáo này sẽ bị xoá vĩnh viễn sau: {getDateDelete(date_delete)}
+              </Typography>
+            )}
           </Stack>
 
-          <Stack direction="row">
-            <Stack width={132}>
-              <ButtonIcon
-                variant="contained"
-                LeftIcon={ModeSvg}
-                onClick={() => {
-                  navigate("Edit", {
-                    state: superiorReport,
-                  });
-                }}
-                sx={{ marginBottom: 2 }}
-              >
-                Chỉnh sửa
-              </ButtonIcon>
-              <ButtonIcon
-                variant="contained"
-                color="red"
-                LeftIcon={DeleteSvg}
-                onClick={() => {
-                  navigate("Delete", {
-                    state: superiorReport,
-                  });
-                }}
-              >
-                Xoá
-              </ButtonIcon>
-            </Stack>
-          </Stack>
+          {buttonELements}
         </Stack>
       </Paper>
 
