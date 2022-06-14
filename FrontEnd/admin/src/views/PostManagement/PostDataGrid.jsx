@@ -119,6 +119,12 @@ function PostDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
     },
   ];
 
+  const handleRestore = (row) => {
+    return request.put(`information/disable`, {
+      _id: row._id,
+    });
+  };
+
   // Render
   const FooterComponent = (
     <ButtonIcon variant="outlined" onClick={() => navigate("Add")} LeftIcon={AddSvg}>
@@ -138,6 +144,7 @@ function PostDataGrid({ shouldTableUpdate, query, onTableUpdate }) {
         onUpdateTable={handleUpdateTable}
         actionButtons={actionButtons}
         FooterComponent={FooterComponent}
+        onRestore={handleRestore}
       />
     </Paper>
   );

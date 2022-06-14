@@ -97,6 +97,7 @@ function InspectionScheduleDataGrid({ shouldTableUpdate, query, onTableUpdate })
         },
       })
       .then((res) => {
+        res.data.result.schedule = importDate(res.data.result.schedule);
         setData(res.data.result);
         setNumRecords(res.data.records);
         setIsLoading(false);
@@ -128,6 +129,10 @@ function InspectionScheduleDataGrid({ shouldTableUpdate, query, onTableUpdate })
     },
   ];
 
+  const handleRestore = (row) => {
+    return request.put(`inspection_schedule/restore_schedule/${row._id}`);
+  };
+
   // Render
   const FooterComponent = (
     <ButtonIcon variant="outlined" onClick={() => navigate("Add")} LeftIcon={AddSvg}>
@@ -147,6 +152,7 @@ function InspectionScheduleDataGrid({ shouldTableUpdate, query, onTableUpdate })
         onUpdateTable={handleUpdateTable}
         actionButtons={actionButtons}
         FooterComponent={FooterComponent}
+        onRestore={handleRestore}
       />
     </Paper>
   );

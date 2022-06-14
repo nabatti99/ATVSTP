@@ -4,13 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useRequest from "hooks/useRequest";
 import { ADD_NEW_SCHEDULE } from "./inspectionScheduleActionTypes";
 import InspectionScheduleModal from "./InspectionScheduleModal";
-import {
-  ASSIGNED_TO_CHANGE,
-  AUTHORITY_CHANGE,
-  GROCERIES_CHANGE,
-  inspectionScheduleReducer,
-  SCHEDULE_CHANGE,
-} from "./inspectionScheduleReducer";
+import { ASSIGNED_TO_CHANGE, AUTHORITY_CHANGE, GROCERIES_CHANGE, inspectionScheduleReducer, SCHEDULE_CHANGE } from "./inspectionScheduleReducer";
 import { exportDate } from "utilities/formatDate";
 
 function AddNewInspectionScheduleModal() {
@@ -73,7 +67,7 @@ function AddNewInspectionScheduleModal() {
       request
         .post("inspection_schedule", {
           ...inspectionScheduleData,
-          schedule: exportDate(inspectionScheduleData.schedule),
+          schedule: inspectionScheduleData.schedule,
         })
         .then(() =>
           navigate("../", {
